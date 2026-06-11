@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dev Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111120;
+    --card: #1a1a2e;
+    --border: #2a2a4a;
+    --neon: #00ff9d;
+    --violet: #7c3aed;
+    --violet-light: #a78bfa;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --danger: #ef4444;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--violet); border-radius: 3px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem; font-weight: 600;
+    color: var(--neon);
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--violet-light); }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; color: var(--muted);
+    text-decoration: none; transition: color 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .nav-links a:hover { color: var(--neon); }
+  .btn-admin {
+    background: transparent;
+    border: 1px solid var(--violet);
+    color: var(--violet-light);
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .btn-admin:hover { background: var(--violet); color: #fff; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 6rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,157,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,157,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 800px; }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; color: var(--neon);
+    letter-spacing: 0.15em;
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block; width: 32px; height: 1px;
+    background: var(--neon);
+  }
+  .hero-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+  .hero-name .cursor {
+    display: inline-block;
+    width: 3px; height: 0.9em;
+    background: var(--neon);
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .hero-title {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--violet-light);
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.01em;
+  }
+  .hero-desc {
+    font-size: 1rem; color: var(--muted);
+    line-height: 1.7; max-width: 520px;
+    margin-bottom: 2.5rem;
+  }
+  .hero-cta {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--neon);
+    color: #0a0a0f;
+    padding: 0.75rem 1.75rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem; font-weight: 600;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: #00e085; transform: translateY(-1px); box-shadow: 0 0 24px rgba(0,255,157,0.3); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    padding: 0.75rem 1.75rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--violet); color: var(--violet-light); }
+
+  /* STATS */
+  .hero-stats {
+    display: flex; gap: 2rem; margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .stat { }
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.75rem; font-weight: 700;
+    color: var(--neon);
+    display: block;
+  }
+  .stat-label {
+    font-size: 0.75rem; color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* SECTION */
+  section { padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .section-header { margin-bottom: 3.5rem; }
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; color: var(--neon);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-eyebrow::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--neon); }
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .section-title span { color: var(--violet-light); }
+
+  /* PROJECTS GRID */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+  }
+  .project-card:hover {
+    border-color: var(--neon);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,255,157,0.08);
+  }
+  .project-card:hover .card-glow { opacity: 1; }
+  .card-glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(0,255,157,0.04), transparent 60%);
+    opacity: 0; transition: opacity 0.25s;
+    pointer-events: none;
+  }
+  .card-header {
+    padding: 1.5rem 1.5rem 1rem;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 1rem;
+  }
+  .card-icon {
+    width: 40px; height: 40px;
+    background: rgba(0,255,157,0.08);
+    border: 1px solid rgba(0,255,157,0.2);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .card-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    background: rgba(124,58,237,0.15);
+    color: var(--violet-light);
+    border: 1px solid rgba(124,58,237,0.25);
+    letter-spacing: 0.03em;
+  }
+  .badge.neon {
+    background: rgba(0,255,157,0.1);
+    color: var(--neon);
+    border-color: rgba(0,255,157,0.2);
+  }
+  .card-body { padding: 0 1.5rem 1.5rem; }
+  .card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  .card-desc {
+    font-size: 0.85rem; color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+  .card-actions {
+    display: flex; gap: 0.75rem; flex-wrap: wrap;
+  }
+  .btn-card {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+    letter-spacing: 0.05em;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .btn-card.preview {
+    background: rgba(0,255,157,0.1);
+    color: var(--neon);
+    border: 1px solid rgba(0,255,157,0.25);
+  }
+  .btn-card.preview:hover { background: rgba(0,255,157,0.2); }
+  .btn-card.open {
+    background: rgba(124,58,237,0.1);
+    color: var(--violet-light);
+    border: 1px solid rgba(124,58,237,0.25);
+  }
+  .btn-card.open:hover { background: rgba(124,58,237,0.2); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 5rem 2rem;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+  .empty-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem; margin-bottom: 0.5rem;
+  }
+  .empty-sub { font-size: 0.85rem; }
+
+  /* IFRAME MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(5,5,10,0.92);
+    backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center;
+    padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: 100%; max-width: 1100px;
+    height: 90vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .modal-bar {
+    padding: 0.75rem 1.25rem;
+    display: flex; align-items: center; gap: 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    flex-shrink: 0;
+  }
+  .modal-dots { display: flex; gap: 6px; }
+  .modal-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+  }
+  .modal-dot:nth-child(1) { background: #ef4444; }
+  .modal-dot:nth-child(2) { background: #f59e0b; }
+  .modal-dot:nth-child(3) { background: var(--neon); }
+  .modal-url {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .modal-close {
+    background: transparent; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 1.2rem; line-height: 1;
+    padding: 0.25rem; border-radius: 4px;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal iframe {
+    flex: 1; width: 100%; border: none;
+    background: #fff;
+  }
+
+  /* ADMIN MODAL */
+  .admin-modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: 100%; max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2rem;
+  }
+  .admin-modal h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.4rem;
+    color: var(--neon);
+  }
+  .admin-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.75rem; }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    padding: 0.65rem 0.9rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--neon);
+  }
+  .form-textarea { resize: vertical; min-height: 90px; }
+  .form-select option { background: var(--card); }
+  .form-row { display: flex; gap: 1rem; }
+  .form-row .form-group { flex: 1; }
+  .form-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .btn-form {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: 4px;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .btn-form.save { background: var(--neon); color: #0a0a0f; font-weight: 600; }
+  .btn-form.save:hover { background: #00e085; }
+  .btn-form.cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .btn-form.cancel:hover { border-color: var(--text); color: var(--text); }
+  .btn-form.danger { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
+  .btn-form.danger:hover { background: rgba(239,68,68,0.2); }
+
+  /* ADMIN PROJECT LIST */
+  .admin-project-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.85rem 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 0.6rem;
+  }
+  .admin-item-name {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+  .admin-item-actions { display: flex; gap: 0.5rem; }
+  .btn-icon {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer;
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px; font-size: 0.8rem;
+    transition: all 0.18s;
+  }
+  .btn-icon:hover { border-color: var(--neon); color: var(--neon); }
+  .btn-icon.del:hover { border-color: #f87171; color: #f87171; }
+
+  /* LOGIN */
+  .login-prompt { }
+  .login-prompt h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--neon); margin-bottom: 0.4rem;
+  }
+  .login-prompt p { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .pw-error {
+    font-size: 0.78rem; color: #f87171;
+    margin-top: 0.5rem; display: none;
+  }
+
+  /* ABOUT */
+  #about {
+    border-top: 1px solid var(--border);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .form-row { flex-direction: column; }
+    nav { padding: 1rem; }
+    .nav-links { gap: 1rem; }
+  }
+  .about-text { }
+  .about-text p {
+    font-size: 0.95rem; color: var(--muted);
+    line-height: 1.8; margin-bottom: 1rem;
+  }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+  .skills-list {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem;
+  }
+  .skill-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.7rem;
+    background: rgba(0,255,157,0.07);
+    border: 1px solid rgba(0,255,157,0.15);
+    border-radius: 3px;
+    color: var(--neon);
+    letter-spacing: 0.03em;
+  }
+  .terminal-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .terminal-titlebar {
+    padding: 0.65rem 1rem;
+    background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .terminal-titlebar .dot { width:10px; height:10px; border-radius:50%; }
+  .terminal-titlebar .dot:nth-child(1){background:#ef4444;}
+  .terminal-titlebar .dot:nth-child(2){background:#f59e0b;}
+  .terminal-titlebar .dot:nth-child(3){background:#22c55e;}
+  .terminal-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; color: var(--muted);
+    flex: 1; text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .terminal-body {
+    padding: 1.25rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.9; color: var(--muted);
+  }
+  .terminal-line .prompt { color: var(--neon); }
+  .terminal-line .cmd { color: var(--text); }
+  .terminal-line .out { color: #a78bfa; }
+  .terminal-line .comment { color: var(--muted); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  footer span { color: var(--neon); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+    background: var(--card);
+    border: 1px solid var(--neon);
+    border-radius: 6px;
+    padding: 0.75rem 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--neon);
+    transform: translateY(100px); opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* TAB */
+  .admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent; color: var(--muted);
+    cursor: pointer; transition: all 0.18s;
+    letter-spacing: 0.05em;
+  }
+  .tab-btn.active { background: var(--violet); border-color: var(--violet); color: #fff; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>~/</span><span id="navName">devportfolio</span></div>
+  <div class="nav-links">
+    <a href="#projects">projects</a>
+    <a href="#about">about</a>
+    <button class="btn-admin" onclick="openAdminModal()">⚙ admin</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="max-width:100%; padding-left:10vw; padding-right:10vw;">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">BACKEND ENGINEER</div>
+    <h1 class="hero-name" id="heroName"><span id="typeTarget"></span><span class="cursor"></span></h1>
+    <p class="hero-title" id="heroTitle">Building the engines that power the web.</p>
+    <p class="hero-desc" id="heroDesc">I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">View Projects →</a>
+      <a href="#about" class="btn-secondary">About Me</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" id="statProjects">0</span><span class="stat-label">Projects</span></div>
+      <div class="stat"><span class="stat-num" id="statTech">—</span><span class="stat-label">Stack</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header">
+    <div class="section-eyebrow">WORK</div>
+    <h2 class="section-title">Backend <span>Projects</span></h2>
+  </div>
+  <div class="projects-grid" id="projectsGrid">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <div class="section-eyebrow">ABOUT</div>
+    <h2 class="section-title">Who I <span>Am</span></h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p id="aboutPara1">I'm a backend engineer who loves working in the parts of software most people never see — the layers where <strong>performance, reliability, and architecture</strong> actually matter.</p>
+      <p id="aboutPara2">My focus is on building clean APIs, designing efficient data models, and writing code that's maintainable and scales gracefully under pressure.</p>
+      <div class="skills-list" id="skillsList">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+    <div class="terminal-box">
+      <div class="terminal-titlebar">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="terminal-title">bash — profile.sh</div>
+      </div>
+      <div class="terminal-body" id="terminalContent">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>Built with <span>♥</span> &amp; <span>{ }</span> — <span id="footerName">devportfolio</span></footer>
+
+<!-- PREVIEW MODAL -->
+<div class="modal-overlay" id="previewModal">
+  <div class="modal">
+    <div class="modal-bar">
+      <div class="modal-dots"><div class="modal-dot"></div><div class="modal-dot"></div><div class="modal-dot"></div></div>
+      <div class="modal-url" id="previewUrl">about:blank</div>
+      <button class="modal-close" onclick="closePreview()">✕</button>
+    </div>
+    <iframe id="previewFrame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  </div>
+</div>
+
+<!-- ADMIN MODAL OVERLAY -->
+<div class="modal-overlay" id="adminModal">
+  <div class="admin-modal" id="adminModalContent">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const ADMIN_KEY = 'portfolio_admin_authed';
+const DATA_KEY = 'portfolio_data';
+
+const DEFAULT_DATA = {
+  name: 'Your Name',
+  title: 'Building the engines that power the web.',
+  desc: 'I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.',
+  about1: "I'm a backend engineer who loves working in the parts of software most people never see — the layers where performance, reliability, and architecture actually matter.",
+  about2: 'My focus is on building clean APIs, designing efficient data models, and writing code that\'s maintainable and scales gracefully under pressure.',
+  skills: ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'Docker', 'REST APIs', 'GraphQL', 'AWS', 'Nginx', 'Git'],
+  password: 'admin123',
+  projects: []
+};
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(DATA_KEY);
+    if (!raw) return JSON.parse(JSON.stringify(DEFAULT_DATA));
+    return { ...DEFAULT_DATA, ...JSON.parse(raw) };
+  } catch { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+}
+
+function saveData(data) {
+  localStorage.setItem(DATA_KEY, JSON.stringify(data));
+}
+
+let data = loadData();
+let adminAuthed = sessionStorage.getItem(ADMIN_KEY) === '1';
+let editingIndex = null;
+
+// ============================================================
+// RENDER SITE
+// ============================================================
+const ICONS = { api: '⚡', db: '🗄️', auth: '🔐', infra: '🏗️', tool: '🔧', service: '🌐', other: '📦' };
+const COLORS = ['neon', '', 'neon', '', ''];
+
+function renderSite() {
+  // Nav + footer name
+  document.getElementById('navName').textContent = data.name.toLowerCase().replace(/\s+/g, '');
+  document.getElementById('footerName').textContent = data.name;
+
+  // Hero
+  startTyping(data.name);
+  document.getElementById('heroTitle').textContent = data.title;
+  document.getElementById('heroDesc').textContent = data.desc;
+  document.getElementById('statProjects').textContent = data.projects.length;
+  const techCount = data.skills.slice(0, 3).join(' · ');
+  document.getElementById('statTech').textContent = techCount;
+
+  // About
+  document.getElementById('aboutPara1').innerHTML = data.about1.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  document.getElementById('aboutPara2').textContent = data.about2;
+  renderSkills();
+  renderTerminal();
+
+  // Projects
+  renderProjects();
+}
+
+function renderSkills() {
+  const el = document.getElementById('skillsList');
+  el.innerHTML = data.skills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+}
+
+function renderTerminal() {
+  const lines = [
+    { type: 'cmd', prompt: '$ ', cmd: `whoami` },
+    { type: 'out', out: data.name.toLowerCase().replace(/\s+/g, '_') },
+    { type: 'cmd', prompt: '$ ', cmd: `cat skills.json` },
+    { type: 'out', out: `["${data.skills.slice(0,4).join('", "')}"]` },
+    { type: 'cmd', prompt: '$ ', cmd: `ls projects/` },
+    { type: 'out', out: data.projects.length > 0 ? data.projects.map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).slice(0,4).join('  ') : '(no projects yet)' },
+    { type: 'cmd', prompt: '$ ', cmd: `git log --oneline -1` },
+    { type: 'out', out: 'a1b2c3d always be shipping' },
+  ];
+  document.getElementById('terminalContent').innerHTML = lines.map(l => {
+    if (l.type === 'cmd') return `<div class="terminal-line"><span class="prompt">${l.prompt}</span><span class="cmd">${l.cmd}</span></div>`;
+    return `<div class="terminal-line"><span class="out">${l.out}</span></div>`;
+  }).join('');
+}
+
+function renderProjects() {
+  const grid = document.getElementById('projectsGrid');
+  if (data.projects.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">No projects yet</div><div class="empty-sub">Log in as admin to add your backend projects.</div></div>`;
+    return;
+  }
+  grid.innerHTML = data.projects.map((p, i) => `
+    <div class="project-card">
+      <div class="card-glow"></div>
+      <div class="card-header">
+        <div class="card-icon">${ICONS[p.icon] || '📦'}</div>
+        <div class="card-badges">
+          ${p.status === 'live' ? '<span class="badge neon">● LIVE</span>' : '<span class="badge">WIP</span>'}
+          ${p.tags ? p.tags.split(',').slice(0,2).map(t=>`<span class="badge">${t.trim()}</span>`).join('') : ''}
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${p.name}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-actions">
+          ${p.url ? `<button class="btn-card preview" onclick="openPreview('${escAttr(p.url)}')">⬡ Preview</button>` : ''}
+          ${p.url ? `<button class="btn-card open" onclick="window.open('${escAttr(p.url)}','_blank')">↗ Open</button>` : ''}
+          ${p.repo ? `<button class="btn-card open" onclick="window.open('${escAttr(p.repo)}','_blank')">⌥ Repo</button>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escAttr(s) { return s.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+// ============================================================
+// TYPING ANIMATION
+// ============================================================
+let typingDone = false;
+function startTyping(name) {
+  if (typingDone) { document.getElementById('typeTarget').textContent = name; return; }
+  const el = document.getElementById('typeTarget');
+  el.textContent = '';
+  let i = 0;
+  const iv = setInterval(() => {
+    el.textContent += name[i++];
+    if (i >= name.length) { clearInterval(iv); typingDone = true; }
+  }, 80);
+}
+
+// ============================================================
+// PREVIEW MODAL
+// ============================================================
+function openPreview(url) {
+  document.getElementById('previewUrl').textContent = url;
+  document.getElementById('previewFrame').src = url;
+  document.getElementById('previewModal').classList.add('open');
+}
+function closePreview() {
+  document.getElementById('previewModal').classList.remove('open');
+  document.getElementById('previewFrame').src = 'about:blank';
+}
+document.getElementById('previewModal').addEventListener('click', function(e) {
+  if (e.target === this) closePreview();
+});
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// ADMIN MODAL
+// ============================================================
+function openAdminModal() {
+  document.getElementById('adminModal').classList.add('open');
+  if (!adminAuthed) renderLoginPanel();
+  else renderAdminPanel();
+}
+function closeAdminModal() {
+  document.getElementById('adminModal').classList.remove('open');
+  editingIndex = null;
+}
+document.getElementById('adminModal').addEventListener('click', function(e) {
+  if (e.target === this) closeAdminModal();
+});
+
+// LOGIN
+function renderLoginPanel() {
+  document.getElementById('adminModalContent').innerHTML = `
+    <div class="login-prompt">
+      <h2>⚙ Admin Access</h2>
+      <p>Enter your password to manage the portfolio.</p>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')tryLogin()"/>
+        <div class="pw-error" id="pwError">Incorrect password.</div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-form save" onclick="tryLogin()">Login</button>
+        <button class="btn-form cancel" onclick="closeAdminModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  setTimeout(() => document.getElementById('pwInput')?.focus(), 50);
+}
+
+function tryLogin() {
+  const pw = document.getElementById('pwInput').value;
+  if (pw === data.password) {
+    adminAuthed = true;
+    sessionStorage.setItem(ADMIN_KEY, '1');
+    renderAdminPanel();
+  } else {
+    document.getElementById('pwError').style.display = 'block';
+  }
+}
+
+// ADMIN PANEL
+let activeTab = 'projects';
+function renderAdminPanel() {
+  document.getElementById('adminModalContent').innerHTML = `
+    <h2>⚙ Admin Panel</h2>
+    <p class="admin-sub">Manage your portfolio content.</p>
+    <div class="admin-tabs">
+      <button class="tab-btn ${activeTab==='projects'?'active':''}" onclick="switchTab('projects')">Projects</button>
+      <button class="tab-btn ${activeTab==='profile'?'active':''}" onclick="switchTab('profile')">Profile</button>
+      <button class="tab-btn ${activeTab==='settings'?'active':''}" onclick="switchTab('settings')">Settings</button>
+    </div>
+    <div class="tab-panel ${activeTab==='projects'?'active':''}" id="tab-projects">${renderProjectsTab()}</div>
+    <div class="tab-panel ${activeTab==='profile'?'active':''}" id="tab-profile">${renderProfileTab()}</div>
+    <div class="tab-panel ${activeTab==='settings'?'active':''}" id="tab-settings">${renderSettingsTab()}</div>
+    <div class="form-actions" style="margin-top:1rem; border-top:1px solid var(--border); padding-top:1rem;">
+      <button class="btn-form cancel" onclick="closeAdminModal()">Close</button>
+      <button class="btn-form danger" onclick="logoutAdmin()">Logout</button>
+    </div>
+  `;
+}
+
+function switchTab(tab) { activeTab = tab; renderAdminPanel(); }
+
+// Projects Tab
+function renderProjectsTab() {
+  const list = data.projects.length > 0
+    ? data.projects.map((p,i) => `
+      <div class="admin-project-item">
+        <span class="admin-item-name">${ICONS[p.icon]||'📦'} ${p.name}</span>
+        <div class="admin-item-actions">
+          <button class="btn-icon" onclick="editProject(${i})">✎</button>
+          <button class="btn-icon del" onclick="deleteProject(${i})">✕</button>
+        </div>
+      </div>`).join('')
+    : '<p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">No projects yet. Add your first one!</p>';
+
+  return `
+    ${list}
+    <button class="btn-form save" style="margin-top:0.5rem" onclick="showAddProject()">+ Add Project</button>
+    <div id="projectForm" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+      ${projectFormHTML()}
+    </div>
+  `;
+}
+
+function projectFormHTML(p) {
+  return `
+    <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;margin-bottom:1rem;color:var(--neon);">${editingIndex!==null?'Edit':'New'} Project</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Project Name *</label>
+        <input class="form-input" id="pName" value="${p?.name||''}" placeholder="My API Service"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Icon</label>
+        <select class="form-select" id="pIcon">
+          ${Object.entries(ICONS).map(([k,v])=>`<option value="${k}" ${p?.icon===k?'selected':''}>${v} ${k}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description *</label>
+      <textarea class="form-textarea" id="pDesc" placeholder="What this project does...">${p?.desc||''}</textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Live URL</label>
+        <input class="form-input" id="pUrl" value="${p?.url||''}" placeholder="https://myapi.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Repo URL</label>
+        <input class="form-input" id="pRepo" value="${p?.repo||''}" placeholder="https://github.com/..."/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tags (comma separated)</label>
+        <input class="form-input" id="pTags" value="${p?.tags||''}" placeholder="Node.js, Redis, AWS"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="pStatus">
+          <option value="live" ${p?.status==='live'?'selected':''}>Live</option>
+          <option value="wip" ${p?.status==='wip'?'selected':''}>WIP</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-form save" onclick="saveProject()">Save Project</button>
+      <button class="btn-form cancel" onclick="cancelProjectForm()">Cancel</button>
+    </div>
+  `;
+}
+
+function showAddProject() {
+  editingIndex = null;
+  document.getElementById('projectForm').style.display = 'block';
+  document.getElementById('projectForm').innerHTML = projectFormHTML();
+}
+function editProject(i) {
+  editingIndex = i;
+  document.getElementById('projectForm').style.display = 'block';
+  document.getElementById('projectForm').innerHTML = projectFormHTML(data.projects[i]);
+  document.getElementById('projectForm').scrollIntoView({ behavior: 'smooth' });
+}
+function cancelProjectForm() {
+  document.getElementById('projectForm').style.display = 'none';
+  editingIndex = null;
+}
+function saveProject() {
+  const name = document.getElementById('pName').value.trim();
+  const desc = document.getElementById('pDesc').value.trim();
+  if (!name || !desc) { showToast('Name and description required.'); return; }
+  const proj = {
+    name,
+    desc,
+    icon: document.getElementById('pIcon').value,
+    url: document.getElementById('pUrl').value.trim(),
+    repo: document.getElementById('pRepo').value.trim(),
+    tags: document.getElementById('pTags').value.trim(),
+    status: document.getElementById('pStatus').value,
+  };
+  if (editingIndex !== null) data.projects[editingIndex] = proj;
+  else data.projects.push(proj);
+  saveData(data);
+  renderSite();
+  renderAdminPanel();
+  showToast(editingIndex !== null ? 'Project updated!' : 'Project added!');
+}
+function deleteProject(i) {
+  if (!confirm(`Delete "${data.projects[i].name}"?`)) return;
+  data.projects.splice(i, 1);
+  saveData(data);
+  renderSite();
+  renderAdminPanel();
+  showToast('Project deleted.');
+}
+
+// Profile Tab
+function renderProfileTab() {
+  return `
+    <div class="form-group">
+      <label class="form-label">Display Name *</label>
+      <input class="form-input" id="prName" value="${data.name}" placeholder="Your Name"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Hero Tagline</label>
+      <input class="form-input" id="prTitle" value="${data.title}" placeholder="Building the engines..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Hero Description</label>
+      <textarea class="form-textarea" id="prDesc">${data.desc}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">About Paragraph 1</label>
+      <textarea class="form-textarea" id="prAbout1">${data.about1}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">About Paragraph 2</label>
+      <textarea class="form-textarea" id="prAbout2">${data.about2}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Skills (comma separated)</label>
+      <input class="form-input" id="prSkills" value="${data.skills.join(', ')}"/>
+    </div>
+    <div class="form-actions">
+      <button class="btn-form save" onclick="saveProfile()">Save Profile</button>
+    </div>
+  `;
+}
+function saveProfile() {
+  data.name = document.getElementById('prName').value.trim() || data.name;
+  data.title = document.getElementById('prTitle').value.trim();
+  data.desc = document.getElementById('prDesc').value.trim();
+  data.about1 = document.getElementById('prAbout1').value.trim();
+  data.about2 = document.getElementById('prAbout2').value.trim();
+  data.skills = document.getElementById('prSkills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  saveData(data);
+  typingDone = false;
+  renderSite();
+  showToast('Profile saved!');
+}
+
+// Settings Tab
+function renderSettingsTab() {
+  return `
+    <div class="form-group">
+      <label class="form-label">Change Password</label>
+      <input type="password" class="form-input" id="setPw" placeholder="New password"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Confirm Password</label>
+      <input type="password" class="form-input" id="setPw2" placeholder="Confirm new password"/>
+    </div>
+    <div class="form-actions">
+      <button class="btn-form save" onclick="changePassword()">Update Password</button>
+    </div>
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">⚠ Danger zone: this resets all data to defaults.</p>
+      <button class="btn-form danger" onclick="resetAll()">Reset All Data</button>
+    </div>
+  `;
+}
+function changePassword() {
+  const p1 = document.getElementById('setPw').value;
+  const p2 = document.getElementById('setPw2').value;
+  if (!p1) { showToast('Enter a new password.'); return; }
+  if (p1 !== p2) { showToast('Passwords do not match.'); return; }
+  data.password = p1;
+  saveData(data);
+  showToast('Password updated!');
+}
+function resetAll() {
+  if (!confirm('Reset ALL portfolio data? This cannot be undone.')) return;
+  localStorage.removeItem(DATA_KEY);
+  data = loadData();
+  typingDone = false;
+  renderSite();
+  closeAdminModal();
+  showToast('Data reset to defaults.');
+}
+function logoutAdmin() {
+  adminAuthed = false;
+  sessionStorage.removeItem(ADMIN_KEY);
+  closeAdminModal();
+  showToast('Logged out.');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSite();
+</script>
+</body>
+</html>
