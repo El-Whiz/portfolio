@@ -243,8 +243,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 /* extra custom fields */
 .extra-fields-list{margin-top:.5rem;}
 .extra-field-row{display:flex;gap:.5rem;align-items:flex-start;margin-bottom:.6rem;}
-.extra-field-row .ef-label{width:140px;flex-shrink:0;}
+.extra-field-row .ef-label{width:120px;flex-shrink:0;}
 .extra-field-row .ef-value{flex:1;}
+.extra-field-row .ef-type{flex-shrink:0;}
+.ef-type-toggle{display:flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;height:36px;}
+.ef-type-btn{background:transparent;border:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:0 .55rem;cursor:pointer;transition:all .15s;letter-spacing:.03em;white-space:nowrap;}
+.ef-type-btn.active{background:var(--violet);color:#fff;}
+.ef-type-btn:first-child{border-right:1px solid var(--border);}
 .extra-field-row .ef-rm{flex-shrink:0;background:transparent;border:1px solid rgba(239,68,68,.3);color:#f87171;width:30px;height:36px;border-radius:4px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .18s;padding:0;}
 .extra-field-row .ef-rm:hover{background:rgba(239,68,68,.15);}
 .add-field-btn{font-family:'JetBrains Mono',monospace;font-size:.72rem;background:transparent;border:1px dashed var(--border);color:var(--muted);padding:.38rem .9rem;border-radius:4px;cursor:pointer;transition:all .18s;letter-spacing:.04em;display:inline-flex;align-items:center;gap:.4rem;margin-top:.25rem;}
@@ -254,6 +259,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .pm-extra-field:last-child{border-bottom:none;}
 .pm-extra-field-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);width:130px;flex-shrink:0;padding-top:.1rem;letter-spacing:.03em;}
 .pm-extra-field-value{color:var(--text);flex:1;line-height:1.6;}
+.pm-extra-field-link{color:var(--neon);text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;font-size:.82rem;border-bottom:1px solid rgba(0,255,157,.3);transition:border-color .18s;}
+.pm-extra-field-link:hover{border-color:var(--neon);}
 
 footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.05em;}
 footer span{color:var(--neon);}
@@ -471,71 +478,89 @@ function fileIcon(name){
 }
 
 // ── extra fields helpers ──────────────────────────────────────────────────
-function extraFieldsHTML(fieldsArr, containerId, addFnName, removeFnName){
+function efTypeToggleHTML(containerId, idx, type){
+  const isLink = type === 'link';
+  return `<div class="ef-type-toggle">
+    <button class="ef-type-btn ${!isLink?'active':''}" onclick="setEfType('${containerId}',${idx},'text',this)">Txt</button>
+    <button class="ef-type-btn ${isLink?'active':''}"  onclick="setEfType('${containerId}',${idx},'link',this)">URL</button>
+  </div>`;
+}
+
+function efRowHTML(containerId, idx, f){
+  return `<div class="extra-field-row" id="ef_${containerId}_${idx}">
+    <input class="form-input ef-label" placeholder="Label" value="${esc(f.label)}"
+      oninput="updateExtraField('${containerId}',${idx},'label',this.value)"/>
+    <input class="form-input ef-value" placeholder="${f.type==='link'?'https://…':'Value'}" value="${esc(f.value)}"
+      oninput="updateExtraField('${containerId}',${idx},'value',this.value)"/>
+    <div class="ef-type">${efTypeToggleHTML(containerId, idx, f.type||'text')}</div>
+    <button class="ef-rm" onclick="removeExtraField('${containerId}',${idx})" title="Remove">✕</button>
+  </div>`;
+}
+
+function extraFieldsHTML(fieldsArr, containerId, addFnName){
   return `
     <div class="extra-fields-list" id="${containerId}">
-      ${fieldsArr.map((f,i)=>`
-        <div class="extra-field-row" id="ef_${containerId}_${i}">
-          <input class="form-input ef-label" placeholder="Field label" value="${esc(f.label)}"
-            oninput="updateExtraField('${containerId}',${i},'label',this.value)"/>
-          <input class="form-input ef-value" placeholder="Value" value="${esc(f.value)}"
-            oninput="updateExtraField('${containerId}',${i},'value',this.value)"/>
-          <button class="ef-rm" onclick="removeExtraField('${containerId}',${i})" title="Remove field">✕</button>
-        </div>`).join('')}
+      ${fieldsArr.map((f,i) => efRowHTML(containerId, i, f)).join('')}
     </div>
     <button class="add-field-btn" onclick="${addFnName}()">+ Add custom field</button>`;
 }
 
+window.setEfType = (containerId, idx, type, btn) => {
+  // update data
+  const arr = containerId.startsWith('proj') ? projectExtraFields : profileExtraFields;
+  arr[idx].type = type;
+  // update toggle button states
+  const toggle = btn.closest('.ef-type-toggle');
+  toggle.querySelectorAll('.ef-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // update value input placeholder
+  const row = $(`ef_${containerId}_${idx}`);
+  if(row){
+    const valInput = row.querySelector('.ef-value');
+    if(valInput) valInput.placeholder = type === 'link' ? 'https://…' : 'Value';
+  }
+};
+
 window.updateExtraField = (containerId, idx, key, val) => {
-  if(containerId.startsWith('proj')) projectExtraFields[idx][key] = val;
-  else profileExtraFields[idx][key] = val;
+  const arr = containerId.startsWith('proj') ? projectExtraFields : profileExtraFields;
+  if(arr[idx]) arr[idx][key] = val;
 };
 
 window.addProjectExtraField = () => {
-  projectExtraFields.push({label:'',value:''});
+  const f = {label:'', value:'', type:'text'};
+  projectExtraFields.push(f);
   const c = $('projExtraFields');
   if(!c) return;
   const i = projectExtraFields.length - 1;
-  const row = document.createElement('div');
-  row.className='extra-field-row'; row.id=`ef_projExtraFields_${i}`;
-  row.innerHTML=`
-    <input class="form-input ef-label" placeholder="Field label" value=""
-      oninput="updateExtraField('projExtraFields',${i},'label',this.value)"/>
-    <input class="form-input ef-value" placeholder="Value" value=""
-      oninput="updateExtraField('projExtraFields',${i},'value',this.value)"/>
-    <button class="ef-rm" onclick="removeExtraField('projExtraFields',${i})" title="Remove field">✕</button>`;
-  c.appendChild(row);
+  const div = document.createElement('div');
+  div.innerHTML = efRowHTML('projExtraFields', i, f);
+  c.appendChild(div.firstElementChild);
 };
 
 window.addProfileExtraField = () => {
-  profileExtraFields.push({label:'',value:''});
+  const f = {label:'', value:'', type:'text'};
+  profileExtraFields.push(f);
   const c = $('profExtraFields');
   if(!c) return;
   const i = profileExtraFields.length - 1;
-  const row = document.createElement('div');
-  row.className='extra-field-row'; row.id=`ef_profExtraFields_${i}`;
-  row.innerHTML=`
-    <input class="form-input ef-label" placeholder="Field label" value=""
-      oninput="updateExtraField('profExtraFields',${i},'label',this.value)"/>
-    <input class="form-input ef-value" placeholder="Value" value=""
-      oninput="updateExtraField('profExtraFields',${i},'value',this.value)"/>
-    <button class="ef-rm" onclick="removeExtraField('profExtraFields',${i})" title="Remove field">✕</button>`;
-  c.appendChild(row);
+  const div = document.createElement('div');
+  div.innerHTML = efRowHTML('profExtraFields', i, f);
+  c.appendChild(div.firstElementChild);
 };
 
 window.removeExtraField = (containerId, idx) => {
   if(containerId.startsWith('proj')){
-    projectExtraFields.splice(idx,1);
-    reRenderExtraFields('projExtraFields', projectExtraFields, 'addProjectExtraField', 'removeExtraField');
+    projectExtraFields.splice(idx, 1);
+    reRenderExtraFields('projExtraFields', projectExtraFields, 'addProjectExtraField');
   } else {
-    profileExtraFields.splice(idx,1);
-    reRenderExtraFields('profExtraFields', profileExtraFields, 'addProfileExtraField', 'removeExtraField');
+    profileExtraFields.splice(idx, 1);
+    reRenderExtraFields('profExtraFields', profileExtraFields, 'addProfileExtraField');
   }
 };
 
-function reRenderExtraFields(containerId, arr, addFn, removeFn){
+function reRenderExtraFields(containerId, arr, addFn){
   const wrap = $(`${containerId}Wrap`);
-  if(wrap) wrap.innerHTML = extraFieldsHTML(arr, containerId, addFn, removeFn);
+  if(wrap) wrap.innerHTML = extraFieldsHTML(arr, containerId, addFn);
 }
 
 // ── state ─────────────────────────────────────────────────────────────────
@@ -653,7 +678,11 @@ function applyProfile(){
     if(pfExWrap) pfExWrap.innerHTML = pfExFields.map(f=>`
       <div class="pm-extra-field">
         <span class="pm-extra-field-label">${esc(f.label)}</span>
-        <span class="pm-extra-field-value">${esc(f.value)}</span>
+        <span class="pm-extra-field-value">
+          ${f.type==='link'
+            ? `<a href="${esc(f.value)}" target="_blank" rel="noopener noreferrer" class="pm-extra-field-link">↗ ${esc(f.value)}</a>`
+            : esc(f.value)}
+        </span>
       </div>`).join('');
   } else if(pfExWrap){
     pfExWrap.innerHTML='';
@@ -824,7 +853,11 @@ window.openProject = id => {
       ${p.extraFields.filter(f=>f.label||f.value).map(f=>`
         <div class="pm-extra-field">
           <span class="pm-extra-field-label">${esc(f.label)}</span>
-          <span class="pm-extra-field-value">${esc(f.value)}</span>
+          <span class="pm-extra-field-value">
+            ${f.type==='link'
+              ? `<a href="${esc(f.value)}" target="_blank" rel="noopener noreferrer" class="pm-extra-field-link">↗ ${esc(f.value)}</a>`
+              : esc(f.value)}
+          </span>
         </div>`).join('')}
     </div>`:''}
   `;
@@ -1026,7 +1059,7 @@ function renderProjectForm(){
 
     <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.25rem;margin-bottom:1rem;">
       <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Custom Fields <span style="font-size:.65rem;opacity:.6;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif">(any extra info you want to display)</span></p>
-      <div id="projExtraFieldsWrap">${extraFieldsHTML(projectExtraFields,'projExtraFields','addProjectExtraField','removeExtraField')}</div>
+      <div id="projExtraFieldsWrap">${extraFieldsHTML(projectExtraFields,'projExtraFields','addProjectExtraField')}</div>
     </div>
 
     <div class="form-actions">
@@ -1228,7 +1261,7 @@ function renderProfileForm(){
 
     <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.25rem;margin-bottom:1rem;">
       <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Custom Fields <span style="font-size:.65rem;opacity:.6;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif">(extra info shown on your profile)</span></p>
-      <div id="profExtraFieldsWrap">${extraFieldsHTML(profileExtraFields,'profExtraFields','addProfileExtraField','removeExtraField')}</div>
+      <div id="profExtraFieldsWrap">${extraFieldsHTML(profileExtraFields,'profExtraFields','addProfileExtraField')}</div>
     </div>
 
     <div class="form-actions">
