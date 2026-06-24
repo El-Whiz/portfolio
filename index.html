@@ -1,1124 +1,1391 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Dev Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111120;
-    --card: #1a1a2e;
-    --border: #2a2a4a;
-    --neon: #00ff9d;
-    --violet: #7c3aed;
-    --violet-light: #a78bfa;
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --danger: #ef4444;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+:root{--bg:#0a0a0f;--surface:#111120;--card:#1a1a2e;--border:#2a2a4a;--neon:#00ff9d;--violet:#7c3aed;--vl:#a78bfa;--text:#e2e8f0;--muted:#64748b;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--violet);border-radius:3px;}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:600;color:var(--neon);}
+.nav-logo span{color:var(--vl);}
+.nav-links{display:flex;gap:1.75rem;align-items:center;}
+.nav-links a{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .2s;letter-spacing:.05em;}
+.nav-links a:hover{color:var(--neon);}
+.btn-admin{background:transparent;border:1px solid var(--violet);color:var(--vl);padding:.38rem .9rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.73rem;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.btn-admin:hover{background:var(--violet);color:#fff;}
 
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--violet); border-radius: 3px; }
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 10vw 4rem;position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,157,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,157,.04) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 30%,transparent 100%);}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.hero-content{position:relative;z-index:1;width:100%;max-width:1100px;}
+.hero-inner{display:flex;align-items:center;justify-content:space-between;gap:3rem;}
+.hero-text{flex:1;min-width:0;}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--neon);letter-spacing:.15em;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;}
+.hero-eyebrow::before{content:'';display:inline-block;width:32px;height:1px;background:var(--neon);}
+.hero-name{font-family:'JetBrains Mono',monospace;font-size:clamp(2rem,5vw,4.2rem);font-weight:700;line-height:1.05;letter-spacing:-.03em;margin-bottom:1.25rem;}
+.cursor{display:inline-block;width:3px;height:.85em;background:var(--neon);margin-left:4px;vertical-align:middle;animation:blink 1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hero-sub{font-size:clamp(.9rem,1.8vw,1.2rem);color:var(--vl);margin-bottom:1rem;}
+.hero-desc{font-size:.95rem;color:var(--muted);line-height:1.75;max-width:500px;margin-bottom:2.5rem;}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-primary{background:var(--neon);color:#0a0a0f;padding:.72rem 1.6rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.83rem;font-weight:600;border:none;cursor:pointer;transition:all .2s;letter-spacing:.05em;text-decoration:none;display:inline-block;}
+.btn-primary:hover{background:#00e085;transform:translateY(-1px);box-shadow:0 0 24px rgba(0,255,157,.3);}
+.btn-secondary{background:transparent;color:var(--text);padding:.72rem 1.6rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.83rem;border:1px solid var(--border);cursor:pointer;transition:all .2s;letter-spacing:.05em;text-decoration:none;display:inline-block;}
+.btn-secondary:hover{border-color:var(--violet);color:var(--vl);}
+.hero-stats{display:flex;gap:2rem;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:1.75rem;font-weight:700;color:var(--neon);display:block;}
+.stat-label{font-size:.72rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 1rem 2rem;
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(10,10,15,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1rem; font-weight: 600;
-    color: var(--neon);
-    letter-spacing: -0.02em;
-  }
-  .nav-logo span { color: var(--violet-light); }
-  .nav-links { display: flex; gap: 2rem; align-items: center; }
-  .nav-links a {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem; color: var(--muted);
-    text-decoration: none; transition: color 0.2s;
-    letter-spacing: 0.05em;
-  }
-  .nav-links a:hover { color: var(--neon); }
-  .btn-admin {
-    background: transparent;
-    border: 1px solid var(--violet);
-    color: var(--violet-light);
-    padding: 0.4rem 1rem;
-    border-radius: 4px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.05em;
-  }
-  .btn-admin:hover { background: var(--violet); color: #fff; }
+/* HERO AVATAR */
+.hero-avatar-wrap{flex-shrink:0;position:relative;width:260px;height:260px;}
+.hero-avatar-ring{position:absolute;inset:-4px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--violet),var(--neon));animation:spin 6s linear infinite;z-index:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-avatar-inner{position:absolute;inset:4px;border-radius:50%;background:var(--bg);z-index:1;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.hero-avatar-inner img{width:100%;height:100%;object-fit:cover;display:block;}
+.hero-avatar-placeholder{font-size:4rem;}
 
-  /* HERO */
-  #hero {
-    min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    padding: 6rem 2rem 4rem;
-    position: relative; overflow: hidden;
-  }
-  .hero-grid {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(0,255,157,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,157,0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
-  }
-  .hero-glow {
-    position: absolute;
-    width: 600px; height: 600px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-  .hero-content { position: relative; z-index: 1; max-width: 800px; }
-  .hero-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem; color: var(--neon);
-    letter-spacing: 0.15em;
-    margin-bottom: 1.5rem;
-    display: flex; align-items: center; gap: 0.75rem;
-  }
-  .hero-eyebrow::before {
-    content: '';
-    display: inline-block; width: 32px; height: 1px;
-    background: var(--neon);
-  }
-  .hero-name {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    color: var(--text);
-    margin-bottom: 1.25rem;
-  }
-  .hero-name .cursor {
-    display: inline-block;
-    width: 3px; height: 0.9em;
-    background: var(--neon);
-    margin-left: 4px;
-    vertical-align: middle;
-    animation: blink 1s step-end infinite;
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-  .hero-title {
-    font-size: clamp(1rem, 2.5vw, 1.4rem);
-    color: var(--violet-light);
-    font-weight: 400;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.01em;
-  }
-  .hero-desc {
-    font-size: 1rem; color: var(--muted);
-    line-height: 1.7; max-width: 520px;
-    margin-bottom: 2.5rem;
-  }
-  .hero-cta {
-    display: flex; gap: 1rem; flex-wrap: wrap;
-  }
-  .btn-primary {
-    background: var(--neon);
-    color: #0a0a0f;
-    padding: 0.75rem 1.75rem;
-    border-radius: 4px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem; font-weight: 600;
-    border: none; cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.05em;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .btn-primary:hover { background: #00e085; transform: translateY(-1px); box-shadow: 0 0 24px rgba(0,255,157,0.3); }
-  .btn-secondary {
-    background: transparent;
-    color: var(--text);
-    padding: 0.75rem 1.75rem;
-    border-radius: 4px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.05em;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .btn-secondary:hover { border-color: var(--violet); color: var(--violet-light); }
+/* SECTION */
+.section-wrap{padding:5rem 2rem;max-width:1240px;margin:0 auto;}
+.section-header{margin-bottom:3rem;}
+.section-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--neon);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem;}
+.section-eyebrow::after{content:'';flex:1;max-width:60px;height:1px;background:var(--neon);}
+.section-title{font-family:'JetBrains Mono',monospace;font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;letter-spacing:-.02em;}
+.section-title span{color:var(--vl);}
 
-  /* STATS */
-  .hero-stats {
-    display: flex; gap: 2rem; margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-  .stat { }
-  .stat-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.75rem; font-weight: 700;
-    color: var(--neon);
-    display: block;
-  }
-  .stat-label {
-    font-size: 0.75rem; color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+/* PROJECT CARDS */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;}
+.project-card{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:all .25s;cursor:pointer;position:relative;}
+.project-card:hover{border-color:var(--neon);transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,255,157,.07);}
+.card-glow{position:absolute;inset:0;background:radial-gradient(circle at 30% 10%,rgba(0,255,157,.04),transparent 55%);opacity:0;transition:opacity .25s;pointer-events:none;}
+.project-card:hover .card-glow{opacity:1;}
+.card-thumb{height:180px;background-size:cover;background-position:center;position:relative;background-color:rgba(0,0,0,.2);border-bottom:1px solid var(--border);}
+.card-thumb--empty{display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(0,255,157,.04));}
+.card-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2rem;background:rgba(0,0,0,.35);}
+.card-body{padding:1.25rem;}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;}
+.type-badge{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--vl);background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.22);padding:.18rem .55rem;border-radius:3px;letter-spacing:.03em;}
+.status-badge{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.18rem .5rem;border-radius:3px;}
+.status-badge.live{background:rgba(0,255,157,.1);color:var(--neon);border:1px solid rgba(0,255,157,.2);}
+.status-badge.wip{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2);}
+.status-badge.archived{background:rgba(100,116,139,.1);color:var(--muted);border:1px solid var(--border);}
+.card-title{font-family:'JetBrains Mono',monospace;font-size:.97rem;font-weight:600;margin-bottom:.45rem;letter-spacing:-.01em;}
+.card-desc{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:.9rem;}
+.card-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem;}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.63rem;padding:.18rem .5rem;background:rgba(0,255,157,.07);border:1px solid rgba(0,255,157,.14);color:var(--neon);border-radius:3px;}
+.card-footer{display:flex;gap:.75rem;flex-wrap:wrap;}
+.card-link{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);letter-spacing:.04em;}
+.empty-state{grid-column:1/-1;text-align:center;padding:5rem 2rem;color:var(--muted);}
+.empty-icon{font-size:3rem;margin-bottom:1rem;opacity:.35;}
+.empty-title{font-family:'JetBrains Mono',monospace;font-size:.97rem;margin-bottom:.5rem;}
+.empty-sub{font-size:.82rem;}
 
-  /* SECTION */
-  section { padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; }
-  .section-header { margin-bottom: 3.5rem; }
-  .section-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem; color: var(--neon);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-    display: flex; align-items: center; gap: 0.75rem;
-  }
-  .section-eyebrow::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--neon); }
-  .section-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .section-title span { color: var(--violet-light); }
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(5,5,10,.94);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
 
-  /* PROJECTS GRID */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.5rem;
-  }
-  .project-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.25s;
-    cursor: pointer;
-    position: relative;
-  }
-  .project-card:hover {
-    border-color: var(--neon);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 32px rgba(0,255,157,0.08);
-  }
-  .project-card:hover .card-glow { opacity: 1; }
-  .card-glow {
-    position: absolute; inset: 0;
-    background: radial-gradient(circle at 30% 20%, rgba(0,255,157,0.04), transparent 60%);
-    opacity: 0; transition: opacity 0.25s;
-    pointer-events: none;
-  }
-  .card-header {
-    padding: 1.5rem 1.5rem 1rem;
-    display: flex; justify-content: space-between; align-items: flex-start;
-    gap: 1rem;
-  }
-  .card-icon {
-    width: 40px; height: 40px;
-    background: rgba(0,255,157,0.08);
-    border: 1px solid rgba(0,255,157,0.2);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-  .card-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
-  .badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-    background: rgba(124,58,237,0.15);
-    color: var(--violet-light);
-    border: 1px solid rgba(124,58,237,0.25);
-    letter-spacing: 0.03em;
-  }
-  .badge.neon {
-    background: rgba(0,255,157,0.1);
-    color: var(--neon);
-    border-color: rgba(0,255,157,0.2);
-  }
-  .card-body { padding: 0 1.5rem 1.5rem; }
-  .card-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1rem; font-weight: 600;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.01em;
-  }
-  .card-desc {
-    font-size: 0.85rem; color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 1.25rem;
-  }
-  .card-actions {
-    display: flex; gap: 0.75rem; flex-wrap: wrap;
-  }
-  .btn-card {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    padding: 0.4rem 0.9rem;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.18s;
-    letter-spacing: 0.05em;
-    display: flex; align-items: center; gap: 0.4rem;
-  }
-  .btn-card.preview {
-    background: rgba(0,255,157,0.1);
-    color: var(--neon);
-    border: 1px solid rgba(0,255,157,0.25);
-  }
-  .btn-card.preview:hover { background: rgba(0,255,157,0.2); }
-  .btn-card.open {
-    background: rgba(124,58,237,0.1);
-    color: var(--violet-light);
-    border: 1px solid rgba(124,58,237,0.25);
-  }
-  .btn-card.open:hover { background: rgba(124,58,237,0.2); }
+/* PROJECT DETAIL */
+.project-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:100%;max-width:860px;max-height:92vh;overflow-y:auto;position:relative;}
+.pm-close{position:sticky;top:.75rem;float:right;margin-right:.75rem;z-index:10;background:rgba(10,10,15,.8);border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:color .2s;}
+.pm-close:hover{color:var(--text);}
+#projectModalContent{padding:1.75rem 2rem 2rem;clear:both;}
+.pm-header{margin-bottom:1.5rem;}
+.pm-meta{display:flex;gap:.5rem;margin-bottom:.75rem;}
+.pm-title{font-family:'JetBrains Mono',monospace;font-size:clamp(1.25rem,3vw,1.75rem);font-weight:700;letter-spacing:-.02em;margin-bottom:.75rem;}
+.pm-desc{font-size:.9rem;color:var(--muted);line-height:1.75;margin-bottom:1rem;white-space:pre-wrap;}
+.pm-section-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;}
 
-  /* EMPTY STATE */
-  .empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 5rem 2rem;
-    color: var(--muted);
-  }
-  .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
-  .empty-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1rem; margin-bottom: 0.5rem;
-  }
-  .empty-sub { font-size: 0.85rem; }
+/* LIGHTBOX */
+.lightbox{margin-bottom:1.75rem;}
+.lb-main{width:100%;aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.lb-img{width:100%;height:100%;object-fit:contain;}
+.lb-vid{width:100%;height:100%;object-fit:contain;}
+.lb-controls{display:flex;align-items:center;gap:1rem;justify-content:center;margin:.75rem 0;}
+.lb-btn{background:transparent;border:1px solid var(--border);color:var(--text);width:34px;height:34px;border-radius:50%;font-size:1.2rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.lb-btn:hover{border-color:var(--neon);color:var(--neon);}
+.lb-counter{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);}
+.lb-thumbs{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;}
+.lb-thumb{width:70px;height:52px;border-radius:4px;overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:border-color .2s;flex-shrink:0;background:var(--card);display:flex;align-items:center;justify-content:center;}
+.lb-thumb.active{border-color:var(--neon);}
+.lb-thumb img{width:100%;height:100%;object-fit:cover;}
+.lb-thumb-video{font-size:1.2rem;color:var(--muted);}
+.pm-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.btn-action{font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:.55rem 1.2rem;border-radius:4px;border:none;cursor:pointer;transition:all .2s;letter-spacing:.05em;text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;}
+.btn-action.primary{background:var(--neon);color:#0a0a0f;font-weight:600;}
+.btn-action.primary:hover{background:#00e085;}
+.btn-action.secondary{background:transparent;color:var(--vl);border:1px solid rgba(124,58,237,.3);}
+.btn-action.secondary:hover{background:rgba(124,58,237,.12);}
+.pm-files{border-top:1px solid var(--border);padding-top:1.25rem;margin-top:1.25rem;}
+.file-row{display:flex;align-items:center;gap:.75rem;padding:.65rem .9rem;background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:.5rem;text-decoration:none;color:var(--text);transition:border-color .2s;}
+.file-row:hover{border-color:var(--neon);}
+.file-name{flex:1;font-size:.82rem;}
+.file-dl{color:var(--neon);font-size:.85rem;}
+.pm-admin-bar{border-top:1px solid var(--border);padding-top:1.25rem;margin-top:1.5rem;display:flex;gap:.75rem;}
 
-  /* IFRAME MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(5,5,10,0.92);
-    backdrop-filter: blur(6px);
-    display: none; align-items: center; justify-content: center;
-    padding: 1rem;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    width: 100%; max-width: 1100px;
-    height: 90vh;
-    display: flex; flex-direction: column;
-    overflow: hidden;
-  }
-  .modal-bar {
-    padding: 0.75rem 1.25rem;
-    display: flex; align-items: center; gap: 1rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--card);
-    flex-shrink: 0;
-  }
-  .modal-dots { display: flex; gap: 6px; }
-  .modal-dot {
-    width: 12px; height: 12px;
-    border-radius: 50%;
-  }
-  .modal-dot:nth-child(1) { background: #ef4444; }
-  .modal-dot:nth-child(2) { background: #f59e0b; }
-  .modal-dot:nth-child(3) { background: var(--neon); }
-  .modal-url {
-    flex: 1;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .modal-close {
-    background: transparent; border: none;
-    color: var(--muted); cursor: pointer;
-    font-size: 1.2rem; line-height: 1;
-    padding: 0.25rem; border-radius: 4px;
-    transition: color 0.2s;
-  }
-  .modal-close:hover { color: var(--text); }
-  .modal iframe {
-    flex: 1; width: 100%; border: none;
-    background: #fff;
-  }
+/* PREVIEW MODAL */
+.preview-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:100%;max-width:1100px;height:90vh;display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{padding:.7rem 1.25rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--border);background:var(--card);flex-shrink:0;}
+.preview-dots{display:flex;gap:6px;}
+.preview-dot{width:11px;height:11px;border-radius:50%;}
+.preview-dot:nth-child(1){background:#ef4444;}.preview-dot:nth-child(2){background:#f59e0b;}.preview-dot:nth-child(3){background:var(--neon);}
+.preview-url{flex:1;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.preview-close{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:.25rem;border-radius:4px;transition:color .2s;}
+.preview-close:hover{color:var(--text);}
+#previewFrame{flex:1;width:100%;border:none;background:#fff;}
 
-  /* ADMIN MODAL */
-  .admin-modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    width: 100%; max-width: 560px;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 2rem;
-  }
-  .admin-modal h2 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem; font-weight: 700;
-    margin-bottom: 0.4rem;
-    color: var(--neon);
-  }
-  .admin-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.75rem; }
-  .form-group { margin-bottom: 1.25rem; }
-  .form-label {
-    display: block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-  .form-input, .form-textarea, .form-select {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
-    padding: 0.65rem 0.9rem;
-    transition: border-color 0.2s;
-    outline: none;
-  }
-  .form-input:focus, .form-textarea:focus, .form-select:focus {
-    border-color: var(--neon);
-  }
-  .form-textarea { resize: vertical; min-height: 90px; }
-  .form-select option { background: var(--card); }
-  .form-row { display: flex; gap: 1rem; }
-  .form-row .form-group { flex: 1; }
-  .form-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
-  .btn-form {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    padding: 0.65rem 1.5rem;
-    border-radius: 4px;
-    border: none; cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.05em;
-  }
-  .btn-form.save { background: var(--neon); color: #0a0a0f; font-weight: 600; }
-  .btn-form.save:hover { background: #00e085; }
-  .btn-form.cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-  .btn-form.cancel:hover { border-color: var(--text); color: var(--text); }
-  .btn-form.danger { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
-  .btn-form.danger:hover { background: rgba(239,68,68,0.2); }
+/* ADMIN MODAL */
+.admin-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;padding:2rem;}
+.admin-modal-box h2{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--neon);margin-bottom:.4rem;}
+.admin-sub{font-size:.78rem;color:var(--muted);margin-bottom:1.5rem;}
+.admin-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;}
+.tab-btn{font-family:'JetBrains Mono',monospace;font-size:.73rem;padding:.38rem .9rem;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;letter-spacing:.04em;}
+.tab-btn.active{background:var(--violet);border-color:var(--violet);color:#fff;}
+.form-group{margin-bottom:1.1rem;}
+.form-row{display:flex;gap:1rem;}
+.form-row .form-group{flex:1;}
+.form-label{display:block;font-family:'JetBrains Mono',monospace;font-size:.69rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;}
+.form-input,.form-textarea,.form-select{width:100%;background:var(--card);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;padding:.6rem .85rem;transition:border-color .2s;outline:none;}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--neon);}
+.form-textarea{resize:vertical;min-height:90px;}
+.form-select option{background:var(--card);}
+.form-actions{display:flex;gap:.75rem;flex-wrap:wrap;}
+.btn-form{font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:.6rem 1.4rem;border-radius:4px;border:none;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.btn-form.save{background:var(--neon);color:#0a0a0f;font-weight:600;}
+.btn-form.save:hover{background:#00e085;}
+.btn-form.save:disabled{opacity:.5;cursor:not-allowed;}
+.btn-form.cancel{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-form.cancel:hover{border-color:var(--text);color:var(--text);}
+.btn-form.danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;}
+.btn-form.danger:hover{background:rgba(239,68,68,.2);}
+.field-err{font-size:.78rem;color:#f87171;margin-top:.5rem;}
+.upload-zone{border:1px dashed var(--border);border-radius:6px;padding:1.25rem;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:.6rem;}
+.upload-zone:hover{border-color:var(--neon);}
+.uz-icon{font-size:1.5rem;margin-bottom:.4rem;}
+.uz-text{font-size:.78rem;color:var(--muted);line-height:1.5;}
+.uz-text small{font-size:.7rem;opacity:.7;}
+.media-preview-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.4rem;}
+.media-thumb{width:72px;height:54px;border-radius:5px;overflow:hidden;position:relative;border:1px solid var(--border);background:var(--card);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.media-thumb img{width:100%;height:100%;object-fit:cover;}
+.vid-thumb{background:rgba(124,58,237,.1);}
+.vid-play-icon{font-size:1.2rem;color:var(--muted);}
+.rm-btn{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.7);border:none;color:#fff;width:16px;height:16px;border-radius:50%;cursor:pointer;font-size:.6rem;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;}
+.rm-btn.inline-rm{position:static;background:transparent;color:#f87171;width:auto;height:auto;border-radius:0;font-size:.78rem;border:none;cursor:pointer;margin-left:.5rem;}
+.new-label{position:absolute;bottom:2px;left:2px;background:var(--neon);color:#0a0a0f;font-size:.55rem;font-family:'JetBrains Mono',monospace;padding:.08rem .3rem;border-radius:2px;font-weight:700;pointer-events:none;}
+.file-row-edit{display:flex;align-items:center;font-size:.8rem;color:var(--muted);padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.file-row-edit span:first-child{flex:1;}
+.progress-bar-wrap{height:4px;background:var(--border);border-radius:2px;margin-bottom:.4rem;overflow:hidden;}
+.progress-bar{height:100%;background:var(--neon);border-radius:2px;transition:width .15s;width:0%;}
+.progress-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);}
+.admin-project-item{display:flex;align-items:center;gap:1rem;padding:.75rem .9rem;background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:.5rem;}
+.admin-item-name{flex:1;font-family:'JetBrains Mono',monospace;font-size:.82rem;}
+.admin-item-actions{display:flex;gap:.4rem;}
+.btn-icon{background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:.3rem .55rem;border-radius:4px;font-size:.75rem;transition:all .18s;}
+.btn-icon:hover{border-color:var(--neon);color:var(--neon);}
+.btn-icon.del:hover{border-color:#f87171;color:#f87171;}
 
-  /* ADMIN PROJECT LIST */
-  .admin-project-item {
-    display: flex; align-items: center; gap: 1rem;
-    padding: 0.85rem 1rem;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    margin-bottom: 0.6rem;
-  }
-  .admin-item-name {
-    flex: 1;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-  }
-  .admin-item-actions { display: flex; gap: 0.5rem; }
-  .btn-icon {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--muted); cursor: pointer;
-    padding: 0.35rem 0.6rem;
-    border-radius: 4px; font-size: 0.8rem;
-    transition: all 0.18s;
-  }
-  .btn-icon:hover { border-color: var(--neon); color: var(--neon); }
-  .btn-icon.del:hover { border-color: #f87171; color: #f87171; }
+/* ABOUT */
+.about-section{border-top:1px solid var(--border);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.about-left{}
+.about-left p{font-size:.93rem;color:var(--muted);line-height:1.8;margin-bottom:1rem;}
+.skills-list{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.25rem;}
+.skill-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.25rem .65rem;background:rgba(0,255,157,.07);border:1px solid rgba(0,255,157,.15);color:var(--neon);border-radius:3px;}
 
-  /* LOGIN */
-  .login-prompt { }
-  .login-prompt h2 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem; font-weight: 700;
-    color: var(--neon); margin-bottom: 0.4rem;
-  }
-  .login-prompt p { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
-  .pw-error {
-    font-size: 0.78rem; color: #f87171;
-    margin-top: 0.5rem; display: none;
-  }
+/* ABOUT PHOTO GALLERY */
+:root{ --gallery-size: 340px; }
+.about-gallery{margin-bottom:1.75rem;width:var(--gallery-size);max-width:100%;}
+.gallery-placeholder{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(0,255,157,.05));border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:3rem;color:var(--muted);}
+.gallery-main{width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;border:1px solid var(--border);background:var(--card);margin-bottom:.75rem;}
+.gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .35s;}
+.gallery-fade{opacity:0;}
+.gallery-thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;}
+.gallery-thumb{aspect-ratio:1;border-radius:7px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s;background:var(--card);}
+.gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.gallery-thumb.active{border-color:var(--neon);}
+.gallery-thumb.empty{border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.1rem;cursor:default;}
 
-  /* ABOUT */
-  #about {
-    border-top: 1px solid var(--border);
-  }
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
-  }
-  @media (max-width: 768px) {
-    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .form-row { flex-direction: column; }
-    nav { padding: 1rem; }
-    .nav-links { gap: 1rem; }
-  }
-  .about-text { }
-  .about-text p {
-    font-size: 0.95rem; color: var(--muted);
-    line-height: 1.8; margin-bottom: 1rem;
-  }
-  .about-text p strong { color: var(--text); font-weight: 500; }
-  .skills-list {
-    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem;
-  }
-  .skill-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    padding: 0.3rem 0.7rem;
-    background: rgba(0,255,157,0.07);
-    border: 1px solid rgba(0,255,157,0.15);
-    border-radius: 3px;
-    color: var(--neon);
-    letter-spacing: 0.03em;
-  }
-  .terminal-box {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .terminal-titlebar {
-    padding: 0.65rem 1rem;
-    background: rgba(0,0,0,0.3);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .terminal-titlebar .dot { width:10px; height:10px; border-radius:50%; }
-  .terminal-titlebar .dot:nth-child(1){background:#ef4444;}
-  .terminal-titlebar .dot:nth-child(2){background:#f59e0b;}
-  .terminal-titlebar .dot:nth-child(3){background:#22c55e;}
-  .terminal-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem; color: var(--muted);
-    flex: 1; text-align: center;
-    letter-spacing: 0.05em;
-  }
-  .terminal-body {
-    padding: 1.25rem 1.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    line-height: 1.9; color: var(--muted);
-  }
-  .terminal-line .prompt { color: var(--neon); }
-  .terminal-line .cmd { color: var(--text); }
-  .terminal-line .out { color: #a78bfa; }
-  .terminal-line .comment { color: var(--muted); }
+.terminal-box{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.terminal-bar{padding:.6rem 1rem;background:rgba(0,0,0,.3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.45rem;}
+.t-dot{width:10px;height:10px;border-radius:50%;}
+.t-dot:nth-child(1){background:#ef4444;}.t-dot:nth-child(2){background:#f59e0b;}.t-dot:nth-child(3){background:#22c55e;}
+.terminal-title{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);flex:1;text-align:center;}
+.terminal-body{padding:1.1rem 1.4rem;font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.9;color:var(--muted);}
+.t-line .prompt{color:var(--neon);}.t-line .cmd{color:var(--text);}.t-line .out{color:var(--vl);}
 
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2rem;
-    text-align: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-  footer span { color: var(--neon); }
+/* PROFILE PHOTO UPLOAD ADMIN */
+.pf-upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:.6rem;}
+.pf-slot{border:1px dashed var(--border);border-radius:8px;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;position:relative;overflow:hidden;background:var(--card);}
+.pf-slot:hover{border-color:var(--neon);}
+.pf-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.pf-slot-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.35rem;position:relative;z-index:1;}
+.pf-slot-icon{font-size:1.4rem;position:relative;z-index:1;}
+.pf-slot-rm{position:absolute;top:4px;right:4px;z-index:2;background:rgba(0,0,0,.75);border:none;color:#fff;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:.65rem;display:flex;align-items:center;justify-content:center;}
+.pf-slot-main-badge{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);z-index:2;background:var(--neon);color:#0a0a0f;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;padding:.1rem .4rem;border-radius:2px;letter-spacing:.04em;white-space:nowrap;}
 
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
-    background: var(--card);
-    border: 1px solid var(--neon);
-    border-radius: 6px;
-    padding: 0.75rem 1.25rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--neon);
-    transform: translateY(100px); opacity: 0;
-    transition: all 0.3s;
-    pointer-events: none;
-  }
-  .toast.show { transform: translateY(0); opacity: 1; }
+/* gallery size picker */
+.size-picker{display:flex;gap:.75rem;margin-top:.4rem;}
+.size-btn{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.65rem .9rem;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:.4rem;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.04em;min-width:70px;}
+.size-btn:hover{border-color:var(--neon);color:var(--neon);}
+.size-btn.active{border-color:var(--neon);color:var(--neon);background:rgba(0,255,157,.07);}
+.size-preview{background:rgba(0,255,157,.25);border-radius:3px;height:28px;}
+.size-preview--small{width:28px;}
+.size-preview--medium{width:42px;}
+.size-preview--large{width:58px;}
 
-  /* TAB */
-  .admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-  .tab-btn {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    padding: 0.4rem 1rem;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    background: transparent; color: var(--muted);
-    cursor: pointer; transition: all 0.18s;
-    letter-spacing: 0.05em;
-  }
-  .tab-btn.active { background: var(--violet); border-color: var(--violet); color: #fff; }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+/* extra custom fields */
+.extra-fields-list{margin-top:.5rem;}
+.extra-field-row{display:flex;gap:.5rem;align-items:flex-start;margin-bottom:.6rem;}
+.extra-field-row .ef-label{width:140px;flex-shrink:0;}
+.extra-field-row .ef-value{flex:1;}
+.extra-field-row .ef-rm{flex-shrink:0;background:transparent;border:1px solid rgba(239,68,68,.3);color:#f87171;width:30px;height:36px;border-radius:4px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .18s;padding:0;}
+.extra-field-row .ef-rm:hover{background:rgba(239,68,68,.15);}
+.add-field-btn{font-family:'JetBrains Mono',monospace;font-size:.72rem;background:transparent;border:1px dashed var(--border);color:var(--muted);padding:.38rem .9rem;border-radius:4px;cursor:pointer;transition:all .18s;letter-spacing:.04em;display:inline-flex;align-items:center;gap:.4rem;margin-top:.25rem;}
+.add-field-btn:hover{border-color:var(--neon);color:var(--neon);}
+.pm-extra-fields{border-top:1px solid var(--border);padding-top:1.25rem;margin-top:1.25rem;}
+.pm-extra-field{display:flex;gap:1rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.85rem;}
+.pm-extra-field:last-child{border-bottom:none;}
+.pm-extra-field-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);width:130px;flex-shrink:0;padding-top:.1rem;letter-spacing:.03em;}
+.pm-extra-field-value{color:var(--text);flex:1;line-height:1.6;}
+
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.05em;}
+footer span{color:var(--neon);}
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--card);border:1px solid var(--neon);border-radius:6px;padding:.7rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--neon);transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+@media(max-width:900px){
+  .hero-inner{flex-direction:column-reverse;gap:2rem;text-align:center;}
+  .hero-eyebrow{justify-content:center;}
+  .hero-cta{justify-content:center;}
+  .hero-stats{justify-content:center;}
+  #heroSocials{justify-content:center;}
+  .hero-avatar-wrap{width:180px;height:180px;}
+  .hero-desc{max-width:100%;}
+}
+@media(max-width:768px){
+  nav{padding:.75rem 1rem;}.nav-links{gap:1rem;}
+  #hero{padding:5rem 1.25rem 3rem;}
+  .section-wrap{padding:3.5rem 1.25rem;}
+  .projects-grid{grid-template-columns:1fr;}
+  .about-grid{grid-template-columns:1fr;gap:2rem;}
+  .form-row{flex-direction:column;}
+  .admin-modal-box{padding:1.25rem;}
+  #projectModalContent{padding:1.25rem;}
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <div class="nav-logo"><span>~/</span><span id="navName">devportfolio</span></div>
+  <div class="nav-logo"><span>~/</span>devportfolio</div>
   <div class="nav-links">
     <a href="#projects">projects</a>
     <a href="#about">about</a>
-    <button class="btn-admin" onclick="openAdminModal()">⚙ admin</button>
+    <button class="btn-admin" id="adminBtn" onclick="openAdminModal()">⚙ admin</button>
   </div>
 </nav>
 
-<!-- HERO -->
-<section id="hero" style="max-width:100%; padding-left:10vw; padding-right:10vw;">
+<section id="hero">
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">BACKEND ENGINEER</div>
-    <h1 class="hero-name" id="heroName"><span id="typeTarget"></span><span class="cursor"></span></h1>
-    <p class="hero-title" id="heroTitle">Building the engines that power the web.</p>
-    <p class="hero-desc" id="heroDesc">I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.</p>
-    <div class="hero-cta">
-      <a href="#projects" class="btn-primary">View Projects →</a>
-      <a href="#about" class="btn-secondary">About Me</a>
-    </div>
-    <div class="hero-stats">
-      <div class="stat"><span class="stat-num" id="statProjects">0</span><span class="stat-label">Projects</span></div>
-      <div class="stat"><span class="stat-num" id="statTech">—</span><span class="stat-label">Stack</span></div>
+    <div class="hero-inner">
+      <!-- LEFT: text -->
+      <div class="hero-text">
+        <div class="hero-eyebrow" id="heroEyebrow">BACKEND ENGINEER</div>
+        <h1 class="hero-name"><span id="typeTarget"></span><span class="cursor"></span></h1>
+        <p class="hero-sub" id="heroSub">Building the engines that power the web.</p>
+        <p class="hero-desc" id="heroDesc">I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.</p>
+        <div class="hero-cta">
+          <a href="#projects" class="btn-primary">View Projects →</a>
+          <a href="#about" class="btn-secondary">About Me</a>
+        </div>
+        <div id="heroSocials" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem;"></div>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num" id="statProjects">—</span><span class="stat-label">Projects</span></div>
+        </div>
+      </div>
+      <!-- RIGHT: main profile photo -->
+      <div class="hero-avatar-wrap" id="heroAvatarWrap">
+        <div class="hero-avatar-ring"></div>
+        <div class="hero-avatar-inner" id="heroAvatarInner">
+          <span class="hero-avatar-placeholder">🧑‍💻</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- PROJECTS -->
-<section id="projects">
+<section id="projects" class="section-wrap">
   <div class="section-header">
     <div class="section-eyebrow">WORK</div>
     <h2 class="section-title">Backend <span>Projects</span></h2>
   </div>
   <div class="projects-grid" id="projectsGrid">
-    <!-- Populated by JS -->
+    <div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">Connecting…</div></div>
   </div>
 </section>
 
-<!-- ABOUT -->
-<section id="about">
+<section id="about" class="section-wrap about-section">
   <div class="section-header">
     <div class="section-eyebrow">ABOUT</div>
     <h2 class="section-title">Who I <span>Am</span></h2>
   </div>
   <div class="about-grid">
-    <div class="about-text">
-      <p id="aboutPara1">I'm a backend engineer who loves working in the parts of software most people never see — the layers where <strong>performance, reliability, and architecture</strong> actually matter.</p>
-      <p id="aboutPara2">My focus is on building clean APIs, designing efficient data models, and writing code that's maintainable and scales gracefully under pressure.</p>
-      <div class="skills-list" id="skillsList">
-        <!-- Populated by JS -->
+    <!-- LEFT col: photo gallery + bio -->
+    <div class="about-left">
+      <!-- Photo gallery -->
+      <div class="about-gallery" id="aboutGallery">
+        <!-- rendered by JS -->
+        <div class="gallery-placeholder">🧑‍💻</div>
       </div>
+      <!-- Bio text -->
+      <p id="aboutP1">I'm a backend engineer who loves working in the parts of software most people never see — the layers where performance, reliability, and architecture actually matter.</p>
+      <p id="aboutP2">My focus is on building clean APIs, designing efficient data models, and writing code that's maintainable and scales gracefully under pressure.</p>
+      <div class="skills-list" id="skillsList"></div>
     </div>
+    <!-- RIGHT col: terminal -->
     <div class="terminal-box">
-      <div class="terminal-titlebar">
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        <div class="terminal-title">bash — profile.sh</div>
-      </div>
-      <div class="terminal-body" id="terminalContent">
-        <!-- Populated by JS -->
+      <div class="terminal-bar"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div><div class="terminal-title">bash — profile.sh</div></div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="prompt">$ </span><span class="cmd">whoami</span></div>
+        <div class="t-line"><span class="out" id="termName">backend_engineer</span></div>
+        <div class="t-line"><span class="prompt">$ </span><span class="cmd">cat stack.json</span></div>
+        <div class="t-line"><span class="out" id="termSkills">["Node.js","PostgreSQL","Docker","AWS"]</span></div>
+        <div class="t-line"><span class="prompt">$ </span><span class="cmd">ls ./projects</span></div>
+        <div class="t-line"><span class="out" id="termProj">(loading…)</span></div>
+        <div class="t-line"><span class="prompt">$ </span><span class="cmd">git log --oneline -1</span></div>
+        <div class="t-line"><span class="out">a1b2c3d always be shipping 🚀</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>Built with <span>♥</span> &amp; <span>{ }</span> — <span id="footerName">devportfolio</span></footer>
+<footer>Built with <span>♥</span> &amp; <span>{ }</span> — Powered by Firebase</footer>
 
-<!-- PREVIEW MODAL -->
+<!-- PROJECT DETAIL MODAL -->
+<div class="modal-overlay" id="projectModal">
+  <div class="project-modal-box">
+    <button class="pm-close" onclick="closeProjectModal()">✕</button>
+    <div id="projectModalContent"></div>
+  </div>
+</div>
+
+<!-- IFRAME PREVIEW MODAL -->
 <div class="modal-overlay" id="previewModal">
-  <div class="modal">
-    <div class="modal-bar">
-      <div class="modal-dots"><div class="modal-dot"></div><div class="modal-dot"></div><div class="modal-dot"></div></div>
-      <div class="modal-url" id="previewUrl">about:blank</div>
-      <button class="modal-close" onclick="closePreview()">✕</button>
+  <div class="preview-modal-box">
+    <div class="preview-bar">
+      <div class="preview-dots"><div class="preview-dot"></div><div class="preview-dot"></div><div class="preview-dot"></div></div>
+      <div class="preview-url" id="previewUrl">about:blank</div>
+      <button class="preview-close" onclick="closePreview()">✕</button>
     </div>
     <iframe id="previewFrame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
   </div>
 </div>
 
-<!-- ADMIN MODAL OVERLAY -->
+<!-- ADMIN MODAL -->
 <div class="modal-overlay" id="adminModal">
-  <div class="admin-modal" id="adminModalContent">
-    <!-- Populated by JS -->
-  </div>
+  <div class="admin-modal-box" id="adminModalContent"></div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script>
-// ============================================================
-// STATE
-// ============================================================
-const ADMIN_KEY = 'portfolio_admin_authed';
-const DATA_KEY = 'portfolio_data';
+<!-- ═══════════════════════════════════════════════════════ FIREBASE + APP JS -->
+<script type="module">
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, orderBy, query, getDoc, setDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL, deleteObject }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-const DEFAULT_DATA = {
-  name: 'Your Name',
-  title: 'Building the engines that power the web.',
-  desc: 'I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.',
-  about1: "I'm a backend engineer who loves working in the parts of software most people never see — the layers where performance, reliability, and architecture actually matter.",
-  about2: 'My focus is on building clean APIs, designing efficient data models, and writing code that\'s maintainable and scales gracefully under pressure.',
-  skills: ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'Docker', 'REST APIs', 'GraphQL', 'AWS', 'Nginx', 'Git'],
-  password: 'admin123',
-  projects: []
+/* ─────────────────────────────────────────────────────────────────────────────
+   PASTE YOUR FIREBASE CONFIG BELOW
+   Go to: Firebase Console → Project Settings → Your apps → SDK setup
+   ───────────────────────────────────────────────────────────────────────── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyBQ-3hdu9V9s-wg8LQ1f5fnJrkjnQ9wxBc",
+  authDomain:        "myportfolio-4c570.firebaseapp.com",
+  projectId:         "myportfolio-4c570",
+  storageBucket:     "myportfolio-4c570.firebasestorage.app",
+  messagingSenderId: "835335448993",
+  appId:             "1:835335448993:web:8c22f1336bf4ea5f7783e0"
+};
+/* ───────────────────────────────────────────────────────────────────────── */
+
+const fbApp = initializeApp(firebaseConfig);
+const auth  = getAuth(fbApp);
+const db    = getFirestore(fbApp);
+const stor  = getStorage(fbApp);
+
+// ── tiny helpers ──────────────────────────────────────────────────────────
+const $  = id => document.getElementById(id);
+const esc = s  => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+// silently delete a Firebase Storage file by its download URL (best-effort)
+async function deleteStorageUrl(url){
+  if(!url || !url.includes('firebasestorage')) return;
+  try{
+    // extract the path from the download URL
+    const base = decodeURIComponent(url.split('/o/')[1].split('?')[0]);
+    await deleteObject(sRef(stor, base));
+  } catch(e){ console.warn('Storage delete skipped:', e.code || e.message); }
+}
+const toast = (msg, isErr) => {
+  const t = $('toast');
+  t.textContent = msg;
+  t.style.borderColor = isErr ? '#ef4444' : 'var(--neon)';
+  t.style.color       = isErr ? '#f87171' : 'var(--neon)';
+  t.classList.add('show');
+  clearTimeout(t._to);
+  t._to = setTimeout(()=>t.classList.remove('show'), 3200);
 };
 
-function loadData() {
-  try {
-    const raw = localStorage.getItem(DATA_KEY);
-    if (!raw) return JSON.parse(JSON.stringify(DEFAULT_DATA));
-    return { ...DEFAULT_DATA, ...JSON.parse(raw) };
-  } catch { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+const TYPE_META = {
+  backend:{ icon:'⚡', label:'Backend API'   },
+  mobile: { icon:'📱', label:'Mobile App'    },
+  web:    { icon:'🌐', label:'Web App'       },
+  cli:    { icon:'>_', label:'CLI Tool'      },
+  library:{ icon:'📦', label:'Library / SDK' },
+  desktop:{ icon:'🖥',  label:'Desktop App'  },
+  other:  { icon:'🔧', label:'Other'         },
+};
+
+function fileIcon(name){
+  const e=(name||'').split('.').pop().toLowerCase();
+  if(e==='apk') return '🤖';
+  if(['exe','msi'].includes(e)) return '🪟';
+  if(['dmg','pkg'].includes(e)) return '🍎';
+  if(['zip','tar','gz','rar'].includes(e)) return '📁';
+  if(e==='pdf') return '📄';
+  return '📎';
 }
 
-function saveData(data) {
-  localStorage.setItem(DATA_KEY, JSON.stringify(data));
+// ── extra fields helpers ──────────────────────────────────────────────────
+function extraFieldsHTML(fieldsArr, containerId, addFnName, removeFnName){
+  return `
+    <div class="extra-fields-list" id="${containerId}">
+      ${fieldsArr.map((f,i)=>`
+        <div class="extra-field-row" id="ef_${containerId}_${i}">
+          <input class="form-input ef-label" placeholder="Field label" value="${esc(f.label)}"
+            oninput="updateExtraField('${containerId}',${i},'label',this.value)"/>
+          <input class="form-input ef-value" placeholder="Value" value="${esc(f.value)}"
+            oninput="updateExtraField('${containerId}',${i},'value',this.value)"/>
+          <button class="ef-rm" onclick="removeExtraField('${containerId}',${i})" title="Remove field">✕</button>
+        </div>`).join('')}
+    </div>
+    <button class="add-field-btn" onclick="${addFnName}()">+ Add custom field</button>`;
 }
 
-let data = loadData();
-let adminAuthed = sessionStorage.getItem(ADMIN_KEY) === '1';
-let editingIndex = null;
+window.updateExtraField = (containerId, idx, key, val) => {
+  if(containerId.startsWith('proj')) projectExtraFields[idx][key] = val;
+  else profileExtraFields[idx][key] = val;
+};
 
-// ============================================================
-// RENDER SITE
-// ============================================================
-const ICONS = { api: '⚡', db: '🗄️', auth: '🔐', infra: '🏗️', tool: '🔧', service: '🌐', other: '📦' };
-const COLORS = ['neon', '', 'neon', '', ''];
+window.addProjectExtraField = () => {
+  projectExtraFields.push({label:'',value:''});
+  const c = $('projExtraFields');
+  if(!c) return;
+  const i = projectExtraFields.length - 1;
+  const row = document.createElement('div');
+  row.className='extra-field-row'; row.id=`ef_projExtraFields_${i}`;
+  row.innerHTML=`
+    <input class="form-input ef-label" placeholder="Field label" value=""
+      oninput="updateExtraField('projExtraFields',${i},'label',this.value)"/>
+    <input class="form-input ef-value" placeholder="Value" value=""
+      oninput="updateExtraField('projExtraFields',${i},'value',this.value)"/>
+    <button class="ef-rm" onclick="removeExtraField('projExtraFields',${i})" title="Remove field">✕</button>`;
+  c.appendChild(row);
+};
 
-function renderSite() {
-  // Nav + footer name
-  document.getElementById('navName').textContent = data.name.toLowerCase().replace(/\s+/g, '');
-  document.getElementById('footerName').textContent = data.name;
+window.addProfileExtraField = () => {
+  profileExtraFields.push({label:'',value:''});
+  const c = $('profExtraFields');
+  if(!c) return;
+  const i = profileExtraFields.length - 1;
+  const row = document.createElement('div');
+  row.className='extra-field-row'; row.id=`ef_profExtraFields_${i}`;
+  row.innerHTML=`
+    <input class="form-input ef-label" placeholder="Field label" value=""
+      oninput="updateExtraField('profExtraFields',${i},'label',this.value)"/>
+    <input class="form-input ef-value" placeholder="Value" value=""
+      oninput="updateExtraField('profExtraFields',${i},'value',this.value)"/>
+    <button class="ef-rm" onclick="removeExtraField('profExtraFields',${i})" title="Remove field">✕</button>`;
+  c.appendChild(row);
+};
 
-  // Hero
-  startTyping(data.name);
-  document.getElementById('heroTitle').textContent = data.title;
-  document.getElementById('heroDesc').textContent = data.desc;
-  document.getElementById('statProjects').textContent = data.projects.length;
-  const techCount = data.skills.slice(0, 3).join(' · ');
-  document.getElementById('statTech').textContent = techCount;
+window.removeExtraField = (containerId, idx) => {
+  if(containerId.startsWith('proj')){
+    projectExtraFields.splice(idx,1);
+    reRenderExtraFields('projExtraFields', projectExtraFields, 'addProjectExtraField', 'removeExtraField');
+  } else {
+    profileExtraFields.splice(idx,1);
+    reRenderExtraFields('profExtraFields', profileExtraFields, 'addProfileExtraField', 'removeExtraField');
+  }
+};
 
-  // About
-  document.getElementById('aboutPara1').innerHTML = data.about1.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  document.getElementById('aboutPara2').textContent = data.about2;
-  renderSkills();
-  renderTerminal();
+function reRenderExtraFields(containerId, arr, addFn, removeFn){
+  const wrap = $(`${containerId}Wrap`);
+  if(wrap) wrap.innerHTML = extraFieldsHTML(arr, containerId, addFn, removeFn);
+}
 
-  // Projects
+// ── state ─────────────────────────────────────────────────────────────────
+let currentUser   = null;
+let projects      = [];
+let editingId     = null;
+let activeAdminTab= 'projects';
+let lbMedia       = [];
+let lbIdx         = 0;
+let exMedia       = { images:[], videos:[], files:[] };
+let queued        = { images:[], videos:[], files:[] };
+
+const DEFAULT_PROFILE = {
+  name:       'Your Name',
+  role:       'Backend Engineer',
+  tagline:    'Building the engines that power the web.',
+  desc:       'I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.',
+  about1:     "I'm a backend engineer who loves working in the parts of software most people never see — the layers where performance, reliability, and architecture actually matter.",
+  about2:     "My focus is on building clean APIs, designing efficient data models, and writing code that's maintainable and scales gracefully under pressure.",
+  skills:     'Node.js, Python, PostgreSQL, Redis, Docker, REST APIs, GraphQL, AWS, Nginx',
+  email:      '',
+  github:     '',
+  linkedin:   '',
+  twitter:    '',
+  photos:     [],
+  photoSize:  'medium',  // 'small' | 'medium' | 'large'
+};
+let profile = { ...DEFAULT_PROFILE };
+
+// profile photo carousel state
+let pfIdx = 0;
+let pfNewFiles = [];   // queued new photo files (File objects)
+let pfSlots = [];      // current 3 slots: null | { url, isNew, file? }
+
+// extra fields state (shared between project form and profile form)
+let projectExtraFields = [];   // [{label, value}]
+let profileExtraFields = [];   // [{label, value}]
+
+// ── typing hero ───────────────────────────────────────────────────────────
+let typingDone = false;
+function startTyping(name){
+  if(typingDone){ $('typeTarget').textContent=name; return; }
+  const el=$('typeTarget'); el.textContent=''; let i=0;
+  const iv=setInterval(()=>{ el.textContent+=name[i++]; if(i>=name.length){clearInterval(iv);typingDone=true;} },80);
+}
+// ── gallery size ──────────────────────────────────────────────────────────
+const GALLERY_SIZES = { small:'200px', medium:'300px', large:'100%' };
+function applyGallerySize(size){
+  document.documentElement.style.setProperty('--gallery-size', GALLERY_SIZES[size] || GALLERY_SIZES.medium);
+}
+
+// ── load profile from Firestore ───────────────────────────────────────────
+async function loadProfile(){
+  try{
+    const snap = await getDoc(doc(db,'config','profile'));
+    if(snap.exists()) profile = { ...DEFAULT_PROFILE, ...snap.data() };
+  } catch(e){ console.warn('Profile load failed:',e); }
+  applyProfile();
+}
+
+function applyProfile(){
+  // nav logo
+  document.querySelector('.nav-logo').innerHTML =
+    `<span>~/</span>${(profile.name||'devportfolio').toLowerCase().replace(/\s+/g,'')}`;
+  // hero
+  startTyping(profile.name || 'Your Name');
+  const sub = document.getElementById('heroSub');
+  const desc = document.getElementById('heroDesc');
+  const eyebrow = document.getElementById('heroEyebrow');
+  if(sub)     sub.textContent  = profile.tagline || DEFAULT_PROFILE.tagline;
+  if(desc)    desc.textContent = profile.desc    || DEFAULT_PROFILE.desc;
+  if(eyebrow) eyebrow.textContent = profile.role || DEFAULT_PROFILE.role;
+  // social links
+  const socials = document.getElementById('heroSocials');
+  if(socials){
+    socials.innerHTML = [
+      profile.github   ? `<a href="${profile.github}"   target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">⌥ GitHub</a>`   : '',
+      profile.linkedin ? `<a href="${profile.linkedin}" target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">in LinkedIn</a>` : '',
+      profile.twitter  ? `<a href="${profile.twitter}"  target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">𝕏 Twitter</a>`  : '',
+      profile.email    ? `<a href="mailto:${profile.email}" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">✉ Email</a>` : '',
+    ].join('');
+  }
+  // about section
+  const ab1 = document.getElementById('aboutP1');
+  const ab2 = document.getElementById('aboutP2');
+  const sk  = document.getElementById('skillsList');
+  const tName = document.getElementById('termName');
+  const tSkills = document.getElementById('termSkills');
+  const tProj = document.getElementById('termProj');
+  if(ab1) ab1.textContent = profile.about1 || DEFAULT_PROFILE.about1;
+  if(ab2) ab2.textContent = profile.about2 || DEFAULT_PROFILE.about2;
+  if(sk){
+    const tags = (profile.skills||'').split(',').map(s=>s.trim()).filter(Boolean);
+    sk.innerHTML = tags.map(t=>`<span class="skill-tag">${esc(t)}</span>`).join('');
+  }
+  if(tName)   tName.textContent   = (profile.name||'backend_engineer').toLowerCase().replace(/\s+/g,'_');
+  if(tSkills) tSkills.textContent = JSON.stringify((profile.skills||'').split(',').map(s=>s.trim()).filter(Boolean).slice(0,4));
+  if(tProj)   tProj.textContent   = projects.length ? projects.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ') : '(no projects yet)';
+  // page title
+  document.title = `${profile.name || 'Dev'} — Portfolio`;
+  // profile extra fields in about section
+  let pfExWrap = $('profileExtraFieldsDisplay');
+  const pfExFields = (profile.extraFields||[]).filter(f=>f.label||f.value);
+  if(pfExFields.length){
+    if(!pfExWrap){
+      const skillsList = $('skillsList');
+      if(skillsList){
+        pfExWrap = document.createElement('div');
+        pfExWrap.id = 'profileExtraFieldsDisplay';
+        pfExWrap.className = 'pm-extra-fields';
+        pfExWrap.style.marginTop='1.5rem';
+        skillsList.after(pfExWrap);
+      }
+    }
+    if(pfExWrap) pfExWrap.innerHTML = pfExFields.map(f=>`
+      <div class="pm-extra-field">
+        <span class="pm-extra-field-label">${esc(f.label)}</span>
+        <span class="pm-extra-field-value">${esc(f.value)}</span>
+      </div>`).join('');
+  } else if(pfExWrap){
+    pfExWrap.innerHTML='';
+  }
+  // profile photo gallery
+  pfIdx = 0;
+  applyGallerySize(profile.photoSize || 'medium');
+  renderHeroAvatar();
+  renderAboutGallery();
+}
+
+// ── hero avatar (main photo = photos[0]) ─────────────────────────────────
+function renderHeroAvatar(){
+  const inner = $('heroAvatarInner');
+  if(!inner) return;
+  const main = (profile.photos||[]).filter(Boolean)[0];
+  if(main){
+    inner.innerHTML = `<img src="${main}" alt="${esc(profile.name||'')}" style="width:100%;height:100%;object-fit:cover;display:block;"/>`;
+  } else {
+    inner.innerHTML = `<span class="hero-avatar-placeholder">🧑‍💻</span>`;
+  }
+}
+
+// ── about gallery (all photos, clickable thumbnails) ──────────────────────
+let galIdx = 0;
+function renderAboutGallery(){
+  const photos = (profile.photos||[]).filter(Boolean);
+  const wrap = $('aboutGallery');
+  if(!wrap) return;
+
+  if(!photos.length){
+    wrap.innerHTML = `<div class="gallery-placeholder">🧑‍💻</div>`;
+    return;
+  }
+
+  galIdx = 0;
+  wrap.innerHTML = `
+    <div class="gallery-main" id="galMain">
+      <img id="galMainImg" src="${photos[0]}" alt="Profile photo 1"/>
+    </div>
+    <div class="gallery-thumbs">
+      ${[0,1,2].map(i => photos[i]
+        ? `<div class="gallery-thumb ${i===0?'active':''}" id="galThumb${i}" onclick="galGoto(${i})">
+             <img src="${photos[i]}" alt="Photo ${i+1}"/>
+           </div>`
+        : `<div class="gallery-thumb empty">+</div>`
+      ).join('')}
+    </div>`;
+}
+
+window.galGoto = i => {
+  const photos = (profile.photos||[]).filter(Boolean);
+  if(!photos[i]) return;
+  galIdx = i;
+  const img = $('galMainImg');
+  if(img){
+    img.classList.add('gallery-fade');
+    setTimeout(()=>{ img.src=photos[i]; img.classList.remove('gallery-fade'); }, 180);
+  }
+  document.querySelectorAll('.gallery-thumb').forEach((el,j)=>el.classList.toggle('active', j===i));
+};
+loadProfile();
+
+// ── auth ──────────────────────────────────────────────────────────────────
+onAuthStateChanged(auth, user=>{
+  currentUser=user;
+  $('adminBtn').textContent = user ? '⚙ admin ●' : '⚙ admin';
+  $('adminBtn').style.color = user ? 'var(--neon)' : '';
+  if($('adminModal').classList.contains('open'))
+    user ? renderAdminPanel() : renderLoginPanel();
+});
+
+// ── realtime projects ─────────────────────────────────────────────────────
+onSnapshot(query(collection(db,'projects'),orderBy('createdAt','desc')), snap=>{
+  projects = snap.docs.map(d=>({id:d.id,...d.data()}));
+  $('statProjects').textContent = projects.length;
   renderProjects();
-}
+  // refresh terminal projects line if profile already loaded
+  const tProj = $('termProj');
+  if(tProj) tProj.textContent = projects.length
+    ? projects.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ')
+    : '(no projects yet)';
+});
 
-function renderSkills() {
-  const el = document.getElementById('skillsList');
-  el.innerHTML = data.skills.map(s => `<span class="skill-tag">${s}</span>`).join('');
-}
-
-function renderTerminal() {
-  const lines = [
-    { type: 'cmd', prompt: '$ ', cmd: `whoami` },
-    { type: 'out', out: data.name.toLowerCase().replace(/\s+/g, '_') },
-    { type: 'cmd', prompt: '$ ', cmd: `cat skills.json` },
-    { type: 'out', out: `["${data.skills.slice(0,4).join('", "')}"]` },
-    { type: 'cmd', prompt: '$ ', cmd: `ls projects/` },
-    { type: 'out', out: data.projects.length > 0 ? data.projects.map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).slice(0,4).join('  ') : '(no projects yet)' },
-    { type: 'cmd', prompt: '$ ', cmd: `git log --oneline -1` },
-    { type: 'out', out: 'a1b2c3d always be shipping' },
-  ];
-  document.getElementById('terminalContent').innerHTML = lines.map(l => {
-    if (l.type === 'cmd') return `<div class="terminal-line"><span class="prompt">${l.prompt}</span><span class="cmd">${l.cmd}</span></div>`;
-    return `<div class="terminal-line"><span class="out">${l.out}</span></div>`;
+// ── render grid ───────────────────────────────────────────────────────────
+function renderProjects(){
+  const grid=$('projectsGrid');
+  if(!projects.length){
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">No projects yet</div><div class="empty-sub">The admin will add projects soon.</div></div>`;
+    return;
+  }
+  grid.innerHTML=projects.map(p=>{
+    const m=TYPE_META[p.type]||TYPE_META.other;
+    const thumb=p.images?.[0]||'';
+    const tags=(p.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+    return `<div class="project-card" onclick="openProject('${p.id}')">
+      <div class="card-glow"></div>
+      ${thumb
+        ?`<div class="card-thumb" style="background-image:url('${thumb}')">
+            ${p.videos?.length?'<div class="card-play">▶</div>':''}
+          </div>`
+        :`<div class="card-thumb card-thumb--empty"><span>${m.icon}</span></div>`}
+      <div class="card-body">
+        <div class="card-top">
+          <span class="type-badge">${m.icon} ${m.label}</span>
+          <span class="status-badge ${p.status||'wip'}">${p.status==='live'?'● LIVE':p.status==='archived'?'ARCHIVED':'WIP'}</span>
+        </div>
+        <h3 class="card-title">${esc(p.name)}</h3>
+        <p class="card-desc">${esc(p.desc||'').slice(0,115)}${(p.desc||'').length>115?'…':''}</p>
+        <div class="card-tags">${tags.slice(0,4).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+        <div class="card-footer">
+          ${p.liveUrl?'<span class="card-link">↗ Live</span>':''}
+          ${p.repoUrl?'<span class="card-link">⌥ Repo</span>':''}
+          ${p.files?.length?'<span class="card-link">⬇ Files</span>':''}
+        </div>
+      </div>
+    </div>`;
   }).join('');
 }
 
-function renderProjects() {
-  const grid = document.getElementById('projectsGrid');
-  if (data.projects.length === 0) {
-    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">No projects yet</div><div class="empty-sub">Log in as admin to add your backend projects.</div></div>`;
-    return;
-  }
-  grid.innerHTML = data.projects.map((p, i) => `
-    <div class="project-card">
-      <div class="card-glow"></div>
-      <div class="card-header">
-        <div class="card-icon">${ICONS[p.icon] || '📦'}</div>
-        <div class="card-badges">
-          ${p.status === 'live' ? '<span class="badge neon">● LIVE</span>' : '<span class="badge">WIP</span>'}
-          ${p.tags ? p.tags.split(',').slice(0,2).map(t=>`<span class="badge">${t.trim()}</span>`).join('') : ''}
-        </div>
+// ── project detail modal ──────────────────────────────────────────────────
+window.openProject = id => {
+  const p=projects.find(x=>x.id===id); if(!p) return;
+  const m=TYPE_META[p.type]||TYPE_META.other;
+  const tags=(p.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+  lbMedia=[...(p.images||[]).map(u=>({type:'image',url:u})), ...(p.videos||[]).map(u=>({type:'video',url:u}))];
+  lbIdx=0;
+  $('projectModalContent').innerHTML=`
+    <div class="pm-header">
+      <div class="pm-meta">
+        <span class="type-badge">${m.icon} ${m.label}</span>
+        <span class="status-badge ${p.status||'wip'}">${p.status==='live'?'● LIVE':p.status==='archived'?'ARCHIVED':'WIP'}</span>
       </div>
-      <div class="card-body">
-        <div class="card-title">${p.name}</div>
-        <div class="card-desc">${p.desc}</div>
-        <div class="card-actions">
-          ${p.url ? `<button class="btn-card preview" onclick="openPreview('${escAttr(p.url)}')">⬡ Preview</button>` : ''}
-          ${p.url ? `<button class="btn-card open" onclick="window.open('${escAttr(p.url)}','_blank')">↗ Open</button>` : ''}
-          ${p.repo ? `<button class="btn-card open" onclick="window.open('${escAttr(p.repo)}','_blank')">⌥ Repo</button>` : ''}
-        </div>
-      </div>
+      <h2 class="pm-title">${esc(p.name)}</h2>
+      <p class="pm-desc">${esc(p.desc||'')}</p>
+      ${tags.length?`<div class="card-tags" style="margin-bottom:1rem">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}
     </div>
-  `).join('');
-}
-
-function escAttr(s) { return s.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
-
-// ============================================================
-// TYPING ANIMATION
-// ============================================================
-let typingDone = false;
-function startTyping(name) {
-  if (typingDone) { document.getElementById('typeTarget').textContent = name; return; }
-  const el = document.getElementById('typeTarget');
-  el.textContent = '';
-  let i = 0;
-  const iv = setInterval(() => {
-    el.textContent += name[i++];
-    if (i >= name.length) { clearInterval(iv); typingDone = true; }
-  }, 80);
-}
-
-// ============================================================
-// PREVIEW MODAL
-// ============================================================
-function openPreview(url) {
-  document.getElementById('previewUrl').textContent = url;
-  document.getElementById('previewFrame').src = url;
-  document.getElementById('previewModal').classList.add('open');
-}
-function closePreview() {
-  document.getElementById('previewModal').classList.remove('open');
-  document.getElementById('previewFrame').src = 'about:blank';
-}
-document.getElementById('previewModal').addEventListener('click', function(e) {
-  if (e.target === this) closePreview();
-});
-
-// ============================================================
-// TOAST
-// ============================================================
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ============================================================
-// ADMIN MODAL
-// ============================================================
-function openAdminModal() {
-  document.getElementById('adminModal').classList.add('open');
-  if (!adminAuthed) renderLoginPanel();
-  else renderAdminPanel();
-}
-function closeAdminModal() {
-  document.getElementById('adminModal').classList.remove('open');
-  editingIndex = null;
-}
-document.getElementById('adminModal').addEventListener('click', function(e) {
-  if (e.target === this) closeAdminModal();
-});
-
-// LOGIN
-function renderLoginPanel() {
-  document.getElementById('adminModalContent').innerHTML = `
-    <div class="login-prompt">
-      <h2>⚙ Admin Access</h2>
-      <p>Enter your password to manage the portfolio.</p>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-input" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')tryLogin()"/>
-        <div class="pw-error" id="pwError">Incorrect password.</div>
+    ${lbMedia.length?`
+    <div class="lightbox">
+      <div class="lb-main" id="lbMain"></div>
+      ${lbMedia.length>1?`
+      <div class="lb-controls">
+        <button class="lb-btn" onclick="lbNav(-1)">‹</button>
+        <span class="lb-counter" id="lbCounter">1 / ${lbMedia.length}</span>
+        <button class="lb-btn" onclick="lbNav(1)">›</button>
       </div>
-      <div class="form-actions">
-        <button class="btn-form save" onclick="tryLogin()">Login</button>
-        <button class="btn-form cancel" onclick="closeAdminModal()">Cancel</button>
-      </div>
+      <div class="lb-thumbs">${lbMedia.map((x,i)=>`
+        <div class="lb-thumb ${i===0?'active':''}" onclick="lbGoto(${i})">
+          ${x.type==='video'?'<div class="lb-thumb-video">▶</div>':`<img src="${x.url}" alt=""/>`}
+        </div>`).join('')}
+      </div>`:''}
+    </div>`:''}
+    <div class="pm-actions">
+      ${p.liveUrl?`<a href="${p.liveUrl}" target="_blank" class="btn-action primary">↗ View Live</a>`:''}
+      ${p.repoUrl?`<a href="${p.repoUrl}" target="_blank" class="btn-action secondary">⌥ GitHub Repo</a>`:''}
+      ${p.liveUrl?`<button class="btn-action secondary" onclick="openPreview('${p.liveUrl.replace(/'/g,"\\'")}')">⬡ Preview in page</button>`:''}
     </div>
+    ${p.files?.length?`
+    <div class="pm-files">
+      <div class="pm-section-label">Downloads</div>
+      ${p.files.map(f=>`<a class="file-row" href="${f.url}" download="${esc(f.name)}" target="_blank">
+        <span>${fileIcon(f.name)}</span><span class="file-name">${esc(f.name)}</span><span class="file-dl">⬇</span>
+      </a>`).join('')}
+    </div>`:''}
+    ${p.extraFields?.filter(f=>f.label||f.value).length?`
+    <div class="pm-extra-fields">
+      <div class="pm-section-label">More Info</div>
+      ${p.extraFields.filter(f=>f.label||f.value).map(f=>`
+        <div class="pm-extra-field">
+          <span class="pm-extra-field-label">${esc(f.label)}</span>
+          <span class="pm-extra-field-value">${esc(f.value)}</span>
+        </div>`).join('')}
+    </div>`:''}
   `;
-  setTimeout(() => document.getElementById('pwInput')?.focus(), 50);
-}
+  $('projectModal').classList.add('open');
+  lbRender();
+};
 
-function tryLogin() {
-  const pw = document.getElementById('pwInput').value;
-  if (pw === data.password) {
-    adminAuthed = true;
-    sessionStorage.setItem(ADMIN_KEY, '1');
-    renderAdminPanel();
-  } else {
-    document.getElementById('pwError').style.display = 'block';
-  }
+function lbRender(){
+  const main=$('lbMain'); if(!main||!lbMedia.length) return;
+  const x=lbMedia[lbIdx];
+  main.innerHTML=x.type==='image'
+    ?`<img src="${x.url}" alt="" class="lb-img"/>`
+    :`<video src="${x.url}" controls autoplay muted class="lb-vid"></video>`;
+  const ctr=$('lbCounter'); if(ctr) ctr.textContent=`${lbIdx+1} / ${lbMedia.length}`;
+  document.querySelectorAll('.lb-thumb').forEach((el,i)=>el.classList.toggle('active',i===lbIdx));
 }
+window.lbNav  = d=>{ lbIdx=(lbIdx+d+lbMedia.length)%lbMedia.length; lbRender(); };
+window.lbGoto = i=>{ lbIdx=i; lbRender(); };
 
-// ADMIN PANEL
-let activeTab = 'projects';
-function renderAdminPanel() {
-  document.getElementById('adminModalContent').innerHTML = `
+window.closeProjectModal = ()=>{
+  $('projectModal').classList.remove('open');
+  const v=$('lbMain')?.querySelector('video'); if(v) v.pause();
+};
+
+// ── iframe preview ────────────────────────────────────────────────────────
+window.openPreview = url=>{ $('previewUrl').textContent=url; $('previewFrame').src=url; $('previewModal').classList.add('open'); };
+window.closePreview= ()=>{ $('previewModal').classList.remove('open'); $('previewFrame').src='about:blank'; };
+
+// ── admin modal open/close ────────────────────────────────────────────────
+window.openAdminModal  = ()=>{ $('adminModal').classList.add('open'); currentUser?renderAdminPanel():renderLoginPanel(); };
+window.closeAdminModal = ()=>{ $('adminModal').classList.remove('open'); editingId=null; };
+
+// ── login ─────────────────────────────────────────────────────────────────
+function renderLoginPanel(){
+  $('adminModalContent').innerHTML=`
+    <h2>⚙ Admin Login</h2>
+    <p class="admin-sub">Only the site owner can log in.</p>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="liEmail" placeholder="you@example.com"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="liPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div class="field-err" id="liErr" style="display:none"></div>
+    <div class="form-actions" style="margin-top:1rem">
+      <button class="btn-form save" onclick="doLogin()">Login</button>
+      <button class="btn-form cancel" onclick="closeAdminModal()">Cancel</button>
+    </div>`;
+  setTimeout(()=>$('liEmail')?.focus(),60);
+}
+window.doLogin = async()=>{
+  const e=$('liEmail').value.trim(), p=$('liPw').value, err=$('liErr');
+  err.style.display='none';
+  try{ await signInWithEmailAndPassword(auth,e,p); }
+  catch{ err.textContent='Incorrect email or password.'; err.style.display='block'; }
+};
+window.doLogout = async()=>{ await signOut(auth); closeAdminModal(); toast('Logged out.'); };
+
+// ── admin panel ───────────────────────────────────────────────────────────
+function renderAdminPanel(){
+  $('adminModalContent').innerHTML=`
     <h2>⚙ Admin Panel</h2>
     <p class="admin-sub">Manage your portfolio content.</p>
     <div class="admin-tabs">
-      <button class="tab-btn ${activeTab==='projects'?'active':''}" onclick="switchTab('projects')">Projects</button>
-      <button class="tab-btn ${activeTab==='profile'?'active':''}" onclick="switchTab('profile')">Profile</button>
-      <button class="tab-btn ${activeTab==='settings'?'active':''}" onclick="switchTab('settings')">Settings</button>
+      <button class="tab-btn ${activeAdminTab==='projects'?'active':''}" onclick="switchTab('projects')">All Projects</button>
+      <button class="tab-btn ${activeAdminTab==='form'?'active':''}" onclick="switchTab('form')">${editingId?'✎ Edit':'+ Add'} Project</button>
+      <button class="tab-btn ${activeAdminTab==='profile'?'active':''}" onclick="switchTab('profile')">✦ Profile</button>
     </div>
-    <div class="tab-panel ${activeTab==='projects'?'active':''}" id="tab-projects">${renderProjectsTab()}</div>
-    <div class="tab-panel ${activeTab==='profile'?'active':''}" id="tab-profile">${renderProfileTab()}</div>
-    <div class="tab-panel ${activeTab==='settings'?'active':''}" id="tab-settings">${renderSettingsTab()}</div>
-    <div class="form-actions" style="margin-top:1rem; border-top:1px solid var(--border); padding-top:1rem;">
+    <div id="aTabBody"></div>
+    <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:1rem;display:flex;gap:.75rem;">
       <button class="btn-form cancel" onclick="closeAdminModal()">Close</button>
-      <button class="btn-form danger" onclick="logoutAdmin()">Logout</button>
-    </div>
-  `;
+      <button class="btn-form danger" onclick="doLogout()">Logout</button>
+    </div>`;
+  if(activeAdminTab==='projects') renderAdminList();
+  else if(activeAdminTab==='form') renderProjectForm();
+  else renderProfileForm();
+}
+window.switchTab = t=>{ activeAdminTab=t; renderAdminPanel(); };
+
+function renderAdminList(){
+  const el=$('aTabBody');
+  if(!projects.length){ el.innerHTML=`<p style="font-size:.82rem;color:var(--muted);padding:.5rem 0">No projects yet.</p>`; return; }
+  el.innerHTML=projects.map(p=>`
+    <div class="admin-project-item">
+      <span class="admin-item-name">${TYPE_META[p.type]?.icon||'📦'} ${esc(p.name)}</span>
+      <div class="admin-item-actions">
+        <button class="btn-icon" onclick="startEditProject('${p.id}')">✎</button>
+        <button class="btn-icon del" onclick="confirmDelete('${p.id}')">✕</button>
+      </div>
+    </div>`).join('');
 }
 
-function switchTab(tab) { activeTab = tab; renderAdminPanel(); }
+// ── project form ──────────────────────────────────────────────────────────
+window.startEditProject = id=>{
+  editingId=id;
+  const p=projects.find(x=>x.id===id)||{};
+  exMedia={ images:[...(p.images||[])], videos:[...(p.videos||[])], files:[...(p.files||[])] };
+  queued={ images:[], videos:[], files:[] };
+  projectExtraFields = (p.extraFields||[]).map(f=>({...f}));
+  activeAdminTab='form';
+  if($('adminModal').classList.contains('open')) renderAdminPanel();
+  else { openAdminModal(); }
+};
+window.startAddProject = ()=>{
+  editingId=null;
+  exMedia={images:[],videos:[],files:[]};
+  queued={images:[],videos:[],files:[]};
+  projectExtraFields=[];
+  activeAdminTab='form';
+  renderAdminPanel();
+};
 
-// Projects Tab
-function renderProjectsTab() {
-  const list = data.projects.length > 0
-    ? data.projects.map((p,i) => `
-      <div class="admin-project-item">
-        <span class="admin-item-name">${ICONS[p.icon]||'📦'} ${p.name}</span>
-        <div class="admin-item-actions">
-          <button class="btn-icon" onclick="editProject(${i})">✎</button>
-          <button class="btn-icon del" onclick="deleteProject(${i})">✕</button>
-        </div>
-      </div>`).join('')
-    : '<p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">No projects yet. Add your first one!</p>';
-
-  return `
-    ${list}
-    <button class="btn-form save" style="margin-top:0.5rem" onclick="showAddProject()">+ Add Project</button>
-    <div id="projectForm" style="display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);">
-      ${projectFormHTML()}
-    </div>
-  `;
-}
-
-function projectFormHTML(p) {
-  return `
-    <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;margin-bottom:1rem;color:var(--neon);">${editingIndex!==null?'Edit':'New'} Project</h3>
+function renderProjectForm(){
+  const p = editingId ? (projects.find(x=>x.id===editingId)||{}) : {};
+  $('aTabBody').innerHTML=`
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Project Name *</label>
-        <input class="form-input" id="pName" value="${p?.name||''}" placeholder="My API Service"/>
+        <input class="form-input" id="fName" value="${esc(p.name||'')}" placeholder="My REST API"/>
       </div>
       <div class="form-group">
-        <label class="form-label">Icon</label>
-        <select class="form-select" id="pIcon">
-          ${Object.entries(ICONS).map(([k,v])=>`<option value="${k}" ${p?.icon===k?'selected':''}>${v} ${k}</option>`).join('')}
+        <label class="form-label">Type *</label>
+        <select class="form-select" id="fType">
+          ${Object.entries(TYPE_META).map(([k,v])=>`<option value="${k}"${p.type===k?' selected':''}>${v.icon} ${v.label}</option>`).join('')}
         </select>
       </div>
     </div>
     <div class="form-group">
       <label class="form-label">Description *</label>
-      <textarea class="form-textarea" id="pDesc" placeholder="What this project does...">${p?.desc||''}</textarea>
+      <textarea class="form-textarea" id="fDesc" placeholder="What it does, how it works, key decisions…">${esc(p.desc||'')}</textarea>
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Live URL</label>
-        <input class="form-input" id="pUrl" value="${p?.url||''}" placeholder="https://myapi.com"/>
+        <label class="form-label">Live / Demo URL</label>
+        <input class="form-input" id="fLive" value="${esc(p.liveUrl||'')}" placeholder="https://..."/>
       </div>
       <div class="form-group">
         <label class="form-label">Repo URL</label>
-        <input class="form-input" id="pRepo" value="${p?.repo||''}" placeholder="https://github.com/..."/>
+        <input class="form-input" id="fRepo" value="${esc(p.repoUrl||'')}" placeholder="https://github.com/..."/>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Tags (comma separated)</label>
-        <input class="form-input" id="pTags" value="${p?.tags||''}" placeholder="Node.js, Redis, AWS"/>
+        <label class="form-label">Tech Stack (comma separated)</label>
+        <input class="form-input" id="fTags" value="${esc(p.tags||'')}" placeholder="Node.js, PostgreSQL, Docker"/>
       </div>
       <div class="form-group">
         <label class="form-label">Status</label>
-        <select class="form-select" id="pStatus">
-          <option value="live" ${p?.status==='live'?'selected':''}>Live</option>
-          <option value="wip" ${p?.status==='wip'?'selected':''}>WIP</option>
+        <select class="form-select" id="fStatus">
+          <option value="live"${p.status==='live'?' selected':''}>● Live</option>
+          <option value="wip"${(!p.status||p.status==='wip')?' selected':''}>WIP</option>
+          <option value="archived"${p.status==='archived'?' selected':''}>Archived</option>
         </select>
       </div>
     </div>
-    <div class="form-actions">
-      <button class="btn-form save" onclick="saveProject()">Save Project</button>
-      <button class="btn-form cancel" onclick="cancelProjectForm()">Cancel</button>
-    </div>
-  `;
-}
 
-function showAddProject() {
-  editingIndex = null;
-  document.getElementById('projectForm').style.display = 'block';
-  document.getElementById('projectForm').innerHTML = projectFormHTML();
-}
-function editProject(i) {
-  editingIndex = i;
-  document.getElementById('projectForm').style.display = 'block';
-  document.getElementById('projectForm').innerHTML = projectFormHTML(data.projects[i]);
-  document.getElementById('projectForm').scrollIntoView({ behavior: 'smooth' });
-}
-function cancelProjectForm() {
-  document.getElementById('projectForm').style.display = 'none';
-  editingIndex = null;
-}
-function saveProject() {
-  const name = document.getElementById('pName').value.trim();
-  const desc = document.getElementById('pDesc').value.trim();
-  if (!name || !desc) { showToast('Name and description required.'); return; }
-  const proj = {
-    name,
-    desc,
-    icon: document.getElementById('pIcon').value,
-    url: document.getElementById('pUrl').value.trim(),
-    repo: document.getElementById('pRepo').value.trim(),
-    tags: document.getElementById('pTags').value.trim(),
-    status: document.getElementById('pStatus').value,
-  };
-  if (editingIndex !== null) data.projects[editingIndex] = proj;
-  else data.projects.push(proj);
-  saveData(data);
-  renderSite();
-  renderAdminPanel();
-  showToast(editingIndex !== null ? 'Project updated!' : 'Project added!');
-}
-function deleteProject(i) {
-  if (!confirm(`Delete "${data.projects[i].name}"?`)) return;
-  data.projects.splice(i, 1);
-  saveData(data);
-  renderSite();
-  renderAdminPanel();
-  showToast('Project deleted.');
-}
-
-// Profile Tab
-function renderProfileTab() {
-  return `
     <div class="form-group">
-      <label class="form-label">Display Name *</label>
-      <input class="form-input" id="prName" value="${data.name}" placeholder="Your Name"/>
+      <label class="form-label">Screenshots / Images</label>
+      <div class="upload-zone" onclick="document.getElementById('imgInput').click()">
+        <div class="uz-icon">🖼</div>
+        <div class="uz-text">Click to add images<br/><small>JPG, PNG, WebP — multiple ok</small></div>
+      </div>
+      <input type="file" id="imgInput" multiple accept="image/*" style="display:none" onchange="queueFiles('images',this)"/>
+      <div class="media-preview-row" id="imgRow">
+        ${exMedia.images.map((u,i)=>`<div class="media-thumb" id="exImg${i}"><img src="${u}" alt=""/><button class="rm-btn" onclick="removeEx('images',${i})">✕</button></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Demo Videos</label>
+      <div class="upload-zone" onclick="document.getElementById('vidInput').click()">
+        <div class="uz-icon">🎬</div>
+        <div class="uz-text">Click to add videos<br/><small>MP4, WebM, MOV</small></div>
+      </div>
+      <input type="file" id="vidInput" multiple accept="video/*" style="display:none" onchange="queueFiles('videos',this)"/>
+      <div class="media-preview-row" id="vidRow">
+        ${exMedia.videos.map((u,i)=>`<div class="media-thumb vid-thumb" id="exVid${i}"><div class="vid-play-icon">▶</div><button class="rm-btn" onclick="removeEx('videos',${i})">✕</button></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Downloadable Files (APK, EXE, ZIP, PDF…)</label>
+      <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+        <div class="uz-icon">📎</div>
+        <div class="uz-text">Click to attach any files<br/><small>APK, EXE, DMG, ZIP, PDF, etc.</small></div>
+      </div>
+      <input type="file" id="fileInput" multiple style="display:none" onchange="queueFiles('files',this)"/>
+      <div id="fileList">
+        ${exMedia.files.map((f,i)=>`<div class="file-row-edit" id="exFile${i}"><span>${fileIcon(f.name)} ${esc(f.name)}</span><button class="rm-btn inline-rm" onclick="removeEx('files',${i})">✕</button></div>`).join('')}
+      </div>
+    </div>
+
+    <div id="uploadProgress" style="display:none;margin-bottom:1rem;">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="pBar"></div></div>
+      <p class="progress-label" id="pLabel">Uploading…</p>
+    </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.25rem;margin-bottom:1rem;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Custom Fields <span style="font-size:.65rem;opacity:.6;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif">(any extra info you want to display)</span></p>
+      <div id="projExtraFieldsWrap">${extraFieldsHTML(projectExtraFields,'projExtraFields','addProjectExtraField','removeExtraField')}</div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-form save" id="saveBtn" onclick="saveProject()">${editingId?'Update Project':'Publish Project'}</button>
+      <button class="btn-form cancel" onclick="cancelForm()">Cancel</button>
+    </div>`;
+}
+
+window.queueFiles = (type, input) => {
+  const files = Array.from(input.files);
+  queued[type].push(...files);
+  if(type==='images'){
+    const row=$('imgRow');
+    files.forEach(f=>{
+      const url=URL.createObjectURL(f);
+      const d=document.createElement('div'); d.className='media-thumb new-thumb';
+      d.innerHTML=`<img src="${url}" alt=""/><span class="new-label">new</span>`;
+      row.appendChild(d);
+    });
+  } else if(type==='videos'){
+    const row=$('vidRow');
+    files.forEach(()=>{
+      const d=document.createElement('div'); d.className='media-thumb vid-thumb new-thumb';
+      d.innerHTML=`<div class="vid-play-icon">▶</div><span class="new-label">new</span>`;
+      row.appendChild(d);
+    });
+  } else {
+    const list=$('fileList');
+    files.forEach(f=>{
+      const d=document.createElement('div'); d.className='file-row-edit';
+      d.innerHTML=`<span>${fileIcon(f.name)} ${esc(f.name)}</span><span class="new-label" style="position:static;margin-left:.5rem">new</span>`;
+      list.appendChild(d);
+    });
+  }
+  input.value='';
+};
+
+window.removeEx = (type, idx) => {
+  const url = exMedia[type][idx]?.url ?? exMedia[type][idx];
+  // best-effort delete from Storage
+  if(typeof url === 'string') deleteStorageUrl(url);
+  exMedia[type].splice(idx,1);
+  renderProjectForm();
+};
+
+window.cancelForm = ()=>{
+  editingId=null; queued={images:[],videos:[],files:[]}; exMedia={images:[],videos:[],files:[]};
+  activeAdminTab='projects'; renderAdminPanel();
+};
+
+// ── save ──────────────────────────────────────────────────────────────────
+window.saveProject = async () => {
+  const name=($('fName').value||'').trim();
+  const desc=($('fDesc').value||'').trim();
+  if(!name||!desc){ toast('Name and description are required.',true); return; }
+  const btn=$('saveBtn'); btn.disabled=true; btn.textContent='Saving…';
+  try{
+    const newImages = await uploadBatch('images', queued.images);
+    const newVideos = await uploadBatch('videos', queued.videos);
+    const newFiles  = await uploadBatchFiles(queued.files);
+    const data={
+      name, desc,
+      type:    $('fType').value,
+      liveUrl: ($('fLive').value||'').trim(),
+      repoUrl: ($('fRepo').value||'').trim(),
+      tags:    ($('fTags').value||'').trim(),
+      status:  $('fStatus').value,
+      images:  [...exMedia.images, ...newImages],
+      videos:  [...exMedia.videos, ...newVideos],
+      files:   [...exMedia.files,  ...newFiles],
+      extraFields: projectExtraFields.filter(f=>f.label.trim()||f.value.trim()),
+      updatedAt: Date.now(),
+    };
+    if(editingId){ await updateDoc(doc(db,'projects',editingId),data); toast('Project updated!'); }
+    else { data.createdAt=Date.now(); await addDoc(collection(db,'projects'),data); toast('Project published!'); }
+    editingId=null; queued={images:[],videos:[],files:[]}; exMedia={images:[],videos:[],files:[]};
+    activeAdminTab='projects'; renderAdminPanel();
+  } catch(e){ toast('Error: '+e.message,true); btn.disabled=false; btn.textContent=editingId?'Update Project':'Publish Project'; }
+};
+
+async function uploadBatch(type, files){
+  const urls=[];
+  for(let i=0;i<files.length;i++) urls.push(await uploadOne(files[i],`${type}/${Date.now()}_${files[i].name}`,i,files.length,type));
+  return urls;
+}
+async function uploadBatchFiles(files){
+  const out=[];
+  for(let i=0;i<files.length;i++){
+    const url=await uploadOne(files[i],`files/${Date.now()}_${files[i].name}`,i,files.length,'file');
+    out.push({name:files[i].name,url});
+  }
+  return out;
+}
+function uploadOne(file, path, idx, total, label){
+  return new Promise((res,rej)=>{
+    const prog=$('uploadProgress'), bar=$('pBar'), lbl=$('pLabel');
+    if(prog) prog.style.display='block';
+    const task=uploadBytesResumable(sRef(stor,path),file);
+    task.on('state_changed',
+      s=>{ const p=Math.round(s.bytesTransferred/s.totalBytes*100); if(bar) bar.style.width=p+'%'; if(lbl) lbl.textContent=`Uploading ${label} ${idx+1}/${total} — ${p}%`; },
+      rej,
+      async()=>res(await getDownloadURL(task.snapshot.ref))
+    );
+  });
+}
+
+// ── profile form ──────────────────────────────────────────────────────────
+function renderProfileForm(){
+  const p = profile;
+  // initialise pfSlots from existing photos
+  pfSlots = [0,1,2].map(i => p.photos?.[i] ? { url: p.photos[i], isNew: false } : null);
+  pfNewFiles = [];
+  profileExtraFields = (p.extraFields||[]).map(f=>({...f}));
+
+  $('aTabBody').innerHTML=`
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;padding:.6rem .9rem;background:rgba(0,255,157,.05);border:1px solid rgba(0,255,157,.15);border-radius:5px;">
+      ✦ Changes here update the live site instantly for all visitors.
+    </div>
+
+    <!-- PROFILE PHOTOS -->
+    <div class="form-group">
+      <label class="form-label">Profile Photos <small style="font-family:'Inter',sans-serif;font-size:.7rem;text-transform:none;letter-spacing:0;color:var(--muted)">(⭐ Main Photo appears in the hero next to your name)</small></label>
+      <div class="pf-upload-grid" id="pfUploadGrid"></div>
+      <input type="file" id="pfPhotoInput" accept="image/*" style="display:none" onchange="pfPhotoSelected(this)"/>
+    </div>
+
+    <!-- GALLERY SIZE PICKER -->
+    <div class="form-group">
+      <label class="form-label">Gallery Size <small style="font-family:'Inter',sans-serif;font-size:.7rem;text-transform:none;letter-spacing:0;color:var(--muted)">(controls the photo display size in the Who I Am section)</small></label>
+      <div class="size-picker" id="sizePicker">
+        ${['small','medium','large'].map(s=>`
+          <button class="size-btn ${(p.photoSize||'medium')===s?'active':''}" onclick="previewSize('${s}')" data-size="${s}">
+            <div class="size-preview size-preview--${s}"></div>
+            <span>${s.charAt(0).toUpperCase()+s.slice(1)}</span>
+          </button>`).join('')}
+      </div>
+      <input type="hidden" id="pfPhotoSize" value="${p.photoSize||'medium'}"/>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input class="form-input" id="pfName" value="${esc(p.name)}" placeholder="Toluwalase Doe"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role / Title</label>
+        <input class="form-input" id="pfRole" value="${esc(p.role)}" placeholder="Backend Engineer"/>
+      </div>
     </div>
     <div class="form-group">
       <label class="form-label">Hero Tagline</label>
-      <input class="form-input" id="prTitle" value="${data.title}" placeholder="Building the engines..."/>
+      <input class="form-input" id="pfTagline" value="${esc(p.tagline)}" placeholder="Building the engines that power the web."/>
     </div>
     <div class="form-group">
       <label class="form-label">Hero Description</label>
-      <textarea class="form-textarea" id="prDesc">${data.desc}</textarea>
+      <textarea class="form-textarea" id="pfDesc" placeholder="Short paragraph shown under your name on the hero…">${esc(p.desc)}</textarea>
     </div>
     <div class="form-group">
       <label class="form-label">About Paragraph 1</label>
-      <textarea class="form-textarea" id="prAbout1">${data.about1}</textarea>
+      <textarea class="form-textarea" id="pfAbout1">${esc(p.about1)}</textarea>
     </div>
     <div class="form-group">
       <label class="form-label">About Paragraph 2</label>
-      <textarea class="form-textarea" id="prAbout2">${data.about2}</textarea>
+      <textarea class="form-textarea" id="pfAbout2">${esc(p.about2)}</textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">Skills (comma separated)</label>
-      <input class="form-input" id="prSkills" value="${data.skills.join(', ')}"/>
+      <label class="form-label">Skills / Tech Stack <small style="color:var(--muted);font-family:'Inter',sans-serif;font-size:.72rem;text-transform:none;letter-spacing:0">(comma separated)</small></label>
+      <input class="form-input" id="pfSkills" value="${esc(p.skills)}" placeholder="Node.js, Python, PostgreSQL, Redis, Docker"/>
     </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.5rem;margin-bottom:1rem;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem;">Social &amp; Contact Links</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="pfEmail" value="${esc(p.email)}" placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">GitHub URL</label>
+          <input class="form-input" id="pfGithub" value="${esc(p.github)}" placeholder="https://github.com/you"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">LinkedIn URL</label>
+          <input class="form-input" id="pfLinkedin" value="${esc(p.linkedin)}" placeholder="https://linkedin.com/in/you"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Twitter / X URL</label>
+          <input class="form-input" id="pfTwitter" value="${esc(p.twitter)}" placeholder="https://twitter.com/you"/>
+        </div>
+      </div>
+    </div>
+
+    <div id="pfUploadProgress" style="display:none;margin-bottom:.75rem;">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="pfPBar"></div></div>
+      <p class="progress-label" id="pfPLabel">Uploading photo…</p>
+    </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.25rem;margin-bottom:1rem;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Custom Fields <span style="font-size:.65rem;opacity:.6;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif">(extra info shown on your profile)</span></p>
+      <div id="profExtraFieldsWrap">${extraFieldsHTML(profileExtraFields,'profExtraFields','addProfileExtraField','removeExtraField')}</div>
+    </div>
+
     <div class="form-actions">
-      <button class="btn-form save" onclick="saveProfile()">Save Profile</button>
-    </div>
-  `;
-}
-function saveProfile() {
-  data.name = document.getElementById('prName').value.trim() || data.name;
-  data.title = document.getElementById('prTitle').value.trim();
-  data.desc = document.getElementById('prDesc').value.trim();
-  data.about1 = document.getElementById('prAbout1').value.trim();
-  data.about2 = document.getElementById('prAbout2').value.trim();
-  data.skills = document.getElementById('prSkills').value.split(',').map(s=>s.trim()).filter(Boolean);
-  saveData(data);
-  typingDone = false;
-  renderSite();
-  showToast('Profile saved!');
+      <button class="btn-form save" id="pfSaveBtn" onclick="saveProfile()">Save Profile</button>
+      <button class="btn-form cancel" onclick="switchTab('projects')">Cancel</button>
+    </div>`;
+
+  renderPfSlots();
 }
 
-// Settings Tab
-function renderSettingsTab() {
-  return `
-    <div class="form-group">
-      <label class="form-label">Change Password</label>
-      <input type="password" class="form-input" id="setPw" placeholder="New password"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Confirm Password</label>
-      <input type="password" class="form-input" id="setPw2" placeholder="Confirm new password"/>
-    </div>
-    <div class="form-actions">
-      <button class="btn-form save" onclick="changePassword()">Update Password</button>
-    </div>
-    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);">
-      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">⚠ Danger zone: this resets all data to defaults.</p>
-      <button class="btn-form danger" onclick="resetAll()">Reset All Data</button>
-    </div>
-  `;
-}
-function changePassword() {
-  const p1 = document.getElementById('setPw').value;
-  const p2 = document.getElementById('setPw2').value;
-  if (!p1) { showToast('Enter a new password.'); return; }
-  if (p1 !== p2) { showToast('Passwords do not match.'); return; }
-  data.password = p1;
-  saveData(data);
-  showToast('Password updated!');
-}
-function resetAll() {
-  if (!confirm('Reset ALL portfolio data? This cannot be undone.')) return;
-  localStorage.removeItem(DATA_KEY);
-  data = loadData();
-  typingDone = false;
-  renderSite();
-  closeAdminModal();
-  showToast('Data reset to defaults.');
-}
-function logoutAdmin() {
-  adminAuthed = false;
-  sessionStorage.removeItem(ADMIN_KEY);
-  closeAdminModal();
-  showToast('Logged out.');
+// which slot index is being filled next
+let pfTargetSlot = 0;
+
+function renderPfSlots(){
+  const grid = $('pfUploadGrid');
+  if(!grid) return;
+  const slotLabels = ['Main Photo', 'Photo 2', 'Photo 3'];
+  grid.innerHTML = [0,1,2].map(i => {
+    const slot = pfSlots[i];
+    const isMain = i === 0;
+    if(slot){
+      const preview = slot.isNew ? slot.previewUrl : slot.url;
+      return `<div class="pf-slot">
+        <img src="${preview}" alt="Photo ${i+1}"/>
+        ${isMain ? `<div class="pf-slot-main-badge">★ MAIN</div>` : ''}
+        ${slot.isNew ? '<span style="position:absolute;top:4px;left:4px;background:var(--neon);color:#0a0a0f;font-size:.55rem;font-family:\'JetBrains Mono\',monospace;padding:.08rem .3rem;border-radius:2px;font-weight:700;z-index:2">new</span>' : ''}
+        <button class="pf-slot-rm" onclick="pfRemoveSlot(${i})">✕</button>
+      </div>`;
+    }
+    return `<div class="pf-slot" onclick="pfPickSlot(${i})">
+      <div class="pf-slot-icon">${isMain ? '⭐' : '📷'}</div>
+      <div class="pf-slot-label">${slotLabels[i]}${isMain ? '' : ''}</div>
+    </div>`;
+  }).join('');
 }
 
-// ============================================================
-// INIT
-// ============================================================
-renderSite();
+window.pfPickSlot = i => {
+  pfTargetSlot = i;
+  $('pfPhotoInput').value='';
+  $('pfPhotoInput').click();
+};
+
+window.pfPhotoSelected = input => {
+  const file = input.files[0];
+  if(!file) return;
+  const previewUrl = URL.createObjectURL(file);
+  pfSlots[pfTargetSlot] = { isNew: true, file, previewUrl };
+  renderPfSlots();
+};
+
+window.pfRemoveSlot = i => {
+  const slot = pfSlots[i];
+  // if it's an already-saved photo, delete from Storage
+  if(slot && !slot.isNew && slot.url) deleteStorageUrl(slot.url);
+  pfSlots[i] = null;
+  renderPfSlots();
+};
+
+window.previewSize = size => {
+  const inp = $('pfPhotoSize'); if(inp) inp.value = size;
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('active', b.dataset.size === size));
+  applyGallerySize(size); // live preview while admin panel is open
+};
+
+window.saveProfile = async () => {
+  const btn = $('pfSaveBtn');
+  btn.disabled=true; btn.textContent='Saving…';
+  try{
+    // upload any new photo slots
+    const finalPhotos = [];
+    for(let i=0;i<3;i++){
+      const slot = pfSlots[i];
+      if(!slot){ finalPhotos.push(null); continue; }
+      if(slot.isNew && slot.file){
+        // upload to Firebase Storage
+        const prog=$('pfUploadProgress'), bar=$('pfPBar'), lbl=$('pfPLabel');
+        if(prog) prog.style.display='block';
+        const path = `profile/photo_${i}_${Date.now()}_${slot.file.name}`;
+        const url  = await new Promise((res,rej)=>{
+          const task = uploadBytesResumable(sRef(stor,path), slot.file);
+          task.on('state_changed',
+            s=>{ const p=Math.round(s.bytesTransferred/s.totalBytes*100); if(bar) bar.style.width=p+'%'; if(lbl) lbl.textContent=`Uploading photo ${i+1}/3 — ${p}%`; },
+            rej,
+            async()=>res(await getDownloadURL(task.snapshot.ref))
+          );
+        });
+        finalPhotos.push(url);
+        if(prog) prog.style.display='none';
+      } else {
+        finalPhotos.push(slot.url);
+      }
+    }
+
+    const updated = {
+      name:      ($('pfName').value||'').trim()     || DEFAULT_PROFILE.name,
+      role:      ($('pfRole').value||'').trim()     || DEFAULT_PROFILE.role,
+      tagline:   ($('pfTagline').value||'').trim()  || DEFAULT_PROFILE.tagline,
+      desc:      ($('pfDesc').value||'').trim()     || DEFAULT_PROFILE.desc,
+      about1:    ($('pfAbout1').value||'').trim()   || DEFAULT_PROFILE.about1,
+      about2:    ($('pfAbout2').value||'').trim()   || DEFAULT_PROFILE.about2,
+      skills:    ($('pfSkills').value||'').trim()   || DEFAULT_PROFILE.skills,
+      email:     ($('pfEmail').value||'').trim(),
+      github:    ($('pfGithub').value||'').trim(),
+      linkedin:  ($('pfLinkedin').value||'').trim(),
+      twitter:   ($('pfTwitter').value||'').trim(),
+      photos:    finalPhotos.filter(Boolean),
+      photoSize: $('pfPhotoSize')?.value || 'medium',
+      extraFields: profileExtraFields.filter(f=>f.label.trim()||f.value.trim()),
+    };
+    await setDoc(doc(db,'config','profile'), updated);
+    profile = updated;
+    typingDone = false;
+    applyProfile();
+    renderHeroAvatar();
+    renderAboutGallery();
+    toast('Profile saved! Live site updated.');
+    btn.disabled=false; btn.textContent='Save Profile';
+  } catch(e){
+    toast('Error saving profile: '+e.message, true);
+    btn.disabled=false; btn.textContent='Save Profile';
+  }
+};
+
+// ── delete ────────────────────────────────────────────────────────────────
+window.confirmDelete = async id=>{
+  if(!confirm('Delete this project permanently? All uploaded files will also be removed.')) return;
+  try{
+    const p = projects.find(x=>x.id===id);
+    if(p){
+      // delete all Storage assets in parallel (best-effort)
+      const allUrls = [
+        ...(p.images||[]),
+        ...(p.videos||[]),
+        ...(p.files||[]).map(f=>f.url),
+      ];
+      await Promise.allSettled(allUrls.map(u=>deleteStorageUrl(u)));
+    }
+    await deleteDoc(doc(db,'projects',id));
+    closeProjectModal();
+    toast('Project and all its files deleted.');
+    if($('adminModal').classList.contains('open')) renderAdminPanel();
+  } catch(e){ toast('Error: '+e.message,true); }
+};
+
+// ── keyboard / overlay close ──────────────────────────────────────────────
+document.addEventListener('click',e=>{
+  if(e.target.id==='projectModal') closeProjectModal();
+  if(e.target.id==='previewModal') closePreview();
+  if(e.target.id==='adminModal')   closeAdminModal();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeProjectModal(); closePreview(); closeAdminModal(); }
+  if($('projectModal').classList.contains('open')){
+    if(e.key==='ArrowLeft')  lbNav(-1);
+    if(e.key==='ArrowRight') lbNav(1);
+  }
+});
 </script>
 </body>
 </html>
