@@ -6,7 +6,7 @@
 <title>Dev Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#0a0a0f;--surface:#111120;--card:#1a1a2e;--border:#2a2a4a;--neon:#00ff9d;--violet:#7c3aed;--vl:#a78bfa;--text:#e2e8f0;--muted:#64748b;}
+:root{--bg:#0a0a0f;--surface:#111120;--card:#1a1a2e;--border:#2a2a4a;--neon:#00ff9d;--violet:#7c3aed;--vl:#a78bfa;--text:#e2e8f0;--muted:#64748b;--gallery-size:300px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
@@ -14,20 +14,24 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
-.nav-logo{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:600;color:var(--neon);}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:600;color:var(--neon);text-decoration:none;}
 .nav-logo span{color:var(--vl);}
 .nav-links{display:flex;gap:1.75rem;align-items:center;}
 .nav-links a{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .2s;letter-spacing:.05em;}
-.nav-links a:hover{color:var(--neon);}
-.btn-admin{background:transparent;border:1px solid var(--violet);color:var(--vl);padding:.38rem .9rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.73rem;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.nav-links a:hover,.nav-links a.active{color:var(--neon);}
+.btn-admin{background:transparent;border:1px solid var(--violet);color:var(--vl);padding:.38rem .9rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.73rem;cursor:pointer;transition:all .2s;letter-spacing:.05em;text-decoration:none;}
 .btn-admin:hover{background:var(--violet);color:#fff;}
+.btn-admin.authed{border-color:var(--neon);color:var(--neon);}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:62px;}
+.page.active{display:block;}
 
 /* HERO */
-#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 10vw 4rem;position:relative;overflow:hidden;}
+#heroSection{min-height:calc(100vh - 62px);display:flex;align-items:center;justify-content:center;padding:4rem 10vw;position:relative;overflow:hidden;}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,157,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,157,.04) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 30%,transparent 100%);}
 .hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
-.hero-content{position:relative;z-index:1;width:100%;max-width:1100px;}
-.hero-inner{display:flex;align-items:center;justify-content:space-between;gap:3rem;}
+.hero-inner{position:relative;z-index:1;width:100%;max-width:1100px;display:flex;align-items:center;justify-content:space-between;gap:3rem;}
 .hero-text{flex:1;min-width:0;}
 .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--neon);letter-spacing:.15em;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;}
 .hero-eyebrow::before{content:'';display:inline-block;width:32px;height:1px;background:var(--neon);}
@@ -35,17 +39,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .cursor{display:inline-block;width:3px;height:.85em;background:var(--neon);margin-left:4px;vertical-align:middle;animation:blink 1s step-end infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .hero-sub{font-size:clamp(.9rem,1.8vw,1.2rem);color:var(--vl);margin-bottom:1rem;}
-.hero-desc{font-size:.95rem;color:var(--muted);line-height:1.75;max-width:500px;margin-bottom:2.5rem;}
+.hero-desc{font-size:.95rem;color:var(--muted);line-height:1.75;max-width:500px;margin-bottom:2rem;}
 .hero-cta{display:flex;gap:1rem;flex-wrap:wrap;}
 .btn-primary{background:var(--neon);color:#0a0a0f;padding:.72rem 1.6rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.83rem;font-weight:600;border:none;cursor:pointer;transition:all .2s;letter-spacing:.05em;text-decoration:none;display:inline-block;}
 .btn-primary:hover{background:#00e085;transform:translateY(-1px);box-shadow:0 0 24px rgba(0,255,157,.3);}
 .btn-secondary{background:transparent;color:var(--text);padding:.72rem 1.6rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.83rem;border:1px solid var(--border);cursor:pointer;transition:all .2s;letter-spacing:.05em;text-decoration:none;display:inline-block;}
 .btn-secondary:hover{border-color:var(--violet);color:var(--vl);}
-.hero-stats{display:flex;gap:2rem;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;}
+.hero-socials{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem;}
+.hero-stats{display:flex;gap:2rem;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;}
 .stat-num{font-family:'JetBrains Mono',monospace;font-size:1.75rem;font-weight:700;color:var(--neon);display:block;}
 .stat-label{font-size:.72rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
-
-/* HERO AVATAR */
+/* hero avatar */
 .hero-avatar-wrap{flex-shrink:0;position:relative;width:260px;height:260px;}
 .hero-avatar-ring{position:absolute;inset:-4px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--violet),var(--neon));animation:spin 6s linear infinite;z-index:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -54,14 +58,48 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .hero-avatar-placeholder{font-size:4rem;}
 
 /* SECTION */
-.section-wrap{padding:5rem 2rem;max-width:1240px;margin:0 auto;}
-.section-header{margin-bottom:3rem;}
+.section-wrap{padding:4rem 2rem;max-width:1240px;margin:0 auto;}
+.section-header{margin-bottom:2.5rem;}
 .section-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--neon);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem;}
 .section-eyebrow::after{content:'';flex:1;max-width:60px;height:1px;background:var(--neon);}
 .section-title{font-family:'JetBrains Mono',monospace;font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;letter-spacing:-.02em;}
 .section-title span{color:var(--vl);}
 
-/* PROJECT CARDS */
+/* ABOUT */
+.about-section{border-top:1px solid var(--border);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.about-left p{font-size:.93rem;color:var(--muted);line-height:1.8;margin-bottom:1rem;}
+.skills-list{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.25rem;}
+.skill-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.25rem .65rem;background:rgba(0,255,157,.07);border:1px solid rgba(0,255,157,.15);color:var(--neon);border-radius:3px;}
+/* gallery */
+.about-gallery{margin-bottom:1.75rem;width:var(--gallery-size);max-width:100%;}
+.gallery-placeholder{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(0,255,157,.05));border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:3rem;color:var(--muted);}
+.gallery-main{width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--card);margin-bottom:.75rem;}
+.gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .35s;}
+.gallery-fade{opacity:0;}
+.gallery-thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;}
+.gallery-thumb{aspect-ratio:1;border-radius:7px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s;background:var(--card);}
+.gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.gallery-thumb.active{border-color:var(--neon);}
+.gallery-thumb.empty{border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.1rem;cursor:default;}
+/* terminal */
+.terminal-box{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.terminal-bar{padding:.6rem 1rem;background:rgba(0,0,0,.3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.45rem;}
+.t-dot{width:10px;height:10px;border-radius:50%;}
+.t-dot:nth-child(1){background:#ef4444;}.t-dot:nth-child(2){background:#f59e0b;}.t-dot:nth-child(3){background:#22c55e;}
+.terminal-title{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);flex:1;text-align:center;}
+.terminal-body{padding:1.1rem 1.4rem;font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.9;color:var(--muted);}
+.t-line .prompt{color:var(--neon);}.t-line .cmd{color:var(--text);}.t-line .out{color:var(--vl);}
+
+/* PROJECTS PAGE */
+.projects-page-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;}
+/* filter bar */
+.filter-bar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:2rem;}
+.filter-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-right:.25rem;}
+.filter-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.25rem .7rem;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:20px;cursor:pointer;transition:all .18s;}
+.filter-tag:hover{border-color:var(--neon);color:var(--neon);}
+.filter-tag.active{background:rgba(0,255,157,.1);border-color:var(--neon);color:var(--neon);}
+/* project cards */
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;}
 .project-card{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:all .25s;cursor:pointer;position:relative;}
 .project-card:hover{border-color:var(--neon);transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,255,157,.07);}
@@ -88,11 +126,63 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .empty-title{font-family:'JetBrains Mono',monospace;font-size:.97rem;margin-bottom:.5rem;}
 .empty-sub{font-size:.82rem;}
 
+/* TAG INPUT */
+.tag-input-wrap{display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem .7rem;background:var(--card);border:1px solid var(--border);border-radius:5px;cursor:text;min-height:38px;transition:border-color .2s;align-items:center;}
+.tag-input-wrap:focus-within{border-color:var(--neon);}
+.tag-chip{display:inline-flex;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.18rem .5rem;background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.3);color:var(--vl);border-radius:3px;}
+.tag-chip-rm{background:transparent;border:none;color:var(--vl);cursor:pointer;font-size:.75rem;padding:0;line-height:1;display:flex;align-items:center;}
+.tag-chip-rm:hover{color:#f87171;}
+.tag-real-input{background:transparent;border:none;outline:none;color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;min-width:80px;flex:1;}
+.tag-hint{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.3rem;letter-spacing:.03em;}
+
+/* ADMIN DASHBOARD PAGE */
+#adminPage{background:var(--bg);}
+.admin-page-inner{max-width:1200px;margin:0 auto;padding:2rem;}
+.admin-page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.admin-page-title{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--neon);}
+.admin-page-subtitle{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--muted);margin-top:.25rem;}
+.admin-actions{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;}
+/* project table */
+.proj-table{width:100%;border-collapse:collapse;}
+.proj-table th{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;padding:.75rem 1rem;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.proj-table td{padding:.85rem 1rem;border-bottom:1px solid rgba(42,42,74,.5);vertical-align:middle;}
+.proj-table tr:hover td{background:rgba(255,255,255,.02);}
+.proj-table .pt-name{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:600;}
+.proj-table .pt-type{font-size:.75rem;color:var(--muted);}
+.proj-table .pt-tags{display:flex;flex-wrap:wrap;gap:.3rem;}
+.proj-table .pt-status{font-family:'JetBrains Mono',monospace;font-size:.68rem;}
+/* visibility toggle */
+.vis-toggle{display:flex;align-items:center;gap:.5rem;cursor:pointer;}
+.vis-switch{position:relative;width:38px;height:20px;flex-shrink:0;}
+.vis-switch input{opacity:0;width:0;height:0;position:absolute;}
+.vis-slider{position:absolute;inset:0;background:var(--border);border-radius:20px;transition:background .2s;}
+.vis-slider::before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s;}
+.vis-switch input:checked + .vis-slider{background:var(--neon);}
+.vis-switch input:checked + .vis-slider::before{transform:translateX(18px);}
+.vis-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);white-space:nowrap;}
+.vis-label.on{color:var(--neon);}
+/* table actions */
+.tbl-actions{display:flex;gap:.4rem;}
+.tbl-btn{background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:.3rem .6rem;border-radius:4px;font-size:.75rem;transition:all .18s;white-space:nowrap;}
+.tbl-btn:hover{border-color:var(--neon);color:var(--neon);}
+.tbl-btn.danger:hover{border-color:#f87171;color:#f87171;}
+/* admin login wall */
+.admin-login-wall{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 62px);}
+.admin-login-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:2.5rem;width:100%;max-width:420px;}
+.admin-login-box h2{font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--neon);margin-bottom:.4rem;}
+.admin-login-box p{font-size:.82rem;color:var(--muted);margin-bottom:1.75rem;}
+/* drawer (add/edit project) */
+.drawer-overlay{position:fixed;inset:0;z-index:150;background:rgba(5,5,10,.85);backdrop-filter:blur(6px);display:none;justify-content:flex-end;}
+.drawer-overlay.open{display:flex;}
+.drawer{background:var(--surface);border-left:1px solid var(--border);width:100%;max-width:680px;height:100%;overflow-y:auto;padding:2rem;display:flex;flex-direction:column;gap:0;}
+.drawer-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;}
+.drawer-title{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:var(--neon);}
+.drawer-close{background:transparent;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:color .2s;}
+.drawer-close:hover{color:var(--text);}
+
 /* MODALS */
 .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(5,5,10,.94);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem;}
 .modal-overlay.open{display:flex;}
-
-/* PROJECT DETAIL */
 .project-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:100%;max-width:860px;max-height:92vh;overflow-y:auto;position:relative;}
 .pm-close{position:sticky;top:.75rem;float:right;margin-right:.75rem;z-index:10;background:rgba(10,10,15,.8);border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:color .2s;}
 .pm-close:hover{color:var(--text);}
@@ -102,8 +192,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .pm-title{font-family:'JetBrains Mono',monospace;font-size:clamp(1.25rem,3vw,1.75rem);font-weight:700;letter-spacing:-.02em;margin-bottom:.75rem;}
 .pm-desc{font-size:.9rem;color:var(--muted);line-height:1.75;margin-bottom:1rem;white-space:pre-wrap;}
 .pm-section-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;}
-
-/* LIGHTBOX */
+/* lightbox */
 .lightbox{margin-bottom:1.75rem;}
 .lb-main{width:100%;aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
 .lb-img{width:100%;height:100%;object-fit:contain;}
@@ -128,9 +217,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .file-row:hover{border-color:var(--neon);}
 .file-name{flex:1;font-size:.82rem;}
 .file-dl{color:var(--neon);font-size:.85rem;}
-.pm-admin-bar{border-top:1px solid var(--border);padding-top:1.25rem;margin-top:1.5rem;display:flex;gap:.75rem;}
-
-/* PREVIEW MODAL */
+.pm-extra-fields{border-top:1px solid var(--border);padding-top:1.25rem;margin-top:1.25rem;}
+.pm-extra-field{display:flex;gap:1rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.85rem;}
+.pm-extra-field:last-child{border-bottom:none;}
+.pm-extra-field-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);width:130px;flex-shrink:0;padding-top:.1rem;letter-spacing:.03em;}
+.pm-extra-field-value{color:var(--text);flex:1;line-height:1.6;}
+.pm-extra-field-link{color:var(--neon);text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;font-size:.82rem;border-bottom:1px solid rgba(0,255,157,.3);transition:border-color .18s;}
+.pm-extra-field-link:hover{border-color:var(--neon);}
+/* preview modal */
 .preview-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:100%;max-width:1100px;height:90vh;display:flex;flex-direction:column;overflow:hidden;}
 .preview-bar{padding:.7rem 1.25rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--border);background:var(--card);flex-shrink:0;}
 .preview-dots{display:flex;gap:6px;}
@@ -140,14 +234,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .preview-close{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:.25rem;border-radius:4px;transition:color .2s;}
 .preview-close:hover{color:var(--text);}
 #previewFrame{flex:1;width:100%;border:none;background:#fff;}
-
-/* ADMIN MODAL */
+/* admin settings modal */
 .admin-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;padding:2rem;}
 .admin-modal-box h2{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--neon);margin-bottom:.4rem;}
 .admin-sub{font-size:.78rem;color:var(--muted);margin-bottom:1.5rem;}
-.admin-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;}
-.tab-btn{font-family:'JetBrains Mono',monospace;font-size:.73rem;padding:.38rem .9rem;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;letter-spacing:.04em;}
-.tab-btn.active{background:var(--violet);border-color:var(--violet);color:#fff;}
+
+/* FORMS */
 .form-group{margin-bottom:1.1rem;}
 .form-row{display:flex;gap:1rem;}
 .form-row .form-group{flex:1;}
@@ -166,6 +258,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .btn-form.danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;}
 .btn-form.danger:hover{background:rgba(239,68,68,.2);}
 .field-err{font-size:.78rem;color:#f87171;margin-top:.5rem;}
+/* upload zones */
 .upload-zone{border:1px dashed var(--border);border-radius:6px;padding:1.25rem;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:.6rem;}
 .upload-zone:hover{border-color:var(--neon);}
 .uz-icon{font-size:1.5rem;margin-bottom:.4rem;}
@@ -184,63 +277,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .progress-bar-wrap{height:4px;background:var(--border);border-radius:2px;margin-bottom:.4rem;overflow:hidden;}
 .progress-bar{height:100%;background:var(--neon);border-radius:2px;transition:width .15s;width:0%;}
 .progress-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);}
-.admin-project-item{display:flex;align-items:center;gap:1rem;padding:.75rem .9rem;background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:.5rem;}
-.admin-item-name{flex:1;font-family:'JetBrains Mono',monospace;font-size:.82rem;}
-.admin-item-actions{display:flex;gap:.4rem;}
-.btn-icon{background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:.3rem .55rem;border-radius:4px;font-size:.75rem;transition:all .18s;}
-.btn-icon:hover{border-color:var(--neon);color:var(--neon);}
-.btn-icon.del:hover{border-color:#f87171;color:#f87171;}
-
-/* ABOUT */
-.about-section{border-top:1px solid var(--border);}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
-.about-left{}
-.about-left p{font-size:.93rem;color:var(--muted);line-height:1.8;margin-bottom:1rem;}
-.skills-list{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.25rem;}
-.skill-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.25rem .65rem;background:rgba(0,255,157,.07);border:1px solid rgba(0,255,157,.15);color:var(--neon);border-radius:3px;}
-
-/* ABOUT PHOTO GALLERY */
-:root{ --gallery-size: 340px; }
-.about-gallery{margin-bottom:1.75rem;width:var(--gallery-size);max-width:100%;}
-.gallery-placeholder{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(0,255,157,.05));border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:3rem;color:var(--muted);}
-.gallery-main{width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;position:relative;border:1px solid var(--border);background:var(--card);margin-bottom:.75rem;}
-.gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .35s;}
-.gallery-fade{opacity:0;}
-.gallery-thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;}
-.gallery-thumb{aspect-ratio:1;border-radius:7px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s;background:var(--card);}
-.gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
-.gallery-thumb.active{border-color:var(--neon);}
-.gallery-thumb.empty{border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.1rem;cursor:default;}
-
-.terminal-box{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
-.terminal-bar{padding:.6rem 1rem;background:rgba(0,0,0,.3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.45rem;}
-.t-dot{width:10px;height:10px;border-radius:50%;}
-.t-dot:nth-child(1){background:#ef4444;}.t-dot:nth-child(2){background:#f59e0b;}.t-dot:nth-child(3){background:#22c55e;}
-.terminal-title{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);flex:1;text-align:center;}
-.terminal-body{padding:1.1rem 1.4rem;font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.9;color:var(--muted);}
-.t-line .prompt{color:var(--neon);}.t-line .cmd{color:var(--text);}.t-line .out{color:var(--vl);}
-
-/* PROFILE PHOTO UPLOAD ADMIN */
-.pf-upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:.6rem;}
-.pf-slot{border:1px dashed var(--border);border-radius:8px;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;position:relative;overflow:hidden;background:var(--card);}
-.pf-slot:hover{border-color:var(--neon);}
-.pf-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
-.pf-slot-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.35rem;position:relative;z-index:1;}
-.pf-slot-icon{font-size:1.4rem;position:relative;z-index:1;}
-.pf-slot-rm{position:absolute;top:4px;right:4px;z-index:2;background:rgba(0,0,0,.75);border:none;color:#fff;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:.65rem;display:flex;align-items:center;justify-content:center;}
-.pf-slot-main-badge{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);z-index:2;background:var(--neon);color:#0a0a0f;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;padding:.1rem .4rem;border-radius:2px;letter-spacing:.04em;white-space:nowrap;}
-
-/* gallery size picker */
-.size-picker{display:flex;gap:.75rem;margin-top:.4rem;}
-.size-btn{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.65rem .9rem;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:.4rem;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.04em;min-width:70px;}
-.size-btn:hover{border-color:var(--neon);color:var(--neon);}
-.size-btn.active{border-color:var(--neon);color:var(--neon);background:rgba(0,255,157,.07);}
-.size-preview{background:rgba(0,255,157,.25);border-radius:3px;height:28px;}
-.size-preview--small{width:28px;}
-.size-preview--medium{width:42px;}
-.size-preview--large{width:58px;}
-
-/* extra custom fields */
+/* extra fields */
 .extra-fields-list{margin-top:.5rem;}
 .extra-field-row{display:flex;gap:.5rem;align-items:flex-start;margin-bottom:.6rem;}
 .extra-field-row .ef-label{width:120px;flex-shrink:0;}
@@ -254,13 +291,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .extra-field-row .ef-rm:hover{background:rgba(239,68,68,.15);}
 .add-field-btn{font-family:'JetBrains Mono',monospace;font-size:.72rem;background:transparent;border:1px dashed var(--border);color:var(--muted);padding:.38rem .9rem;border-radius:4px;cursor:pointer;transition:all .18s;letter-spacing:.04em;display:inline-flex;align-items:center;gap:.4rem;margin-top:.25rem;}
 .add-field-btn:hover{border-color:var(--neon);color:var(--neon);}
-.pm-extra-fields{border-top:1px solid var(--border);padding-top:1.25rem;margin-top:1.25rem;}
-.pm-extra-field{display:flex;gap:1rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.85rem;}
-.pm-extra-field:last-child{border-bottom:none;}
-.pm-extra-field-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);width:130px;flex-shrink:0;padding-top:.1rem;letter-spacing:.03em;}
-.pm-extra-field-value{color:var(--text);flex:1;line-height:1.6;}
-.pm-extra-field-link{color:var(--neon);text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;font-size:.82rem;border-bottom:1px solid rgba(0,255,157,.3);transition:border-color .18s;}
-.pm-extra-field-link:hover{border-color:var(--neon);}
+/* profile photo upload admin */
+.pf-upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:.6rem;}
+.pf-slot{border:1px dashed var(--border);border-radius:8px;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s;position:relative;overflow:hidden;background:var(--card);}
+.pf-slot:hover{border-color:var(--neon);}
+.pf-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.pf-slot-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.35rem;position:relative;z-index:1;}
+.pf-slot-icon{font-size:1.4rem;position:relative;z-index:1;}
+.pf-slot-rm{position:absolute;top:4px;right:4px;z-index:2;background:rgba(0,0,0,.75);border:none;color:#fff;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:.65rem;display:flex;align-items:center;justify-content:center;}
+.pf-slot-main-badge{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);z-index:2;background:var(--neon);color:#0a0a0f;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;padding:.1rem .4rem;border-radius:2px;letter-spacing:.04em;white-space:nowrap;}
+/* size picker */
+.size-picker{display:flex;gap:.75rem;margin-top:.4rem;}
+.size-btn{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.65rem .9rem;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:.4rem;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.04em;min-width:70px;}
+.size-btn:hover{border-color:var(--neon);color:var(--neon);}
+.size-btn.active{border-color:var(--neon);color:var(--neon);background:rgba(0,255,157,.07);}
+.size-preview{background:rgba(0,255,157,.25);border-radius:3px;height:28px;}
+.size-preview--small{width:28px;}.size-preview--medium{width:42px;}.size-preview--large{width:58px;}
 
 footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.05em;}
 footer span{color:var(--neon);}
@@ -270,112 +316,112 @@ footer span{color:var(--neon);}
 @media(max-width:900px){
   .hero-inner{flex-direction:column-reverse;gap:2rem;text-align:center;}
   .hero-eyebrow{justify-content:center;}
-  .hero-cta{justify-content:center;}
-  .hero-stats{justify-content:center;}
-  #heroSocials{justify-content:center;}
+  .hero-cta,.hero-socials,.hero-stats{justify-content:center;}
   .hero-avatar-wrap{width:180px;height:180px;}
   .hero-desc{max-width:100%;}
 }
 @media(max-width:768px){
   nav{padding:.75rem 1rem;}.nav-links{gap:1rem;}
-  #hero{padding:5rem 1.25rem 3rem;}
-  .section-wrap{padding:3.5rem 1.25rem;}
+  .section-wrap{padding:3rem 1.25rem;}
   .projects-grid{grid-template-columns:1fr;}
   .about-grid{grid-template-columns:1fr;gap:2rem;}
   .form-row{flex-direction:column;}
-  .admin-modal-box{padding:1.25rem;}
+  .admin-modal-box,.drawer{padding:1.25rem;}
   #projectModalContent{padding:1.25rem;}
+  .proj-table th:nth-child(3),.proj-table td:nth-child(3){display:none;}
 }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <div class="nav-logo"><span>~/</span>devportfolio</div>
+  <a class="nav-logo" href="#/" id="navLogo"><span>~/</span>devportfolio</a>
   <div class="nav-links">
-    <a href="#projects">projects</a>
-    <a href="#about">about</a>
-    <button class="btn-admin" id="adminBtn" onclick="openAdminModal()">⚙ admin</button>
+    <a href="#/" id="navHome">home</a>
+    <a href="#/projects" id="navProjects">projects</a>
+    <a href="#/admin" class="btn-admin" id="adminBtn">⚙ admin</a>
   </div>
 </nav>
 
-<section id="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-glow"></div>
-  <div class="hero-content">
+<!-- ═══ HOME PAGE ═══ -->
+<div class="page" id="homePage">
+  <section id="heroSection">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
     <div class="hero-inner">
-      <!-- LEFT: text -->
       <div class="hero-text">
         <div class="hero-eyebrow" id="heroEyebrow">BACKEND ENGINEER</div>
         <h1 class="hero-name"><span id="typeTarget"></span><span class="cursor"></span></h1>
         <p class="hero-sub" id="heroSub">Building the engines that power the web.</p>
         <p class="hero-desc" id="heroDesc">I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.</p>
         <div class="hero-cta">
-          <a href="#projects" class="btn-primary">View Projects →</a>
+          <a href="#/projects" class="btn-primary">View Projects →</a>
           <a href="#about" class="btn-secondary">About Me</a>
         </div>
-        <div id="heroSocials" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem;"></div>
+        <div class="hero-socials" id="heroSocials"></div>
         <div class="hero-stats">
           <div class="stat"><span class="stat-num" id="statProjects">—</span><span class="stat-label">Projects</span></div>
         </div>
       </div>
-      <!-- RIGHT: main profile photo -->
-      <div class="hero-avatar-wrap" id="heroAvatarWrap">
+      <div class="hero-avatar-wrap">
         <div class="hero-avatar-ring"></div>
-        <div class="hero-avatar-inner" id="heroAvatarInner">
-          <span class="hero-avatar-placeholder">🧑‍💻</span>
+        <div class="hero-avatar-inner" id="heroAvatarInner"><span class="hero-avatar-placeholder">🧑‍💻</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section-wrap about-section">
+    <div class="section-header">
+      <div class="section-eyebrow">ABOUT</div>
+      <h2 class="section-title">Who I <span>Am</span></h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-left">
+        <div class="about-gallery" id="aboutGallery"><div class="gallery-placeholder">🧑‍💻</div></div>
+        <p id="aboutP1"></p>
+        <p id="aboutP2"></p>
+        <div class="skills-list" id="skillsList"></div>
+        <div id="profileExtraFieldsDisplay"></div>
+      </div>
+      <div class="terminal-box">
+        <div class="terminal-bar"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div><div class="terminal-title">bash — profile.sh</div></div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="prompt">$ </span><span class="cmd">whoami</span></div>
+          <div class="t-line"><span class="out" id="termName">backend_engineer</span></div>
+          <div class="t-line"><span class="prompt">$ </span><span class="cmd">cat stack.json</span></div>
+          <div class="t-line"><span class="out" id="termSkills">[]</span></div>
+          <div class="t-line"><span class="prompt">$ </span><span class="cmd">ls ./projects</span></div>
+          <div class="t-line"><span class="out" id="termProj">(loading…)</span></div>
+          <div class="t-line"><span class="prompt">$ </span><span class="cmd">git log --oneline -1</span></div>
+          <div class="t-line"><span class="out">a1b2c3d always be shipping 🚀</span></div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+  <footer>Built with <span>♥</span> &amp; <span>{ }</span> — Powered by Firebase</footer>
+</div>
 
-<section id="projects" class="section-wrap">
-  <div class="section-header">
-    <div class="section-eyebrow">WORK</div>
-    <h2 class="section-title">Backend <span>Projects</span></h2>
-  </div>
-  <div class="projects-grid" id="projectsGrid">
-    <div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">Connecting…</div></div>
-  </div>
-</section>
-
-<section id="about" class="section-wrap about-section">
-  <div class="section-header">
-    <div class="section-eyebrow">ABOUT</div>
-    <h2 class="section-title">Who I <span>Am</span></h2>
-  </div>
-  <div class="about-grid">
-    <!-- LEFT col: photo gallery + bio -->
-    <div class="about-left">
-      <!-- Photo gallery -->
-      <div class="about-gallery" id="aboutGallery">
-        <!-- rendered by JS -->
-        <div class="gallery-placeholder">🧑‍💻</div>
-      </div>
-      <!-- Bio text -->
-      <p id="aboutP1">I'm a backend engineer who loves working in the parts of software most people never see — the layers where performance, reliability, and architecture actually matter.</p>
-      <p id="aboutP2">My focus is on building clean APIs, designing efficient data models, and writing code that's maintainable and scales gracefully under pressure.</p>
-      <div class="skills-list" id="skillsList"></div>
-    </div>
-    <!-- RIGHT col: terminal -->
-    <div class="terminal-box">
-      <div class="terminal-bar"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div><div class="terminal-title">bash — profile.sh</div></div>
-      <div class="terminal-body">
-        <div class="t-line"><span class="prompt">$ </span><span class="cmd">whoami</span></div>
-        <div class="t-line"><span class="out" id="termName">backend_engineer</span></div>
-        <div class="t-line"><span class="prompt">$ </span><span class="cmd">cat stack.json</span></div>
-        <div class="t-line"><span class="out" id="termSkills">["Node.js","PostgreSQL","Docker","AWS"]</span></div>
-        <div class="t-line"><span class="prompt">$ </span><span class="cmd">ls ./projects</span></div>
-        <div class="t-line"><span class="out" id="termProj">(loading…)</span></div>
-        <div class="t-line"><span class="prompt">$ </span><span class="cmd">git log --oneline -1</span></div>
-        <div class="t-line"><span class="out">a1b2c3d always be shipping 🚀</span></div>
+<!-- ═══ PROJECTS PAGE ═══ -->
+<div class="page" id="projectsPage">
+  <div class="section-wrap">
+    <div class="section-header projects-page-header">
+      <div>
+        <div class="section-eyebrow">WORK</div>
+        <h2 class="section-title">Backend <span>Projects</span></h2>
       </div>
     </div>
+    <div class="filter-bar" id="filterBar"></div>
+    <div class="projects-grid" id="projectsGrid">
+      <div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">Loading…</div></div>
+    </div>
   </div>
-</section>
+</div>
 
-<footer>Built with <span>♥</span> &amp; <span>{ }</span> — Powered by Firebase</footer>
+<!-- ═══ ADMIN PAGE ═══ -->
+<div class="page" id="adminPage">
+  <div id="adminPageContent"></div>
+</div>
 
 <!-- PROJECT DETAIL MODAL -->
 <div class="modal-overlay" id="projectModal">
@@ -397,17 +443,21 @@ footer span{color:var(--neon);}
   </div>
 </div>
 
-<!-- ADMIN MODAL -->
-<div class="modal-overlay" id="adminModal">
-  <div class="admin-modal-box" id="adminModalContent"></div>
+<!-- PROFILE SETTINGS MODAL (admin only) -->
+<div class="modal-overlay" id="profileModal">
+  <div class="admin-modal-box" id="profileModalContent"></div>
+</div>
+
+<!-- PROJECT DRAWER (add/edit) -->
+<div class="drawer-overlay" id="drawerOverlay">
+  <div class="drawer" id="drawerContent"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- ═══════════════════════════════════════════════════════ FIREBASE + APP JS -->
+<!-- ════════════════════════════════ FIREBASE + APP ════════════════════════════════ -->
 <script type="module">
-import { initializeApp }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, orderBy, query, getDoc, setDoc }
@@ -415,10 +465,6 @@ import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL, deleteObject }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   PASTE YOUR FIREBASE CONFIG BELOW
-   Go to: Firebase Console → Project Settings → Your apps → SDK setup
-   ───────────────────────────────────────────────────────────────────────── */
 const firebaseConfig = {
   apiKey:            "AIzaSyBQ-3hdu9V9s-wg8LQ1f5fnJrkjnQ9wxBc",
   authDomain:        "myportfolio-4c570.firebaseapp.com",
@@ -427,35 +473,28 @@ const firebaseConfig = {
   messagingSenderId: "835335448993",
   appId:             "1:835335448993:web:8c22f1336bf4ea5f7783e0"
 };
-/* ───────────────────────────────────────────────────────────────────────── */
 
 const fbApp = initializeApp(firebaseConfig);
 const auth  = getAuth(fbApp);
 const db    = getFirestore(fbApp);
 const stor  = getStorage(fbApp);
 
-// ── tiny helpers ──────────────────────────────────────────────────────────
+// ── helpers ───────────────────────────────────────────────────────────────
 const $  = id => document.getElementById(id);
-const esc = s  => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-
-// silently delete a Firebase Storage file by its download URL (best-effort)
-async function deleteStorageUrl(url){
-  if(!url || !url.includes('firebasestorage')) return;
-  try{
-    // extract the path from the download URL
-    const base = decodeURIComponent(url.split('/o/')[1].split('?')[0]);
-    await deleteObject(sRef(stor, base));
-  } catch(e){ console.warn('Storage delete skipped:', e.code || e.message); }
-}
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const toast = (msg, isErr) => {
-  const t = $('toast');
-  t.textContent = msg;
-  t.style.borderColor = isErr ? '#ef4444' : 'var(--neon)';
-  t.style.color       = isErr ? '#f87171' : 'var(--neon)';
-  t.classList.add('show');
-  clearTimeout(t._to);
-  t._to = setTimeout(()=>t.classList.remove('show'), 3200);
+  const t=$('toast'); t.textContent=msg;
+  t.style.borderColor=isErr?'#ef4444':'var(--neon)';
+  t.style.color=isErr?'#f87171':'var(--neon)';
+  t.classList.add('show'); clearTimeout(t._to);
+  t._to=setTimeout(()=>t.classList.remove('show'),3200);
 };
+
+async function deleteStorageUrl(url){
+  if(!url||!url.includes('firebasestorage')) return;
+  try{ const base=decodeURIComponent(url.split('/o/')[1].split('?')[0]); await deleteObject(sRef(stor,base)); }
+  catch(e){ console.warn('Storage delete skipped:',e.code||e.message); }
+}
 
 const TYPE_META = {
   backend:{ icon:'⚡', label:'Backend API'   },
@@ -466,349 +505,229 @@ const TYPE_META = {
   desktop:{ icon:'🖥',  label:'Desktop App'  },
   other:  { icon:'🔧', label:'Other'         },
 };
+const GALLERY_SIZES = { small:'200px', medium:'300px', large:'100%' };
 
 function fileIcon(name){
   const e=(name||'').split('.').pop().toLowerCase();
-  if(e==='apk') return '🤖';
-  if(['exe','msi'].includes(e)) return '🪟';
-  if(['dmg','pkg'].includes(e)) return '🍎';
-  if(['zip','tar','gz','rar'].includes(e)) return '📁';
-  if(e==='pdf') return '📄';
-  return '📎';
-}
-
-// ── extra fields helpers ──────────────────────────────────────────────────
-function efTypeToggleHTML(containerId, idx, type){
-  const isLink = type === 'link';
-  return `<div class="ef-type-toggle">
-    <button class="ef-type-btn ${!isLink?'active':''}" onclick="setEfType('${containerId}',${idx},'text',this)">Txt</button>
-    <button class="ef-type-btn ${isLink?'active':''}"  onclick="setEfType('${containerId}',${idx},'link',this)">URL</button>
-  </div>`;
-}
-
-function efRowHTML(containerId, idx, f){
-  return `<div class="extra-field-row" id="ef_${containerId}_${idx}">
-    <input class="form-input ef-label" placeholder="Label" value="${esc(f.label)}"
-      oninput="updateExtraField('${containerId}',${idx},'label',this.value)"/>
-    <input class="form-input ef-value" placeholder="${f.type==='link'?'https://…':'Value'}" value="${esc(f.value)}"
-      oninput="updateExtraField('${containerId}',${idx},'value',this.value)"/>
-    <div class="ef-type">${efTypeToggleHTML(containerId, idx, f.type||'text')}</div>
-    <button class="ef-rm" onclick="removeExtraField('${containerId}',${idx})" title="Remove">✕</button>
-  </div>`;
-}
-
-function extraFieldsHTML(fieldsArr, containerId, addFnName){
-  return `
-    <div class="extra-fields-list" id="${containerId}">
-      ${fieldsArr.map((f,i) => efRowHTML(containerId, i, f)).join('')}
-    </div>
-    <button class="add-field-btn" onclick="${addFnName}()">+ Add custom field</button>`;
-}
-
-window.setEfType = (containerId, idx, type, btn) => {
-  // update data
-  const arr = containerId.startsWith('proj') ? projectExtraFields : profileExtraFields;
-  arr[idx].type = type;
-  // update toggle button states
-  const toggle = btn.closest('.ef-type-toggle');
-  toggle.querySelectorAll('.ef-type-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  // update value input placeholder
-  const row = $(`ef_${containerId}_${idx}`);
-  if(row){
-    const valInput = row.querySelector('.ef-value');
-    if(valInput) valInput.placeholder = type === 'link' ? 'https://…' : 'Value';
-  }
-};
-
-window.updateExtraField = (containerId, idx, key, val) => {
-  const arr = containerId.startsWith('proj') ? projectExtraFields : profileExtraFields;
-  if(arr[idx]) arr[idx][key] = val;
-};
-
-window.addProjectExtraField = () => {
-  const f = {label:'', value:'', type:'text'};
-  projectExtraFields.push(f);
-  const c = $('projExtraFields');
-  if(!c) return;
-  const i = projectExtraFields.length - 1;
-  const div = document.createElement('div');
-  div.innerHTML = efRowHTML('projExtraFields', i, f);
-  c.appendChild(div.firstElementChild);
-};
-
-window.addProfileExtraField = () => {
-  const f = {label:'', value:'', type:'text'};
-  profileExtraFields.push(f);
-  const c = $('profExtraFields');
-  if(!c) return;
-  const i = profileExtraFields.length - 1;
-  const div = document.createElement('div');
-  div.innerHTML = efRowHTML('profExtraFields', i, f);
-  c.appendChild(div.firstElementChild);
-};
-
-window.removeExtraField = (containerId, idx) => {
-  if(containerId.startsWith('proj')){
-    projectExtraFields.splice(idx, 1);
-    reRenderExtraFields('projExtraFields', projectExtraFields, 'addProjectExtraField');
-  } else {
-    profileExtraFields.splice(idx, 1);
-    reRenderExtraFields('profExtraFields', profileExtraFields, 'addProfileExtraField');
-  }
-};
-
-function reRenderExtraFields(containerId, arr, addFn){
-  const wrap = $(`${containerId}Wrap`);
-  if(wrap) wrap.innerHTML = extraFieldsHTML(arr, containerId, addFn);
+  if(e==='apk') return '🤖'; if(['exe','msi'].includes(e)) return '🪟';
+  if(['dmg','pkg'].includes(e)) return '🍎'; if(['zip','tar','gz','rar'].includes(e)) return '📁';
+  if(e==='pdf') return '📄'; return '📎';
 }
 
 // ── state ─────────────────────────────────────────────────────────────────
-let currentUser   = null;
-let projects      = [];
-let editingId     = null;
-let activeAdminTab= 'projects';
-let lbMedia       = [];
-let lbIdx         = 0;
-let exMedia       = { images:[], videos:[], files:[] };
-let queued        = { images:[], videos:[], files:[] };
+let currentUser = null;
+let projects    = [];
+let activeFilter = 'all';
+
+let editingId = null;
+let exMedia   = { images:[], videos:[], files:[] };
+let queued    = { images:[], videos:[], files:[] };
+let projectTags = [];       // array of strings for current project being edited
+let projectExtraFields = [];
+let profileExtraFields = [];
+let pfSlots  = [];
+let pfTargetSlot = 0;
+let profileExtraOrig = [];
+
+let lbMedia = [], lbIdx = 0, galIdx = 0;
 
 const DEFAULT_PROFILE = {
-  name:       'Your Name',
-  role:       'Backend Engineer',
-  tagline:    'Building the engines that power the web.',
-  desc:       'I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.',
-  about1:     "I'm a backend engineer who loves working in the parts of software most people never see — the layers where performance, reliability, and architecture actually matter.",
-  about2:     "My focus is on building clean APIs, designing efficient data models, and writing code that's maintainable and scales gracefully under pressure.",
-  skills:     'Node.js, Python, PostgreSQL, Redis, Docker, REST APIs, GraphQL, AWS, Nginx',
-  email:      '',
-  github:     '',
-  linkedin:   '',
-  twitter:    '',
-  photos:     [],
-  photoSize:  'medium',  // 'small' | 'medium' | 'large'
+  name:'Your Name', role:'Backend Engineer',
+  tagline:'Building the engines that power the web.',
+  desc:'I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.',
+  about1:"I'm a backend engineer who loves working in the parts of software most people never see — the layers where performance, reliability, and architecture actually matter.",
+  about2:"My focus is on building clean APIs, designing efficient data models, and writing code that's maintainable and scales gracefully under pressure.",
+  skills:'Node.js, Python, PostgreSQL, Redis, Docker, REST APIs, GraphQL, AWS, Nginx',
+  email:'', github:'', linkedin:'', twitter:'',
+  photos:[], photoSize:'medium', extraFields:[],
 };
 let profile = { ...DEFAULT_PROFILE };
 
-// profile photo carousel state
-let pfIdx = 0;
-let pfNewFiles = [];   // queued new photo files (File objects)
-let pfSlots = [];      // current 3 slots: null | { url, isNew, file? }
-
-// extra fields state (shared between project form and profile form)
-let projectExtraFields = [];   // [{label, value}]
-let profileExtraFields = [];   // [{label, value}]
-
-// ── typing hero ───────────────────────────────────────────────────────────
-let typingDone = false;
-function startTyping(name){
-  if(typingDone){ $('typeTarget').textContent=name; return; }
-  const el=$('typeTarget'); el.textContent=''; let i=0;
-  const iv=setInterval(()=>{ el.textContent+=name[i++]; if(i>=name.length){clearInterval(iv);typingDone=true;} },80);
-}
-// ── gallery size ──────────────────────────────────────────────────────────
-const GALLERY_SIZES = { small:'200px', medium:'300px', large:'100%' };
-function applyGallerySize(size){
-  document.documentElement.style.setProperty('--gallery-size', GALLERY_SIZES[size] || GALLERY_SIZES.medium);
-}
-
-// ── load profile from Firestore ───────────────────────────────────────────
-async function loadProfile(){
-  try{
-    const snap = await getDoc(doc(db,'config','profile'));
-    if(snap.exists()) profile = { ...DEFAULT_PROFILE, ...snap.data() };
-  } catch(e){ console.warn('Profile load failed:',e); }
-  applyProfile();
-}
-
-function applyProfile(){
-  // nav logo
-  document.querySelector('.nav-logo').innerHTML =
-    `<span>~/</span>${(profile.name||'devportfolio').toLowerCase().replace(/\s+/g,'')}`;
-  // hero
-  startTyping(profile.name || 'Your Name');
-  const sub = document.getElementById('heroSub');
-  const desc = document.getElementById('heroDesc');
-  const eyebrow = document.getElementById('heroEyebrow');
-  if(sub)     sub.textContent  = profile.tagline || DEFAULT_PROFILE.tagline;
-  if(desc)    desc.textContent = profile.desc    || DEFAULT_PROFILE.desc;
-  if(eyebrow) eyebrow.textContent = profile.role || DEFAULT_PROFILE.role;
-  // social links
-  const socials = document.getElementById('heroSocials');
-  if(socials){
-    socials.innerHTML = [
-      profile.github   ? `<a href="${profile.github}"   target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">⌥ GitHub</a>`   : '',
-      profile.linkedin ? `<a href="${profile.linkedin}" target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">in LinkedIn</a>` : '',
-      profile.twitter  ? `<a href="${profile.twitter}"  target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">𝕏 Twitter</a>`  : '',
-      profile.email    ? `<a href="mailto:${profile.email}" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">✉ Email</a>` : '',
-    ].join('');
-  }
-  // about section
-  const ab1 = document.getElementById('aboutP1');
-  const ab2 = document.getElementById('aboutP2');
-  const sk  = document.getElementById('skillsList');
-  const tName = document.getElementById('termName');
-  const tSkills = document.getElementById('termSkills');
-  const tProj = document.getElementById('termProj');
-  if(ab1) ab1.textContent = profile.about1 || DEFAULT_PROFILE.about1;
-  if(ab2) ab2.textContent = profile.about2 || DEFAULT_PROFILE.about2;
-  if(sk){
-    const tags = (profile.skills||'').split(',').map(s=>s.trim()).filter(Boolean);
-    sk.innerHTML = tags.map(t=>`<span class="skill-tag">${esc(t)}</span>`).join('');
-  }
-  if(tName)   tName.textContent   = (profile.name||'backend_engineer').toLowerCase().replace(/\s+/g,'_');
-  if(tSkills) tSkills.textContent = JSON.stringify((profile.skills||'').split(',').map(s=>s.trim()).filter(Boolean).slice(0,4));
-  if(tProj)   tProj.textContent   = projects.length ? projects.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ') : '(no projects yet)';
-  // page title
-  document.title = `${profile.name || 'Dev'} — Portfolio`;
-  // profile extra fields in about section
-  let pfExWrap = $('profileExtraFieldsDisplay');
-  const pfExFields = (profile.extraFields||[]).filter(f=>f.label||f.value);
-  if(pfExFields.length){
-    if(!pfExWrap){
-      const skillsList = $('skillsList');
-      if(skillsList){
-        pfExWrap = document.createElement('div');
-        pfExWrap.id = 'profileExtraFieldsDisplay';
-        pfExWrap.className = 'pm-extra-fields';
-        pfExWrap.style.marginTop='1.5rem';
-        skillsList.after(pfExWrap);
-      }
-    }
-    if(pfExWrap) pfExWrap.innerHTML = pfExFields.map(f=>`
-      <div class="pm-extra-field">
-        <span class="pm-extra-field-label">${esc(f.label)}</span>
-        <span class="pm-extra-field-value">
-          ${f.type==='link'
-            ? `<a href="${esc(f.value)}" target="_blank" rel="noopener noreferrer" class="pm-extra-field-link">↗ ${esc(f.value)}</a>`
-            : esc(f.value)}
-        </span>
-      </div>`).join('');
-  } else if(pfExWrap){
-    pfExWrap.innerHTML='';
-  }
-  // profile photo gallery
-  pfIdx = 0;
-  applyGallerySize(profile.photoSize || 'medium');
-  renderHeroAvatar();
-  renderAboutGallery();
-}
-
-// ── hero avatar (main photo = photos[0]) ─────────────────────────────────
-function renderHeroAvatar(){
-  const inner = $('heroAvatarInner');
-  if(!inner) return;
-  const main = (profile.photos||[]).filter(Boolean)[0];
-  if(main){
-    inner.innerHTML = `<img src="${main}" alt="${esc(profile.name||'')}" style="width:100%;height:100%;object-fit:cover;display:block;"/>`;
+// ── routing ───────────────────────────────────────────────────────────────
+function route(){
+  const hash = location.hash || '#/';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  if(hash.startsWith('#/admin')){
+    $('adminPage').classList.add('active');
+    $('adminBtn').classList.add('active');
+    renderAdminPage();
+  } else if(hash.startsWith('#/projects')){
+    $('projectsPage').classList.add('active');
+    $('navProjects').classList.add('active');
+    renderPublicProjects();
   } else {
-    inner.innerHTML = `<span class="hero-avatar-placeholder">🧑‍💻</span>`;
+    $('homePage').classList.add('active');
+    $('navHome').classList.add('active');
   }
 }
-
-// ── about gallery (all photos, clickable thumbnails) ──────────────────────
-let galIdx = 0;
-function renderAboutGallery(){
-  const photos = (profile.photos||[]).filter(Boolean);
-  const wrap = $('aboutGallery');
-  if(!wrap) return;
-
-  if(!photos.length){
-    wrap.innerHTML = `<div class="gallery-placeholder">🧑‍💻</div>`;
-    return;
-  }
-
-  galIdx = 0;
-  wrap.innerHTML = `
-    <div class="gallery-main" id="galMain">
-      <img id="galMainImg" src="${photos[0]}" alt="Profile photo 1"/>
-    </div>
-    <div class="gallery-thumbs">
-      ${[0,1,2].map(i => photos[i]
-        ? `<div class="gallery-thumb ${i===0?'active':''}" id="galThumb${i}" onclick="galGoto(${i})">
-             <img src="${photos[i]}" alt="Photo ${i+1}"/>
-           </div>`
-        : `<div class="gallery-thumb empty">+</div>`
-      ).join('')}
-    </div>`;
-}
-
-window.galGoto = i => {
-  const photos = (profile.photos||[]).filter(Boolean);
-  if(!photos[i]) return;
-  galIdx = i;
-  const img = $('galMainImg');
-  if(img){
-    img.classList.add('gallery-fade');
-    setTimeout(()=>{ img.src=photos[i]; img.classList.remove('gallery-fade'); }, 180);
-  }
-  document.querySelectorAll('.gallery-thumb').forEach((el,j)=>el.classList.toggle('active', j===i));
-};
-loadProfile();
+window.addEventListener('hashchange', route);
 
 // ── auth ──────────────────────────────────────────────────────────────────
 onAuthStateChanged(auth, user=>{
-  currentUser=user;
-  $('adminBtn').textContent = user ? '⚙ admin ●' : '⚙ admin';
-  $('adminBtn').style.color = user ? 'var(--neon)' : '';
-  if($('adminModal').classList.contains('open'))
-    user ? renderAdminPanel() : renderLoginPanel();
+  currentUser = user;
+  const btn=$('adminBtn');
+  if(user){ btn.textContent='⚙ dashboard'; btn.classList.add('authed'); }
+  else     { btn.textContent='⚙ admin';    btn.classList.remove('authed'); }
+  // if on admin page, re-render
+  if(location.hash.startsWith('#/admin')) renderAdminPage();
 });
 
 // ── realtime projects ─────────────────────────────────────────────────────
 onSnapshot(query(collection(db,'projects'),orderBy('createdAt','desc')), snap=>{
   projects = snap.docs.map(d=>({id:d.id,...d.data()}));
-  $('statProjects').textContent = projects.length;
-  renderProjects();
-  // refresh terminal projects line if profile already loaded
-  const tProj = $('termProj');
-  if(tProj) tProj.textContent = projects.length
-    ? projects.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ')
-    : '(no projects yet)';
+  const visible = projects.filter(p=>p.visible);
+  $('statProjects').textContent = visible.length;
+  const tProj=$('termProj');
+  if(tProj) tProj.textContent = visible.length ? visible.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ') : '(none yet)';
+  // refresh whichever page is active
+  if($('projectsPage').classList.contains('active')) renderPublicProjects();
+  if($('adminPage').classList.contains('active')) renderAdminPage();
+  if(location.hash.startsWith('#/admin')) renderAdminTable();
 });
 
-// ── render grid ───────────────────────────────────────────────────────────
-function renderProjects(){
-  const grid=$('projectsGrid');
-  if(!projects.length){
-    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">No projects yet</div><div class="empty-sub">The admin will add projects soon.</div></div>`;
+// ── load profile ──────────────────────────────────────────────────────────
+async function loadProfile(){
+  try{ const snap=await getDoc(doc(db,'config','profile')); if(snap.exists()) profile={...DEFAULT_PROFILE,...snap.data()}; }
+  catch(e){ console.warn('Profile load failed:',e); }
+  applyProfile();
+}
+
+function applyGallerySize(size){
+  document.documentElement.style.setProperty('--gallery-size', GALLERY_SIZES[size]||GALLERY_SIZES.medium);
+}
+
+function applyProfile(){
+  // nav logo
+  $('navLogo').innerHTML = `<span>~/</span>${(profile.name||'devportfolio').toLowerCase().replace(/\s+/g,'')}`;
+  document.title = `${profile.name||'Dev'} — Portfolio`;
+  // hero
+  startTyping(profile.name||'Your Name');
+  const s=id=>$(id)&&($(id).textContent=profile[id.replace('hero','').toLowerCase()]||'');
+  const heroEy=$('heroEyebrow'); if(heroEy) heroEy.textContent=profile.role||DEFAULT_PROFILE.role;
+  const heroSu=$('heroSub');     if(heroSu) heroSu.textContent=profile.tagline||DEFAULT_PROFILE.tagline;
+  const heroDe=$('heroDesc');    if(heroDe) heroDe.textContent=profile.desc||DEFAULT_PROFILE.desc;
+  // socials
+  const soc=$('heroSocials'); if(soc) soc.innerHTML=[
+    profile.github  ?`<a href="${profile.github}"   target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">⌥ GitHub</a>`:'',
+    profile.linkedin?`<a href="${profile.linkedin}" target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">in LinkedIn</a>`:'',
+    profile.twitter ?`<a href="${profile.twitter}"  target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">𝕏 Twitter</a>`:'',
+    profile.email   ?`<a href="mailto:${profile.email}" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">✉ Email</a>`:'',
+  ].join('');
+  // about
+  const ab1=$('aboutP1'); if(ab1) ab1.textContent=profile.about1||DEFAULT_PROFILE.about1;
+  const ab2=$('aboutP2'); if(ab2) ab2.textContent=profile.about2||DEFAULT_PROFILE.about2;
+  const sk=$('skillsList'); if(sk) sk.innerHTML=(profile.skills||'').split(',').map(s=>s.trim()).filter(Boolean).map(t=>`<span class="skill-tag">${esc(t)}</span>`).join('');
+  const tn=$('termName');   if(tn) tn.textContent=(profile.name||'backend_engineer').toLowerCase().replace(/\s+/g,'_');
+  const ts=$('termSkills'); if(ts) ts.textContent=JSON.stringify((profile.skills||'').split(',').map(s=>s.trim()).filter(Boolean).slice(0,4));
+  // profile extra fields
+  const pfEx=$('profileExtraFieldsDisplay');
+  if(pfEx){
+    const fields=(profile.extraFields||[]).filter(f=>f.label||f.value);
+    pfEx.innerHTML = fields.length ? `<div class="pm-extra-fields">${fields.map(f=>`
+      <div class="pm-extra-field">
+        <span class="pm-extra-field-label">${esc(f.label)}</span>
+        <span class="pm-extra-field-value">${f.type==='link'?`<a href="${esc(f.value)}" target="_blank" rel="noopener noreferrer" class="pm-extra-field-link">↗ ${esc(f.value)}</a>`:esc(f.value)}</span>
+      </div>`).join('')}</div>` : '';
+  }
+  applyGallerySize(profile.photoSize||'medium');
+  renderHeroAvatar();
+  renderAboutGallery();
+}
+
+// ── hero typing ───────────────────────────────────────────────────────────
+let typingDone=false;
+function startTyping(name){
+  if(typingDone){ const el=$('typeTarget'); if(el) el.textContent=name; return; }
+  const el=$('typeTarget'); if(!el) return; el.textContent=''; let i=0;
+  const iv=setInterval(()=>{ el.textContent+=name[i++]; if(i>=name.length){clearInterval(iv);typingDone=true;} },80);
+}
+
+// ── hero avatar ───────────────────────────────────────────────────────────
+function renderHeroAvatar(){
+  const inner=$('heroAvatarInner'); if(!inner) return;
+  const main=(profile.photos||[]).filter(Boolean)[0];
+  inner.innerHTML=main?`<img src="${main}" alt="${esc(profile.name||'')}"/>`:`<span class="hero-avatar-placeholder">🧑‍💻</span>`;
+}
+
+// ── about gallery ─────────────────────────────────────────────────────────
+function renderAboutGallery(){
+  const photos=(profile.photos||[]).filter(Boolean);
+  const wrap=$('aboutGallery'); if(!wrap) return;
+  if(!photos.length){ wrap.innerHTML=`<div class="gallery-placeholder">🧑‍💻</div>`; return; }
+  galIdx=0;
+  wrap.innerHTML=`
+    <div class="gallery-main"><img id="galMainImg" src="${photos[0]}" alt="Profile photo 1"/></div>
+    <div class="gallery-thumbs">${[0,1,2].map(i=>photos[i]
+      ?`<div class="gallery-thumb ${i===0?'active':''}" onclick="galGoto(${i})"><img src="${photos[i]}" alt="Photo ${i+1}"/></div>`
+      :`<div class="gallery-thumb empty">+</div>`).join('')}</div>`;
+}
+window.galGoto=i=>{
+  const photos=(profile.photos||[]).filter(Boolean); if(!photos[i]) return; galIdx=i;
+  const img=$('galMainImg'); if(img){ img.classList.add('gallery-fade'); setTimeout(()=>{ img.src=photos[i]; img.classList.remove('gallery-fade'); },180); }
+  document.querySelectorAll('.gallery-thumb').forEach((el,j)=>el.classList.toggle('active',j===i));
+};
+
+// ── public projects page ──────────────────────────────────────────────────
+function allTags(){
+  const set=new Set();
+  projects.filter(p=>p.visible).forEach(p=>(p.tags||[]).forEach(t=>set.add(t)));
+  return [...set].sort();
+}
+
+function renderFilterBar(){
+  const bar=$('filterBar'); if(!bar) return;
+  const tags=allTags();
+  if(!tags.length){ bar.innerHTML=''; return; }
+  bar.innerHTML=`<span class="filter-label">Filter:</span>
+    <button class="filter-tag ${activeFilter==='all'?'active':''}" onclick="setFilter('all')">All</button>
+    ${tags.map(t=>`<button class="filter-tag ${activeFilter===t?'active':''}" onclick="setFilter('${esc(t)}')">${esc(t)}</button>`).join('')}`;
+}
+window.setFilter=t=>{ activeFilter=t; renderPublicProjects(); };
+
+function renderPublicProjects(){
+  renderFilterBar();
+  const grid=$('projectsGrid'); if(!grid) return;
+  let list=projects.filter(p=>p.visible);
+  if(activeFilter!=='all') list=list.filter(p=>(p.tags||[]).includes(activeFilter));
+  if(!list.length){
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">${activeFilter!=='all'?'No projects with this tag':'No projects yet'}</div><div class="empty-sub">Check back soon.</div></div>`;
     return;
   }
-  grid.innerHTML=projects.map(p=>{
-    const m=TYPE_META[p.type]||TYPE_META.other;
-    const thumb=p.images?.[0]||'';
-    const tags=(p.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
-    return `<div class="project-card" onclick="openProject('${p.id}')">
-      <div class="card-glow"></div>
-      ${thumb
-        ?`<div class="card-thumb" style="background-image:url('${thumb}')">
-            ${p.videos?.length?'<div class="card-play">▶</div>':''}
-          </div>`
-        :`<div class="card-thumb card-thumb--empty"><span>${m.icon}</span></div>`}
-      <div class="card-body">
-        <div class="card-top">
-          <span class="type-badge">${m.icon} ${m.label}</span>
-          <span class="status-badge ${p.status||'wip'}">${p.status==='live'?'● LIVE':p.status==='archived'?'ARCHIVED':'WIP'}</span>
-        </div>
-        <h3 class="card-title">${esc(p.name)}</h3>
-        <p class="card-desc">${esc(p.desc||'').slice(0,115)}${(p.desc||'').length>115?'…':''}</p>
-        <div class="card-tags">${tags.slice(0,4).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-        <div class="card-footer">
-          ${p.liveUrl?'<span class="card-link">↗ Live</span>':''}
-          ${p.repoUrl?'<span class="card-link">⌥ Repo</span>':''}
-          ${p.files?.length?'<span class="card-link">⬇ Files</span>':''}
-        </div>
+  grid.innerHTML=list.map(p=>projectCardHTML(p)).join('');
+}
+
+function projectCardHTML(p){
+  const m=TYPE_META[p.type]||TYPE_META.other;
+  const thumb=(p.images||[])[0]||'';
+  const tags=(p.tags||[]).slice(0,4);
+  return `<div class="project-card" onclick="openProject('${p.id}')">
+    <div class="card-glow"></div>
+    ${thumb?`<div class="card-thumb" style="background-image:url('${thumb}')">${p.videos?.length?'<div class="card-play">▶</div>':''}</div>`
+           :`<div class="card-thumb card-thumb--empty"><span>${m.icon}</span></div>`}
+    <div class="card-body">
+      <div class="card-top">
+        <span class="type-badge">${m.icon} ${m.label}</span>
+        <span class="status-badge ${p.status||'wip'}">${p.status==='live'?'● LIVE':p.status==='archived'?'ARCHIVED':'WIP'}</span>
       </div>
-    </div>`;
-  }).join('');
+      <h3 class="card-title">${esc(p.name)}</h3>
+      <p class="card-desc">${esc(p.desc||'').slice(0,115)}${(p.desc||'').length>115?'…':''}</p>
+      <div class="card-tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+      <div class="card-footer">
+        ${p.liveUrl?'<span class="card-link">↗ Live</span>':''}
+        ${p.repoUrl?'<span class="card-link">⌥ Repo</span>':''}
+        ${p.files?.length?'<span class="card-link">⬇ Files</span>':''}
+      </div>
+    </div>
+  </div>`;
 }
 
 // ── project detail modal ──────────────────────────────────────────────────
-window.openProject = id => {
+window.openProject=id=>{
   const p=projects.find(x=>x.id===id); if(!p) return;
   const m=TYPE_META[p.type]||TYPE_META.other;
-  const tags=(p.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
-  lbMedia=[...(p.images||[]).map(u=>({type:'image',url:u})), ...(p.videos||[]).map(u=>({type:'video',url:u}))];
+  const tags=p.tags||[];
+  lbMedia=[...(p.images||[]).map(u=>({type:'image',url:u})),...(p.videos||[]).map(u=>({type:'video',url:u}))];
   lbIdx=0;
   $('projectModalContent').innerHTML=`
     <div class="pm-header">
@@ -820,236 +739,284 @@ window.openProject = id => {
       <p class="pm-desc">${esc(p.desc||'')}</p>
       ${tags.length?`<div class="card-tags" style="margin-bottom:1rem">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}
     </div>
-    ${lbMedia.length?`
-    <div class="lightbox">
+    ${lbMedia.length?`<div class="lightbox">
       <div class="lb-main" id="lbMain"></div>
-      ${lbMedia.length>1?`
-      <div class="lb-controls">
+      ${lbMedia.length>1?`<div class="lb-controls">
         <button class="lb-btn" onclick="lbNav(-1)">‹</button>
-        <span class="lb-counter" id="lbCounter">1 / ${lbMedia.length}</span>
+        <span class="lb-counter" id="lbCounter">1/${lbMedia.length}</span>
         <button class="lb-btn" onclick="lbNav(1)">›</button>
       </div>
-      <div class="lb-thumbs">${lbMedia.map((x,i)=>`
-        <div class="lb-thumb ${i===0?'active':''}" onclick="lbGoto(${i})">
-          ${x.type==='video'?'<div class="lb-thumb-video">▶</div>':`<img src="${x.url}" alt=""/>`}
-        </div>`).join('')}
-      </div>`:''}
+      <div class="lb-thumbs">${lbMedia.map((x,i)=>`<div class="lb-thumb ${i===0?'active':''}" onclick="lbGoto(${i})">${x.type==='video'?'<div class="lb-thumb-video">▶</div>':`<img src="${x.url}" alt=""/>`}</div>`).join('')}</div>`:''}
     </div>`:''}
     <div class="pm-actions">
       ${p.liveUrl?`<a href="${p.liveUrl}" target="_blank" class="btn-action primary">↗ View Live</a>`:''}
       ${p.repoUrl?`<a href="${p.repoUrl}" target="_blank" class="btn-action secondary">⌥ GitHub Repo</a>`:''}
-      ${p.liveUrl?`<button class="btn-action secondary" onclick="openPreview('${p.liveUrl.replace(/'/g,"\\'")}')">⬡ Preview in page</button>`:''}
+      ${p.liveUrl?`<button class="btn-action secondary" onclick="openPreview('${p.liveUrl.replace(/'/g,"\\'")}')">⬡ Preview</button>`:''}
     </div>
-    ${p.files?.length?`
-    <div class="pm-files">
-      <div class="pm-section-label">Downloads</div>
-      ${p.files.map(f=>`<a class="file-row" href="${f.url}" download="${esc(f.name)}" target="_blank">
-        <span>${fileIcon(f.name)}</span><span class="file-name">${esc(f.name)}</span><span class="file-dl">⬇</span>
-      </a>`).join('')}
-    </div>`:''}
-    ${p.extraFields?.filter(f=>f.label||f.value).length?`
-    <div class="pm-extra-fields">
-      <div class="pm-section-label">More Info</div>
-      ${p.extraFields.filter(f=>f.label||f.value).map(f=>`
-        <div class="pm-extra-field">
-          <span class="pm-extra-field-label">${esc(f.label)}</span>
-          <span class="pm-extra-field-value">
-            ${f.type==='link'
-              ? `<a href="${esc(f.value)}" target="_blank" rel="noopener noreferrer" class="pm-extra-field-link">↗ ${esc(f.value)}</a>`
-              : esc(f.value)}
-          </span>
-        </div>`).join('')}
-    </div>`:''}
+    ${p.files?.length?`<div class="pm-files"><div class="pm-section-label">Downloads</div>${p.files.map(f=>`<a class="file-row" href="${f.url}" download="${esc(f.name)}" target="_blank"><span>${fileIcon(f.name)}</span><span class="file-name">${esc(f.name)}</span><span class="file-dl">⬇</span></a>`).join('')}</div>`:''}
+    ${p.extraFields?.filter(f=>f.label||f.value).length?`<div class="pm-extra-fields"><div class="pm-section-label">More Info</div>${p.extraFields.filter(f=>f.label||f.value).map(f=>`<div class="pm-extra-field"><span class="pm-extra-field-label">${esc(f.label)}</span><span class="pm-extra-field-value">${f.type==='link'?`<a href="${esc(f.value)}" target="_blank" rel="noopener noreferrer" class="pm-extra-field-link">↗ ${esc(f.value)}</a>`:esc(f.value)}</span></div>`).join('')}</div>`:''}
   `;
   $('projectModal').classList.add('open');
   lbRender();
 };
-
 function lbRender(){
   const main=$('lbMain'); if(!main||!lbMedia.length) return;
   const x=lbMedia[lbIdx];
-  main.innerHTML=x.type==='image'
-    ?`<img src="${x.url}" alt="" class="lb-img"/>`
-    :`<video src="${x.url}" controls autoplay muted class="lb-vid"></video>`;
-  const ctr=$('lbCounter'); if(ctr) ctr.textContent=`${lbIdx+1} / ${lbMedia.length}`;
+  main.innerHTML=x.type==='image'?`<img src="${x.url}" alt="" class="lb-img"/>`:`<video src="${x.url}" controls autoplay muted class="lb-vid"></video>`;
+  const c=$('lbCounter'); if(c) c.textContent=`${lbIdx+1}/${lbMedia.length}`;
   document.querySelectorAll('.lb-thumb').forEach((el,i)=>el.classList.toggle('active',i===lbIdx));
 }
-window.lbNav  = d=>{ lbIdx=(lbIdx+d+lbMedia.length)%lbMedia.length; lbRender(); };
-window.lbGoto = i=>{ lbIdx=i; lbRender(); };
+window.lbNav=d=>{lbIdx=(lbIdx+d+lbMedia.length)%lbMedia.length;lbRender();};
+window.lbGoto=i=>{lbIdx=i;lbRender();};
+window.closeProjectModal=()=>{ $('projectModal').classList.remove('open'); const v=$('lbMain')?.querySelector('video'); if(v) v.pause(); };
 
-window.closeProjectModal = ()=>{
-  $('projectModal').classList.remove('open');
-  const v=$('lbMain')?.querySelector('video'); if(v) v.pause();
-};
+// ── preview modal ─────────────────────────────────────────────────────────
+window.openPreview=url=>{ $('previewUrl').textContent=url; $('previewFrame').src=url; $('previewModal').classList.add('open'); };
+window.closePreview=()=>{ $('previewModal').classList.remove('open'); $('previewFrame').src='about:blank'; };
 
-// ── iframe preview ────────────────────────────────────────────────────────
-window.openPreview = url=>{ $('previewUrl').textContent=url; $('previewFrame').src=url; $('previewModal').classList.add('open'); };
-window.closePreview= ()=>{ $('previewModal').classList.remove('open'); $('previewFrame').src='about:blank'; };
+// ── ADMIN PAGE ────────────────────────────────────────────────────────────
+function renderAdminPage(){
+  if(!currentUser){ renderAdminLoginWall(); return; }
+  $('adminPageContent').innerHTML=`
+    <div class="admin-page-inner">
+      <div class="admin-page-header">
+        <div>
+          <div class="admin-page-title">⚙ Admin Dashboard</div>
+          <div class="admin-page-subtitle">Manage projects, visibility, and profile</div>
+        </div>
+        <div class="admin-actions">
+          <button class="btn-form save" onclick="openDrawer(null)">+ Add Project</button>
+          <button class="btn-secondary" style="font-size:.8rem;padding:.5rem 1.1rem" onclick="openProfileModal()">✦ Edit Profile</button>
+          <button class="btn-form cancel" onclick="doLogout()">Logout</button>
+        </div>
+      </div>
+      <div id="adminTableWrap"></div>
+    </div>`;
+  renderAdminTable();
+}
 
-// ── admin modal open/close ────────────────────────────────────────────────
-window.openAdminModal  = ()=>{ $('adminModal').classList.add('open'); currentUser?renderAdminPanel():renderLoginPanel(); };
-window.closeAdminModal = ()=>{ $('adminModal').classList.remove('open'); editingId=null; };
+function renderAdminTable(){
+  const wrap=$('adminTableWrap'); if(!wrap) return;
+  if(!projects.length){
+    wrap.innerHTML=`<div class="empty-state"><div class="empty-icon">📁</div><div class="empty-title">No projects yet</div><div class="empty-sub">Click "+ Add Project" to get started.</div></div>`;
+    return;
+  }
+  wrap.innerHTML=`<table class="proj-table">
+    <thead><tr>
+      <th>Project</th>
+      <th>Tags</th>
+      <th>Status</th>
+      <th>Visible to public</th>
+      <th>Actions</th>
+    </tr></thead>
+    <tbody>${projects.map(p=>{
+      const m=TYPE_META[p.type]||TYPE_META.other;
+      const tags=p.tags||[];
+      return `<tr>
+        <td>
+          <div class="pt-name">${m.icon} ${esc(p.name)}</div>
+          <div class="pt-type">${m.label}</div>
+        </td>
+        <td><div class="pt-tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}${!tags.length?'<span style="color:var(--muted);font-size:.75rem">—</span>':''}</div></td>
+        <td><span class="status-badge ${p.status||'wip'}">${p.status==='live'?'● LIVE':p.status==='archived'?'ARCHIVED':'WIP'}</span></td>
+        <td>
+          <label class="vis-toggle" title="${p.visible?'Visible — click to hide':'Hidden — click to show'}">
+            <div class="vis-switch">
+              <input type="checkbox" ${p.visible?'checked':''} onchange="toggleVisibility('${p.id}',this.checked)"/>
+              <div class="vis-slider"></div>
+            </div>
+            <span class="vis-label ${p.visible?'on':''}">${p.visible?'Visible':'Hidden'}</span>
+          </label>
+        </td>
+        <td>
+          <div class="tbl-actions">
+            <button class="tbl-btn" onclick="openProject('${p.id}')">👁 View</button>
+            <button class="tbl-btn" onclick="openDrawer('${p.id}')">✎ Edit</button>
+            <button class="tbl-btn danger" onclick="confirmDelete('${p.id}')">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
 
-// ── login ─────────────────────────────────────────────────────────────────
-function renderLoginPanel(){
-  $('adminModalContent').innerHTML=`
-    <h2>⚙ Admin Login</h2>
-    <p class="admin-sub">Only the site owner can log in.</p>
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-input" id="liEmail" placeholder="you@example.com"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input type="password" class="form-input" id="liPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
-    </div>
-    <div class="field-err" id="liErr" style="display:none"></div>
-    <div class="form-actions" style="margin-top:1rem">
-      <button class="btn-form save" onclick="doLogin()">Login</button>
-      <button class="btn-form cancel" onclick="closeAdminModal()">Cancel</button>
+function renderAdminLoginWall(){
+  $('adminPageContent').innerHTML=`
+    <div class="admin-login-wall">
+      <div class="admin-login-box">
+        <h2>⚙ Admin Login</h2>
+        <p>Only the site owner can access this page.</p>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="liEmail" placeholder="you@example.com"/></div>
+        <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="liPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        <div class="field-err" id="liErr" style="display:none"></div>
+        <div class="form-actions" style="margin-top:1rem">
+          <button class="btn-form save" onclick="doLogin()">Login</button>
+        </div>
+      </div>
     </div>`;
   setTimeout(()=>$('liEmail')?.focus(),60);
 }
-window.doLogin = async()=>{
-  const e=$('liEmail').value.trim(), p=$('liPw').value, err=$('liErr');
-  err.style.display='none';
+
+window.doLogin=async()=>{
+  const e=$('liEmail')?.value.trim(), p=$('liPw')?.value, err=$('liErr');
+  if(err) err.style.display='none';
   try{ await signInWithEmailAndPassword(auth,e,p); }
-  catch{ err.textContent='Incorrect email or password.'; err.style.display='block'; }
+  catch{ if(err){ err.textContent='Incorrect email or password.'; err.style.display='block'; } }
 };
-window.doLogout = async()=>{ await signOut(auth); closeAdminModal(); toast('Logged out.'); };
+window.doLogout=async()=>{ await signOut(auth); location.hash='#/'; toast('Logged out.'); };
 
-// ── admin panel ───────────────────────────────────────────────────────────
-function renderAdminPanel(){
-  $('adminModalContent').innerHTML=`
-    <h2>⚙ Admin Panel</h2>
-    <p class="admin-sub">Manage your portfolio content.</p>
-    <div class="admin-tabs">
-      <button class="tab-btn ${activeAdminTab==='projects'?'active':''}" onclick="switchTab('projects')">All Projects</button>
-      <button class="tab-btn ${activeAdminTab==='form'?'active':''}" onclick="switchTab('form')">${editingId?'✎ Edit':'+ Add'} Project</button>
-      <button class="tab-btn ${activeAdminTab==='profile'?'active':''}" onclick="switchTab('profile')">✦ Profile</button>
-    </div>
-    <div id="aTabBody"></div>
-    <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:1rem;display:flex;gap:.75rem;">
-      <button class="btn-form cancel" onclick="closeAdminModal()">Close</button>
-      <button class="btn-form danger" onclick="doLogout()">Logout</button>
-    </div>`;
-  if(activeAdminTab==='projects') renderAdminList();
-  else if(activeAdminTab==='form') renderProjectForm();
-  else renderProfileForm();
+// ── visibility toggle ─────────────────────────────────────────────────────
+window.toggleVisibility=async(id,val)=>{
+  try{
+    await updateDoc(doc(db,'projects',id),{visible:val});
+    // update label immediately
+    const row=document.querySelector(`[onchange*="${id}"]`)?.closest('tr');
+    if(row){ const lbl=row.querySelector('.vis-label'); if(lbl){ lbl.textContent=val?'Visible':'Hidden'; lbl.classList.toggle('on',val); } }
+    toast(val?'Project is now public.':'Project hidden from public.');
+  } catch(e){ toast('Error: '+e.message,true); }
+};
+
+// ── delete ────────────────────────────────────────────────────────────────
+window.confirmDelete=async id=>{
+  if(!confirm('Delete this project permanently? All uploaded files will also be removed.')) return;
+  try{
+    const p=projects.find(x=>x.id===id);
+    if(p){
+      const urls=[...(p.images||[]),...(p.videos||[]),...(p.files||[]).map(f=>f.url)];
+      await Promise.allSettled(urls.map(u=>deleteStorageUrl(u)));
+    }
+    await deleteDoc(doc(db,'projects',id));
+    closeProjectModal(); toast('Project deleted.');
+  } catch(e){ toast('Error: '+e.message,true); }
+};
+
+// ── TAG INPUT ─────────────────────────────────────────────────────────────
+function tagInputHTML(containerId, tags){
+  return `<div class="tag-input-wrap" id="${containerId}" onclick="focusTagInput('${containerId}')">
+    ${tags.map((t,i)=>`<span class="tag-chip">${esc(t)}<button class="tag-chip-rm" onclick="removeTag('${containerId}',${i},event)">×</button></span>`).join('')}
+    <input class="tag-real-input" id="${containerId}_input" placeholder="Type and press Enter or comma…"
+      onkeydown="handleTagKey(event,'${containerId}')" oninput="handleTagInput(event,'${containerId}')"/>
+  </div>
+  <p class="tag-hint">Press Enter or , to add a tag</p>`;
 }
-window.switchTab = t=>{ activeAdminTab=t; renderAdminPanel(); };
-
-function renderAdminList(){
-  const el=$('aTabBody');
-  if(!projects.length){ el.innerHTML=`<p style="font-size:.82rem;color:var(--muted);padding:.5rem 0">No projects yet.</p>`; return; }
-  el.innerHTML=projects.map(p=>`
-    <div class="admin-project-item">
-      <span class="admin-item-name">${TYPE_META[p.type]?.icon||'📦'} ${esc(p.name)}</span>
-      <div class="admin-item-actions">
-        <button class="btn-icon" onclick="startEditProject('${p.id}')">✎</button>
-        <button class="btn-icon del" onclick="confirmDelete('${p.id}')">✕</button>
-      </div>
-    </div>`).join('');
+window.focusTagInput=id=>{ const inp=document.getElementById(id+'_input'); if(inp) inp.focus(); };
+window.handleTagKey=(e,id)=>{
+  if(e.key==='Enter'||e.key===','){ e.preventDefault(); addTagFromInput(id); }
+  if(e.key==='Backspace'){
+    const inp=e.target; if(inp.value==='') removeLastTag(id);
+  }
+};
+window.handleTagInput=(e,id)=>{
+  if(e.target.value.endsWith(',')){ e.target.value=e.target.value.slice(0,-1); addTagFromInput(id); }
+};
+function addTagFromInput(id){
+  const inp=document.getElementById(id+'_input'); if(!inp) return;
+  const val=inp.value.trim(); if(!val) return;
+  if(!projectTags.includes(val)){ projectTags.push(val); refreshTagInput(id); }
+  inp.value='';
+}
+function removeLastTag(id){ if(projectTags.length){ projectTags.pop(); refreshTagInput(id); } }
+window.removeTag=(id,idx,e)=>{ e.stopPropagation(); projectTags.splice(idx,1); refreshTagInput(id); };
+function refreshTagInput(id){
+  const wrap=$(id); if(!wrap) return;
+  wrap.innerHTML=`${projectTags.map((t,i)=>`<span class="tag-chip">${esc(t)}<button class="tag-chip-rm" onclick="removeTag('${id}',${i},event)">×</button></span>`).join('')}
+    <input class="tag-real-input" id="${id}_input" placeholder="Type and press Enter or comma…"
+      onkeydown="handleTagKey(event,'${id}')" oninput="handleTagInput(event,'${id}')"/>`;
+  document.getElementById(id+'_input')?.focus();
 }
 
-// ── project form ──────────────────────────────────────────────────────────
-window.startEditProject = id=>{
+// ── DRAWER (add / edit project) ───────────────────────────────────────────
+window.openDrawer=id=>{
   editingId=id;
-  const p=projects.find(x=>x.id===id)||{};
-  exMedia={ images:[...(p.images||[])], videos:[...(p.videos||[])], files:[...(p.files||[])] };
-  queued={ images:[], videos:[], files:[] };
-  projectExtraFields = (p.extraFields||[]).map(f=>({...f}));
-  activeAdminTab='form';
-  if($('adminModal').classList.contains('open')) renderAdminPanel();
-  else { openAdminModal(); }
-};
-window.startAddProject = ()=>{
-  editingId=null;
-  exMedia={images:[],videos:[],files:[]};
+  const p=id?projects.find(x=>x.id===id):null;
+  exMedia={images:[...(p?.images||[])],videos:[...(p?.videos||[])],files:[...(p?.files||[])]};
   queued={images:[],videos:[],files:[]};
-  projectExtraFields=[];
-  activeAdminTab='form';
-  renderAdminPanel();
+  projectTags=[...((p?.tags)||[])];
+  projectExtraFields=(p?.extraFields||[]).map(f=>({...f}));
+  $('drawerOverlay').classList.add('open');
+  renderDrawerForm();
 };
+window.closeDrawer=()=>{ $('drawerOverlay').classList.remove('open'); editingId=null; };
 
-function renderProjectForm(){
-  const p = editingId ? (projects.find(x=>x.id===editingId)||{}) : {};
-  $('aTabBody').innerHTML=`
+function renderDrawerForm(){
+  const p=editingId?projects.find(x=>x.id===editingId):null;
+  $('drawerContent').innerHTML=`
+    <div class="drawer-header">
+      <span class="drawer-title">${editingId?'✎ Edit Project':'+ Add Project'}</span>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Project Name *</label>
-        <input class="form-input" id="fName" value="${esc(p.name||'')}" placeholder="My REST API"/>
+        <input class="form-input" id="fName" value="${esc(p?.name||'')}" placeholder="My REST API"/>
       </div>
       <div class="form-group">
-        <label class="form-label">Type *</label>
+        <label class="form-label">Type</label>
         <select class="form-select" id="fType">
-          ${Object.entries(TYPE_META).map(([k,v])=>`<option value="${k}"${p.type===k?' selected':''}>${v.icon} ${v.label}</option>`).join('')}
+          ${Object.entries(TYPE_META).map(([k,v])=>`<option value="${k}"${p?.type===k?' selected':''}>${v.icon} ${v.label}</option>`).join('')}
         </select>
       </div>
     </div>
+
     <div class="form-group">
       <label class="form-label">Description *</label>
-      <textarea class="form-textarea" id="fDesc" placeholder="What it does, how it works, key decisions…">${esc(p.desc||'')}</textarea>
+      <textarea class="form-textarea" id="fDesc" placeholder="What it does, how it works…">${esc(p?.desc||'')}</textarea>
     </div>
+
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Live / Demo URL</label>
-        <input class="form-input" id="fLive" value="${esc(p.liveUrl||'')}" placeholder="https://..."/>
+        <input class="form-input" id="fLive" value="${esc(p?.liveUrl||'')}" placeholder="https://…"/>
       </div>
       <div class="form-group">
         <label class="form-label">Repo URL</label>
-        <input class="form-input" id="fRepo" value="${esc(p.repoUrl||'')}" placeholder="https://github.com/..."/>
+        <input class="form-input" id="fRepo" value="${esc(p?.repoUrl||'')}" placeholder="https://github.com/…"/>
       </div>
     </div>
+
+    <div class="form-group">
+      <label class="form-label">Tags <small style="font-family:'Inter',sans-serif;font-size:.7rem;text-transform:none;letter-spacing:0;color:var(--muted)">(used for filtering)</small></label>
+      ${tagInputHTML('tagInput', projectTags)}
+    </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Tech Stack (comma separated)</label>
-        <input class="form-input" id="fTags" value="${esc(p.tags||'')}" placeholder="Node.js, PostgreSQL, Docker"/>
+        <label class="form-label">Project Status</label>
+        <select class="form-select" id="fStatus">
+          <option value="live"${p?.status==='live'?' selected':''}>● Live</option>
+          <option value="wip"${(!p?.status||p?.status==='wip')?' selected':''}>WIP</option>
+          <option value="archived"${p?.status==='archived'?' selected':''}>Archived</option>
+        </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Status</label>
-        <select class="form-select" id="fStatus">
-          <option value="live"${p.status==='live'?' selected':''}>● Live</option>
-          <option value="wip"${(!p.status||p.status==='wip')?' selected':''}>WIP</option>
-          <option value="archived"${p.status==='archived'?' selected':''}>Archived</option>
+        <label class="form-label">Visibility</label>
+        <select class="form-select" id="fVisible">
+          <option value="1"${p?.visible?' selected':''}>Visible to public</option>
+          <option value="0"${p&&!p.visible?' selected':''}>Hidden</option>
         </select>
       </div>
     </div>
 
     <div class="form-group">
       <label class="form-label">Screenshots / Images</label>
-      <div class="upload-zone" onclick="document.getElementById('imgInput').click()">
-        <div class="uz-icon">🖼</div>
-        <div class="uz-text">Click to add images<br/><small>JPG, PNG, WebP — multiple ok</small></div>
-      </div>
+      <div class="upload-zone" onclick="document.getElementById('imgInput').click()"><div class="uz-icon">🖼</div><div class="uz-text">Click to add images<br/><small>JPG, PNG, WebP</small></div></div>
       <input type="file" id="imgInput" multiple accept="image/*" style="display:none" onchange="queueFiles('images',this)"/>
-      <div class="media-preview-row" id="imgRow">
-        ${exMedia.images.map((u,i)=>`<div class="media-thumb" id="exImg${i}"><img src="${u}" alt=""/><button class="rm-btn" onclick="removeEx('images',${i})">✕</button></div>`).join('')}
-      </div>
+      <div class="media-preview-row" id="imgRow">${exMedia.images.map((u,i)=>`<div class="media-thumb"><img src="${u}" alt=""/><button class="rm-btn" onclick="removeEx('images',${i})">✕</button></div>`).join('')}</div>
     </div>
 
     <div class="form-group">
       <label class="form-label">Demo Videos</label>
-      <div class="upload-zone" onclick="document.getElementById('vidInput').click()">
-        <div class="uz-icon">🎬</div>
-        <div class="uz-text">Click to add videos<br/><small>MP4, WebM, MOV</small></div>
-      </div>
+      <div class="upload-zone" onclick="document.getElementById('vidInput').click()"><div class="uz-icon">🎬</div><div class="uz-text">Click to add videos<br/><small>MP4, WebM, MOV</small></div></div>
       <input type="file" id="vidInput" multiple accept="video/*" style="display:none" onchange="queueFiles('videos',this)"/>
-      <div class="media-preview-row" id="vidRow">
-        ${exMedia.videos.map((u,i)=>`<div class="media-thumb vid-thumb" id="exVid${i}"><div class="vid-play-icon">▶</div><button class="rm-btn" onclick="removeEx('videos',${i})">✕</button></div>`).join('')}
-      </div>
+      <div class="media-preview-row" id="vidRow">${exMedia.videos.map((u,i)=>`<div class="media-thumb vid-thumb"><div class="vid-play-icon">▶</div><button class="rm-btn" onclick="removeEx('videos',${i})">✕</button></div>`).join('')}</div>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Downloadable Files (APK, EXE, ZIP, PDF…)</label>
-      <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
-        <div class="uz-icon">📎</div>
-        <div class="uz-text">Click to attach any files<br/><small>APK, EXE, DMG, ZIP, PDF, etc.</small></div>
-      </div>
+      <label class="form-label">Downloadable Files</label>
+      <div class="upload-zone" onclick="document.getElementById('fileInput').click()"><div class="uz-icon">📎</div><div class="uz-text">APK, EXE, ZIP, PDF…</div></div>
       <input type="file" id="fileInput" multiple style="display:none" onchange="queueFiles('files',this)"/>
-      <div id="fileList">
-        ${exMedia.files.map((f,i)=>`<div class="file-row-edit" id="exFile${i}"><span>${fileIcon(f.name)} ${esc(f.name)}</span><button class="rm-btn inline-rm" onclick="removeEx('files',${i})">✕</button></div>`).join('')}
-      </div>
+      <div id="fileList">${exMedia.files.map((f,i)=>`<div class="file-row-edit"><span>${fileIcon(f.name)} ${esc(f.name)}</span><button class="rm-btn inline-rm" onclick="removeEx('files',${i})">✕</button></div>`).join('')}</div>
     </div>
 
     <div id="uploadProgress" style="display:none;margin-bottom:1rem;">
@@ -1058,367 +1025,206 @@ function renderProjectForm(){
     </div>
 
     <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.25rem;margin-bottom:1rem;">
-      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Custom Fields <span style="font-size:.65rem;opacity:.6;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif">(any extra info you want to display)</span></p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Custom Fields</p>
       <div id="projExtraFieldsWrap">${extraFieldsHTML(projectExtraFields,'projExtraFields','addProjectExtraField')}</div>
     </div>
 
     <div class="form-actions">
       <button class="btn-form save" id="saveBtn" onclick="saveProject()">${editingId?'Update Project':'Publish Project'}</button>
-      <button class="btn-form cancel" onclick="cancelForm()">Cancel</button>
+      <button class="btn-form cancel" onclick="closeDrawer()">Cancel</button>
     </div>`;
 }
 
-window.queueFiles = (type, input) => {
-  const files = Array.from(input.files);
-  queued[type].push(...files);
-  if(type==='images'){
-    const row=$('imgRow');
-    files.forEach(f=>{
-      const url=URL.createObjectURL(f);
-      const d=document.createElement('div'); d.className='media-thumb new-thumb';
-      d.innerHTML=`<img src="${url}" alt=""/><span class="new-label">new</span>`;
-      row.appendChild(d);
-    });
-  } else if(type==='videos'){
-    const row=$('vidRow');
-    files.forEach(()=>{
-      const d=document.createElement('div'); d.className='media-thumb vid-thumb new-thumb';
-      d.innerHTML=`<div class="vid-play-icon">▶</div><span class="new-label">new</span>`;
-      row.appendChild(d);
-    });
-  } else {
-    const list=$('fileList');
-    files.forEach(f=>{
-      const d=document.createElement('div'); d.className='file-row-edit';
-      d.innerHTML=`<span>${fileIcon(f.name)} ${esc(f.name)}</span><span class="new-label" style="position:static;margin-left:.5rem">new</span>`;
-      list.appendChild(d);
-    });
-  }
+// ── media queue ───────────────────────────────────────────────────────────
+window.queueFiles=(type,input)=>{
+  const files=Array.from(input.files); queued[type].push(...files);
+  if(type==='images'){ const row=$('imgRow'); files.forEach(f=>{ const d=document.createElement('div'); d.className='media-thumb new-thumb'; d.innerHTML=`<img src="${URL.createObjectURL(f)}" alt=""/><span class="new-label">new</span>`; row?.appendChild(d); }); }
+  else if(type==='videos'){ const row=$('vidRow'); files.forEach(()=>{ const d=document.createElement('div'); d.className='media-thumb vid-thumb new-thumb'; d.innerHTML=`<div class="vid-play-icon">▶</div><span class="new-label">new</span>`; row?.appendChild(d); }); }
+  else { const list=$('fileList'); files.forEach(f=>{ const d=document.createElement('div'); d.className='file-row-edit'; d.innerHTML=`<span>${fileIcon(f.name)} ${esc(f.name)}</span><span class="new-label" style="position:static;margin-left:.5rem">new</span>`; list?.appendChild(d); }); }
   input.value='';
 };
+window.removeEx=(type,idx)=>{ const url=typeof exMedia[type][idx]==='string'?exMedia[type][idx]:exMedia[type][idx]?.url; if(url) deleteStorageUrl(url); exMedia[type].splice(idx,1); renderDrawerForm(); };
 
-window.removeEx = (type, idx) => {
-  const url = exMedia[type][idx]?.url ?? exMedia[type][idx];
-  // best-effort delete from Storage
-  if(typeof url === 'string') deleteStorageUrl(url);
-  exMedia[type].splice(idx,1);
-  renderProjectForm();
-};
-
-window.cancelForm = ()=>{
-  editingId=null; queued={images:[],videos:[],files:[]}; exMedia={images:[],videos:[],files:[]};
-  activeAdminTab='projects'; renderAdminPanel();
-};
-
-// ── save ──────────────────────────────────────────────────────────────────
-window.saveProject = async () => {
-  const name=($('fName').value||'').trim();
-  const desc=($('fDesc').value||'').trim();
+// ── save project ──────────────────────────────────────────────────────────
+window.saveProject=async()=>{
+  const name=($('fName')?.value||'').trim(), desc=($('fDesc')?.value||'').trim();
   if(!name||!desc){ toast('Name and description are required.',true); return; }
   const btn=$('saveBtn'); btn.disabled=true; btn.textContent='Saving…';
   try{
-    const newImages = await uploadBatch('images', queued.images);
-    const newVideos = await uploadBatch('videos', queued.videos);
-    const newFiles  = await uploadBatchFiles(queued.files);
+    const newImages=await uploadBatch('images',queued.images);
+    const newVideos=await uploadBatch('videos',queued.videos);
+    const newFiles =await uploadBatchFiles(queued.files);
     const data={
-      name, desc,
-      type:    $('fType').value,
-      liveUrl: ($('fLive').value||'').trim(),
-      repoUrl: ($('fRepo').value||'').trim(),
-      tags:    ($('fTags').value||'').trim(),
-      status:  $('fStatus').value,
-      images:  [...exMedia.images, ...newImages],
-      videos:  [...exMedia.videos, ...newVideos],
-      files:   [...exMedia.files,  ...newFiles],
-      extraFields: projectExtraFields.filter(f=>f.label.trim()||f.value.trim()),
-      updatedAt: Date.now(),
+      name,desc,
+      type:$('fType').value,
+      liveUrl:($('fLive')?.value||'').trim(),
+      repoUrl:($('fRepo')?.value||'').trim(),
+      tags:[...projectTags],
+      status:$('fStatus').value,
+      visible:$('fVisible').value==='1',
+      images:[...exMedia.images,...newImages],
+      videos:[...exMedia.videos,...newVideos],
+      files:[...exMedia.files,...newFiles],
+      extraFields:projectExtraFields.filter(f=>f.label.trim()||f.value.trim()),
+      updatedAt:Date.now(),
     };
     if(editingId){ await updateDoc(doc(db,'projects',editingId),data); toast('Project updated!'); }
     else { data.createdAt=Date.now(); await addDoc(collection(db,'projects'),data); toast('Project published!'); }
-    editingId=null; queued={images:[],videos:[],files:[]}; exMedia={images:[],videos:[],files:[]};
-    activeAdminTab='projects'; renderAdminPanel();
+    closeDrawer();
   } catch(e){ toast('Error: '+e.message,true); btn.disabled=false; btn.textContent=editingId?'Update Project':'Publish Project'; }
 };
 
-async function uploadBatch(type, files){
-  const urls=[];
-  for(let i=0;i<files.length;i++) urls.push(await uploadOne(files[i],`${type}/${Date.now()}_${files[i].name}`,i,files.length,type));
-  return urls;
-}
-async function uploadBatchFiles(files){
-  const out=[];
-  for(let i=0;i<files.length;i++){
-    const url=await uploadOne(files[i],`files/${Date.now()}_${files[i].name}`,i,files.length,'file');
-    out.push({name:files[i].name,url});
-  }
-  return out;
-}
-function uploadOne(file, path, idx, total, label){
+async function uploadBatch(type,files){ const urls=[]; for(const f of files) urls.push(await uploadOne(f,`${type}/${Date.now()}_${f.name}`,type)); return urls; }
+async function uploadBatchFiles(files){ const out=[]; for(const f of files){ const url=await uploadOne(f,`files/${Date.now()}_${f.name}`,'file'); out.push({name:f.name,url}); } return out; }
+function uploadOne(file,path,label='file'){
   return new Promise((res,rej)=>{
-    const prog=$('uploadProgress'), bar=$('pBar'), lbl=$('pLabel');
+    const prog=$('uploadProgress'),bar=$('pBar'),lbl=$('pLabel');
     if(prog) prog.style.display='block';
     const task=uploadBytesResumable(sRef(stor,path),file);
-    task.on('state_changed',
-      s=>{ const p=Math.round(s.bytesTransferred/s.totalBytes*100); if(bar) bar.style.width=p+'%'; if(lbl) lbl.textContent=`Uploading ${label} ${idx+1}/${total} — ${p}%`; },
-      rej,
-      async()=>res(await getDownloadURL(task.snapshot.ref))
-    );
+    task.on('state_changed',s=>{ const p=Math.round(s.bytesTransferred/s.totalBytes*100); if(bar) bar.style.width=p+'%'; if(lbl) lbl.textContent=`Uploading ${label} — ${p}%`; },rej,async()=>res(await getDownloadURL(task.snapshot.ref)));
   });
 }
 
-// ── profile form ──────────────────────────────────────────────────────────
+// ── EXTRA FIELDS ──────────────────────────────────────────────────────────
+function efTypeToggleHTML(cid,idx,type){ const isLink=type==='link'; return `<div class="ef-type-toggle"><button class="ef-type-btn ${!isLink?'active':''}" onclick="setEfType('${cid}',${idx},'text',this)">Txt</button><button class="ef-type-btn ${isLink?'active':''}" onclick="setEfType('${cid}',${idx},'link',this)">URL</button></div>`; }
+function efRowHTML(cid,idx,f){ return `<div class="extra-field-row" id="ef_${cid}_${idx}"><input class="form-input ef-label" placeholder="Label" value="${esc(f.label)}" oninput="updateExtraField('${cid}',${idx},'label',this.value)"/><input class="form-input ef-value" placeholder="${f.type==='link'?'https://…':'Value'}" value="${esc(f.value)}" oninput="updateExtraField('${cid}',${idx},'value',this.value)"/><div class="ef-type">${efTypeToggleHTML(cid,idx,f.type||'text')}</div><button class="ef-rm" onclick="removeExtraField('${cid}',${idx})">✕</button></div>`; }
+function extraFieldsHTML(arr,cid,addFn){ return `<div class="extra-fields-list" id="${cid}">${arr.map((f,i)=>efRowHTML(cid,i,f)).join('')}</div><button class="add-field-btn" onclick="${addFn}()">+ Add custom field</button>`; }
+window.setEfType=(cid,idx,type,btn)=>{ const arr=cid.startsWith('proj')?projectExtraFields:profileExtraFields; if(arr[idx]) arr[idx].type=type; btn.closest('.ef-type-toggle').querySelectorAll('.ef-type-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); const row=$(`ef_${cid}_${idx}`); if(row) row.querySelector('.ef-value').placeholder=type==='link'?'https://…':'Value'; };
+window.updateExtraField=(cid,idx,key,val)=>{ const arr=cid.startsWith('proj')?projectExtraFields:profileExtraFields; if(arr[idx]) arr[idx][key]=val; };
+window.addProjectExtraField=()=>{ const f={label:'',value:'',type:'text'}; projectExtraFields.push(f); const c=$('projExtraFields'); if(!c) return; const d=document.createElement('div'); d.innerHTML=efRowHTML('projExtraFields',projectExtraFields.length-1,f); c.appendChild(d.firstElementChild); };
+window.addProfileExtraField=()=>{ const f={label:'',value:'',type:'text'}; profileExtraFields.push(f); const c=$('profExtraFields'); if(!c) return; const d=document.createElement('div'); d.innerHTML=efRowHTML('profExtraFields',profileExtraFields.length-1,f); c.appendChild(d.firstElementChild); };
+window.removeExtraField=(cid,idx)=>{
+  const isProj=cid.startsWith('proj');
+  if(isProj){ projectExtraFields.splice(idx,1); const w=$('projExtraFieldsWrap'); if(w) w.innerHTML=extraFieldsHTML(projectExtraFields,'projExtraFields','addProjectExtraField'); }
+  else { profileExtraFields.splice(idx,1); const w=$('profExtraFieldsWrap'); if(w) w.innerHTML=extraFieldsHTML(profileExtraFields,'profExtraFields','addProfileExtraField'); }
+};
+
+// ── PROFILE MODAL ─────────────────────────────────────────────────────────
+window.openProfileModal=()=>{ pfSlots=[0,1,2].map(i=>profile.photos?.[i]?{url:profile.photos[i],isNew:false}:null); profileExtraFields=(profile.extraFields||[]).map(f=>({...f})); $('profileModal').classList.add('open'); renderProfileForm(); };
+window.closeProfileModal=()=>{ $('profileModal').classList.remove('open'); };
+
 function renderProfileForm(){
-  const p = profile;
-  // initialise pfSlots from existing photos
-  pfSlots = [0,1,2].map(i => p.photos?.[i] ? { url: p.photos[i], isNew: false } : null);
-  pfNewFiles = [];
-  profileExtraFields = (p.extraFields||[]).map(f=>({...f}));
+  const p=profile;
+  $('profileModalContent').innerHTML=`
+    <h2>✦ Edit Profile</h2>
+    <p class="admin-sub">Changes go live instantly for all visitors.</p>
 
-  $('aTabBody').innerHTML=`
-    <div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;padding:.6rem .9rem;background:rgba(0,255,157,.05);border:1px solid rgba(0,255,157,.15);border-radius:5px;">
-      ✦ Changes here update the live site instantly for all visitors.
-    </div>
-
-    <!-- PROFILE PHOTOS -->
     <div class="form-group">
-      <label class="form-label">Profile Photos <small style="font-family:'Inter',sans-serif;font-size:.7rem;text-transform:none;letter-spacing:0;color:var(--muted)">(⭐ Main Photo appears in the hero next to your name)</small></label>
+      <label class="form-label">Profile Photos <small style="font-family:'Inter',sans-serif;font-size:.7rem;text-transform:none;letter-spacing:0;color:var(--muted)">(⭐ Photo 1 appears in the hero)</small></label>
       <div class="pf-upload-grid" id="pfUploadGrid"></div>
       <input type="file" id="pfPhotoInput" accept="image/*" style="display:none" onchange="pfPhotoSelected(this)"/>
     </div>
 
-    <!-- GALLERY SIZE PICKER -->
     <div class="form-group">
-      <label class="form-label">Gallery Size <small style="font-family:'Inter',sans-serif;font-size:.7rem;text-transform:none;letter-spacing:0;color:var(--muted)">(controls the photo display size in the Who I Am section)</small></label>
+      <label class="form-label">Gallery Size</label>
       <div class="size-picker" id="sizePicker">
-        ${['small','medium','large'].map(s=>`
-          <button class="size-btn ${(p.photoSize||'medium')===s?'active':''}" onclick="previewSize('${s}')" data-size="${s}">
-            <div class="size-preview size-preview--${s}"></div>
-            <span>${s.charAt(0).toUpperCase()+s.slice(1)}</span>
-          </button>`).join('')}
+        ${['small','medium','large'].map(s=>`<button class="size-btn ${(p.photoSize||'medium')===s?'active':''}" onclick="previewSize('${s}')" data-size="${s}"><div class="size-preview size-preview--${s}"></div><span>${s[0].toUpperCase()+s.slice(1)}</span></button>`).join('')}
       </div>
       <input type="hidden" id="pfPhotoSize" value="${p.photoSize||'medium'}"/>
     </div>
 
     <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Full Name *</label>
-        <input class="form-input" id="pfName" value="${esc(p.name)}" placeholder="Toluwalase Doe"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Role / Title</label>
-        <input class="form-input" id="pfRole" value="${esc(p.role)}" placeholder="Backend Engineer"/>
-      </div>
+      <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="pfName" value="${esc(p.name)}" placeholder="Toluwalase"/></div>
+      <div class="form-group"><label class="form-label">Role / Title</label><input class="form-input" id="pfRole" value="${esc(p.role)}" placeholder="Backend Engineer"/></div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Hero Tagline</label>
-      <input class="form-input" id="pfTagline" value="${esc(p.tagline)}" placeholder="Building the engines that power the web."/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Hero Description</label>
-      <textarea class="form-textarea" id="pfDesc" placeholder="Short paragraph shown under your name on the hero…">${esc(p.desc)}</textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">About Paragraph 1</label>
-      <textarea class="form-textarea" id="pfAbout1">${esc(p.about1)}</textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">About Paragraph 2</label>
-      <textarea class="form-textarea" id="pfAbout2">${esc(p.about2)}</textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Skills / Tech Stack <small style="color:var(--muted);font-family:'Inter',sans-serif;font-size:.72rem;text-transform:none;letter-spacing:0">(comma separated)</small></label>
-      <input class="form-input" id="pfSkills" value="${esc(p.skills)}" placeholder="Node.js, Python, PostgreSQL, Redis, Docker"/>
-    </div>
+    <div class="form-group"><label class="form-label">Hero Tagline</label><input class="form-input" id="pfTagline" value="${esc(p.tagline)}"/></div>
+    <div class="form-group"><label class="form-label">Hero Description</label><textarea class="form-textarea" id="pfDesc">${esc(p.desc)}</textarea></div>
+    <div class="form-group"><label class="form-label">About — Paragraph 1</label><textarea class="form-textarea" id="pfAbout1">${esc(p.about1)}</textarea></div>
+    <div class="form-group"><label class="form-label">About — Paragraph 2</label><textarea class="form-textarea" id="pfAbout2">${esc(p.about2)}</textarea></div>
+    <div class="form-group"><label class="form-label">Skills <small style="font-family:'Inter',sans-serif;font-size:.7rem;text-transform:none;letter-spacing:0;color:var(--muted)">(comma separated)</small></label><input class="form-input" id="pfSkills" value="${esc(p.skills)}"/></div>
 
     <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.5rem;margin-bottom:1rem;">
-      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem;">Social &amp; Contact Links</p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem;">Social &amp; Contact</p>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input class="form-input" id="pfEmail" value="${esc(p.email)}" placeholder="you@example.com"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">GitHub URL</label>
-          <input class="form-input" id="pfGithub" value="${esc(p.github)}" placeholder="https://github.com/you"/>
-        </div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="pfEmail" value="${esc(p.email)}" placeholder="you@example.com"/></div>
+        <div class="form-group"><label class="form-label">GitHub</label><input class="form-input" id="pfGithub" value="${esc(p.github)}" placeholder="https://github.com/…"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">LinkedIn URL</label>
-          <input class="form-input" id="pfLinkedin" value="${esc(p.linkedin)}" placeholder="https://linkedin.com/in/you"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Twitter / X URL</label>
-          <input class="form-input" id="pfTwitter" value="${esc(p.twitter)}" placeholder="https://twitter.com/you"/>
-        </div>
+        <div class="form-group"><label class="form-label">LinkedIn</label><input class="form-input" id="pfLinkedin" value="${esc(p.linkedin)}" placeholder="https://linkedin.com/in/…"/></div>
+        <div class="form-group"><label class="form-label">Twitter / X</label><input class="form-input" id="pfTwitter" value="${esc(p.twitter)}" placeholder="https://twitter.com/…"/></div>
       </div>
+    </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.25rem;margin-bottom:1rem;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Custom Fields</p>
+      <div id="profExtraFieldsWrap">${extraFieldsHTML(profileExtraFields,'profExtraFields','addProfileExtraField')}</div>
     </div>
 
     <div id="pfUploadProgress" style="display:none;margin-bottom:.75rem;">
       <div class="progress-bar-wrap"><div class="progress-bar" id="pfPBar"></div></div>
-      <p class="progress-label" id="pfPLabel">Uploading photo…</p>
-    </div>
-
-    <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:.25rem;margin-bottom:1rem;">
-      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">Custom Fields <span style="font-size:.65rem;opacity:.6;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif">(extra info shown on your profile)</span></p>
-      <div id="profExtraFieldsWrap">${extraFieldsHTML(profileExtraFields,'profExtraFields','addProfileExtraField')}</div>
+      <p class="progress-label" id="pfPLabel">Uploading…</p>
     </div>
 
     <div class="form-actions">
       <button class="btn-form save" id="pfSaveBtn" onclick="saveProfile()">Save Profile</button>
-      <button class="btn-form cancel" onclick="switchTab('projects')">Cancel</button>
+      <button class="btn-form cancel" onclick="closeProfileModal()">Cancel</button>
     </div>`;
-
   renderPfSlots();
 }
 
-// which slot index is being filled next
-let pfTargetSlot = 0;
-
+// profile photos
+let pfTargetSlot2=0;
+window.pfPickSlot=i=>{ pfTargetSlot2=i; $('pfPhotoInput').value=''; $('pfPhotoInput').click(); };
+window.pfPhotoSelected=input=>{ const f=input.files[0]; if(!f) return; pfSlots[pfTargetSlot2]={isNew:true,file:f,previewUrl:URL.createObjectURL(f)}; renderPfSlots(); };
+window.pfRemoveSlot=i=>{ const s=pfSlots[i]; if(s&&!s.isNew&&s.url) deleteStorageUrl(s.url); pfSlots[i]=null; renderPfSlots(); };
 function renderPfSlots(){
-  const grid = $('pfUploadGrid');
-  if(!grid) return;
-  const slotLabels = ['Main Photo', 'Photo 2', 'Photo 3'];
-  grid.innerHTML = [0,1,2].map(i => {
-    const slot = pfSlots[i];
-    const isMain = i === 0;
-    if(slot){
-      const preview = slot.isNew ? slot.previewUrl : slot.url;
-      return `<div class="pf-slot">
-        <img src="${preview}" alt="Photo ${i+1}"/>
-        ${isMain ? `<div class="pf-slot-main-badge">★ MAIN</div>` : ''}
-        ${slot.isNew ? '<span style="position:absolute;top:4px;left:4px;background:var(--neon);color:#0a0a0f;font-size:.55rem;font-family:\'JetBrains Mono\',monospace;padding:.08rem .3rem;border-radius:2px;font-weight:700;z-index:2">new</span>' : ''}
-        <button class="pf-slot-rm" onclick="pfRemoveSlot(${i})">✕</button>
-      </div>`;
-    }
-    return `<div class="pf-slot" onclick="pfPickSlot(${i})">
-      <div class="pf-slot-icon">${isMain ? '⭐' : '📷'}</div>
-      <div class="pf-slot-label">${slotLabels[i]}${isMain ? '' : ''}</div>
-    </div>`;
-  }).join('');
+  const grid=$('pfUploadGrid'); if(!grid) return;
+  const labels=['⭐ Main Photo','Photo 2','Photo 3'];
+  grid.innerHTML=[0,1,2].map(i=>{ const s=pfSlots[i]; if(s){ const prev=s.isNew?s.previewUrl:s.url; return `<div class="pf-slot"><img src="${prev}" alt=""/>${i===0?'<div class="pf-slot-main-badge">★ MAIN</div>':''}${s.isNew?'<span style="position:absolute;top:4px;left:4px;background:var(--neon);color:#0a0a0f;font-size:.55rem;font-family:\'JetBrains Mono\',monospace;padding:.08rem .3rem;border-radius:2px;font-weight:700;z-index:2">new</span>':''}<button class="pf-slot-rm" onclick="pfRemoveSlot(${i})">✕</button></div>`; } return `<div class="pf-slot" onclick="pfPickSlot(${i})"><div class="pf-slot-icon">${i===0?'⭐':'📷'}</div><div class="pf-slot-label">${labels[i]}</div></div>`; }).join('');
 }
+window.previewSize=size=>{ const inp=$('pfPhotoSize'); if(inp) inp.value=size; document.querySelectorAll('.size-btn').forEach(b=>b.classList.toggle('active',b.dataset.size===size)); applyGallerySize(size); };
 
-window.pfPickSlot = i => {
-  pfTargetSlot = i;
-  $('pfPhotoInput').value='';
-  $('pfPhotoInput').click();
-};
-
-window.pfPhotoSelected = input => {
-  const file = input.files[0];
-  if(!file) return;
-  const previewUrl = URL.createObjectURL(file);
-  pfSlots[pfTargetSlot] = { isNew: true, file, previewUrl };
-  renderPfSlots();
-};
-
-window.pfRemoveSlot = i => {
-  const slot = pfSlots[i];
-  // if it's an already-saved photo, delete from Storage
-  if(slot && !slot.isNew && slot.url) deleteStorageUrl(slot.url);
-  pfSlots[i] = null;
-  renderPfSlots();
-};
-
-window.previewSize = size => {
-  const inp = $('pfPhotoSize'); if(inp) inp.value = size;
-  document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('active', b.dataset.size === size));
-  applyGallerySize(size); // live preview while admin panel is open
-};
-
-window.saveProfile = async () => {
-  const btn = $('pfSaveBtn');
-  btn.disabled=true; btn.textContent='Saving…';
+window.saveProfile=async()=>{
+  const btn=$('pfSaveBtn'); btn.disabled=true; btn.textContent='Saving…';
   try{
-    // upload any new photo slots
-    const finalPhotos = [];
+    const finalPhotos=[];
     for(let i=0;i<3;i++){
-      const slot = pfSlots[i];
-      if(!slot){ finalPhotos.push(null); continue; }
-      if(slot.isNew && slot.file){
-        // upload to Firebase Storage
-        const prog=$('pfUploadProgress'), bar=$('pfPBar'), lbl=$('pfPLabel');
-        if(prog) prog.style.display='block';
-        const path = `profile/photo_${i}_${Date.now()}_${slot.file.name}`;
-        const url  = await new Promise((res,rej)=>{
-          const task = uploadBytesResumable(sRef(stor,path), slot.file);
-          task.on('state_changed',
-            s=>{ const p=Math.round(s.bytesTransferred/s.totalBytes*100); if(bar) bar.style.width=p+'%'; if(lbl) lbl.textContent=`Uploading photo ${i+1}/3 — ${p}%`; },
-            rej,
-            async()=>res(await getDownloadURL(task.snapshot.ref))
-          );
-        });
-        finalPhotos.push(url);
-        if(prog) prog.style.display='none';
-      } else {
-        finalPhotos.push(slot.url);
-      }
+      const s=pfSlots[i]; if(!s){ finalPhotos.push(null); continue; }
+      if(s.isNew&&s.file){
+        const prog=$('pfUploadProgress'),bar=$('pfPBar'),lbl=$('pfPLabel'); if(prog) prog.style.display='block';
+        const url=await new Promise((res,rej)=>{ const task=uploadBytesResumable(sRef(stor,`profile/photo_${i}_${Date.now()}_${s.file.name}`),s.file); task.on('state_changed',snap=>{ const p=Math.round(snap.bytesTransferred/snap.totalBytes*100); if(bar) bar.style.width=p+'%'; if(lbl) lbl.textContent=`Uploading photo ${i+1}/3 — ${p}%`; },rej,async()=>res(await getDownloadURL(task.snapshot.ref))); });
+        finalPhotos.push(url); if(prog) prog.style.display='none';
+      } else finalPhotos.push(s.url);
     }
-
-    const updated = {
-      name:      ($('pfName').value||'').trim()     || DEFAULT_PROFILE.name,
-      role:      ($('pfRole').value||'').trim()     || DEFAULT_PROFILE.role,
-      tagline:   ($('pfTagline').value||'').trim()  || DEFAULT_PROFILE.tagline,
-      desc:      ($('pfDesc').value||'').trim()     || DEFAULT_PROFILE.desc,
-      about1:    ($('pfAbout1').value||'').trim()   || DEFAULT_PROFILE.about1,
-      about2:    ($('pfAbout2').value||'').trim()   || DEFAULT_PROFILE.about2,
-      skills:    ($('pfSkills').value||'').trim()   || DEFAULT_PROFILE.skills,
-      email:     ($('pfEmail').value||'').trim(),
-      github:    ($('pfGithub').value||'').trim(),
-      linkedin:  ($('pfLinkedin').value||'').trim(),
-      twitter:   ($('pfTwitter').value||'').trim(),
-      photos:    finalPhotos.filter(Boolean),
-      photoSize: $('pfPhotoSize')?.value || 'medium',
-      extraFields: profileExtraFields.filter(f=>f.label.trim()||f.value.trim()),
+    const updated={
+      name:($('pfName')?.value||'').trim()||DEFAULT_PROFILE.name,
+      role:($('pfRole')?.value||'').trim()||DEFAULT_PROFILE.role,
+      tagline:($('pfTagline')?.value||'').trim()||DEFAULT_PROFILE.tagline,
+      desc:($('pfDesc')?.value||'').trim()||DEFAULT_PROFILE.desc,
+      about1:($('pfAbout1')?.value||'').trim()||DEFAULT_PROFILE.about1,
+      about2:($('pfAbout2')?.value||'').trim()||DEFAULT_PROFILE.about2,
+      skills:($('pfSkills')?.value||'').trim()||DEFAULT_PROFILE.skills,
+      email:($('pfEmail')?.value||'').trim(),github:($('pfGithub')?.value||'').trim(),
+      linkedin:($('pfLinkedin')?.value||'').trim(),twitter:($('pfTwitter')?.value||'').trim(),
+      photos:finalPhotos.filter(Boolean),
+      photoSize:$('pfPhotoSize')?.value||'medium',
+      extraFields:profileExtraFields.filter(f=>f.label.trim()||f.value.trim()),
     };
-    await setDoc(doc(db,'config','profile'), updated);
-    profile = updated;
-    typingDone = false;
-    applyProfile();
-    renderHeroAvatar();
-    renderAboutGallery();
-    toast('Profile saved! Live site updated.');
+    await setDoc(doc(db,'config','profile'),updated);
+    profile=updated; typingDone=false; applyProfile();
+    closeProfileModal(); toast('Profile saved!');
     btn.disabled=false; btn.textContent='Save Profile';
-  } catch(e){
-    toast('Error saving profile: '+e.message, true);
-    btn.disabled=false; btn.textContent='Save Profile';
-  }
+  } catch(e){ toast('Error: '+e.message,true); btn.disabled=false; btn.textContent='Save Profile'; }
 };
 
-// ── delete ────────────────────────────────────────────────────────────────
-window.confirmDelete = async id=>{
-  if(!confirm('Delete this project permanently? All uploaded files will also be removed.')) return;
-  try{
-    const p = projects.find(x=>x.id===id);
-    if(p){
-      // delete all Storage assets in parallel (best-effort)
-      const allUrls = [
-        ...(p.images||[]),
-        ...(p.videos||[]),
-        ...(p.files||[]).map(f=>f.url),
-      ];
-      await Promise.allSettled(allUrls.map(u=>deleteStorageUrl(u)));
-    }
-    await deleteDoc(doc(db,'projects',id));
-    closeProjectModal();
-    toast('Project and all its files deleted.');
-    if($('adminModal').classList.contains('open')) renderAdminPanel();
-  } catch(e){ toast('Error: '+e.message,true); }
-};
-
-// ── keyboard / overlay close ──────────────────────────────────────────────
+// ── global close handlers ─────────────────────────────────────────────────
 document.addEventListener('click',e=>{
   if(e.target.id==='projectModal') closeProjectModal();
   if(e.target.id==='previewModal') closePreview();
-  if(e.target.id==='adminModal')   closeAdminModal();
+  if(e.target.id==='profileModal') closeProfileModal();
+  if(e.target.id==='drawerOverlay') closeDrawer();
 });
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ closeProjectModal(); closePreview(); closeAdminModal(); }
+  if(e.key==='Escape'){ closeProjectModal(); closePreview(); closeProfileModal(); closeDrawer(); }
   if($('projectModal').classList.contains('open')){
-    if(e.key==='ArrowLeft')  lbNav(-1);
+    if(e.key==='ArrowLeft') lbNav(-1);
     if(e.key==='ArrowRight') lbNav(1);
   }
 });
+
+// ── init ──────────────────────────────────────────────────────────────────
+loadProfile();
+route();
 </script>
 </body>
 </html>
