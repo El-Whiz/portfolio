@@ -589,14 +589,16 @@ onAuthStateChanged(auth, user=>{
 // ── realtime projects ─────────────────────────────────────────────────────
 onSnapshot(query(collection(db,'projects'),orderBy('createdAt','desc')), snap=>{
   projects = snap.docs.map(d=>({id:d.id,...d.data()}));
-  const visible = projects.filter(p=>p.visible);
+  const visible = projects.filter(p=>p.visible !== false);
   $('statProjects').textContent = visible.length;
   const tProj=$('termProj');
-  if(tProj) tProj.textContent = projects.length ? projects.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ') : '(none yet)';
-  // refresh active views
+  if(tProj) tProj.textContent = projects.length
+    ? projects.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ')
+    : '(none yet)';
+  // always refresh home projects section
   renderHomeProjects();
-  if($('projectsPage').classList.contains('active')) renderProjectsManagePage();
-  if($('adminPage').classList.contains('active')) renderAdminPage();
+  // if admin table is currently visible, refresh only the table body (not full page)
+  if($('adminTableWrap')) renderAdminTable();
 });
 
 // ── load profile ──────────────────────────────────────────────────────────
@@ -684,7 +686,7 @@ window.galGoto=i=>{
 // ── home projects (public — visible only) ────────────────────────────────
 function allVisibleTags(){
   const set=new Set();
-  projects.filter(p=>p.visible).forEach(p=>(p.tags||[]).forEach(t=>set.add(t)));
+  projects.filter(p=>p.visible !== false).forEach(p=>(p.tags||[]).forEach(t=>set.add(t)));
   return [...set].sort();
 }
 
@@ -699,7 +701,7 @@ function renderHomeProjects(){
          ${tags.map(t=>`<button class="filter-tag ${activeFilter===t?'active':''}" onclick="setFilter('${esc(t)}')">${esc(t)}</button>`).join('')}`
       : '';
   }
-  let list=projects.filter(p=>p.visible);
+  let list=projects.filter(p=>p.visible !== false);
   if(activeFilter!=='all') list=list.filter(p=>(p.tags||[]).includes(activeFilter));
   if(!list.length){
     grid.innerHTML=`<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">${activeFilter!=='all'?'No projects with this tag':'No projects yet'}</div><div class="empty-sub">Check back soon.</div></div>`;
@@ -723,20 +725,24 @@ function renderProjectsManagePage(){
     setTimeout(()=>$('liEmail')?.focus(),60);
     return;
   }
-  wrap.innerHTML=`
-    <div class="admin-page-inner">
-      <div class="admin-page-header">
-        <div>
-          <div class="admin-page-title">📁 Project Manager</div>
-          <div class="admin-page-subtitle">Control which projects are visible to the public</div>
+  // only build the shell if it isn't already there
+  if(!$('adminTableWrap')){
+    wrap.innerHTML=`
+      <div class="admin-page-inner">
+        <div class="admin-page-header">
+          <div>
+            <div class="admin-page-title">📁 Project Manager</div>
+            <div class="admin-page-subtitle">All your projects — toggle "Show on Home" to control what visitors see</div>
+          </div>
+          <div class="admin-actions">
+            <button class="btn-form save" onclick="openDrawer(null)">+ Add Project</button>
+            <a href="#/admin" class="btn-secondary" style="font-size:.8rem;padding:.5rem 1.1rem;text-decoration:none;display:inline-block">⚙ Settings</a>
+            <button class="btn-form cancel" onclick="doLogout()">Logout</button>
+          </div>
         </div>
-        <div class="admin-actions">
-          <button class="btn-form save" onclick="openDrawer(null)">+ Add Project</button>
-          <button class="btn-form cancel" onclick="doLogout()">Logout</button>
-        </div>
-      </div>
-      <div id="adminTableWrap"></div>
-    </div>`;
+        <div id="adminTableWrap"></div>
+      </div>`;
+  }
   renderAdminTable();
 }
 
@@ -863,12 +869,13 @@ function renderAdminTable(){
       <th>Project</th>
       <th>Tags</th>
       <th>Status</th>
-      <th>Visible to public</th>
+      <th>Show on Home</th>
       <th>Actions</th>
     </tr></thead>
     <tbody>${projects.map(p=>{
       const m=TYPE_META[p.type]||TYPE_META.other;
       const tags=p.tags||[];
+      const isVisible = p.visible !== false;
       return `<tr>
         <td>
           <div class="pt-name">${m.icon} ${esc(p.name)}</div>
@@ -877,12 +884,12 @@ function renderAdminTable(){
         <td><div class="pt-tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}${!tags.length?'<span style="color:var(--muted);font-size:.75rem">—</span>':''}</div></td>
         <td><span class="status-badge ${p.status||'wip'}">${p.status==='live'?'● LIVE':p.status==='archived'?'ARCHIVED':'WIP'}</span></td>
         <td>
-          <label class="vis-toggle" title="${p.visible?'Visible — click to hide':'Hidden — click to show'}">
+          <label class="vis-toggle" title="${isVisible?'Visible on home — click to hide':'Hidden from home — click to show'}">
             <div class="vis-switch">
-              <input type="checkbox" ${p.visible?'checked':''} onchange="toggleVisibility('${p.id}',this.checked)"/>
+              <input type="checkbox" ${isVisible?'checked':''} onchange="toggleVisibility('${p.id}',this.checked)"/>
               <div class="vis-slider"></div>
             </div>
-            <span class="vis-label ${p.visible?'on':''}">${p.visible?'Visible':'Hidden'}</span>
+            <span class="vis-label ${isVisible?'on':''}">${isVisible?'Visible':'Hidden'}</span>
           </label>
         </td>
         <td>
