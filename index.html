@@ -464,7 +464,7 @@ footer span{color:var(--neon);}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, orderBy, query, getDoc, setDoc }
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, getDoc, setDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL, deleteObject }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
@@ -575,30 +575,44 @@ onAuthStateChanged(auth, user=>{
   if(user){
     btn.textContent='⚙ settings'; btn.classList.add('authed');
     if(projLink){ projLink.style.display=''; projLink.textContent='projects'; }
+    // if on projects or admin page, re-render now that auth is confirmed
+    if(location.hash.startsWith('#/projects')) renderProjectsManagePage();
+    if(location.hash.startsWith('#/admin')) renderAdminPage();
   } else {
     btn.textContent='⚙ admin'; btn.classList.remove('authed');
     if(projLink) projLink.style.display='none';
-    // if visitor somehow landed on admin-only pages, kick to home
-    if(location.hash.startsWith('#/projects') || location.hash.startsWith('#/admin'))
-      location.hash='#/';
+    // show login wall if on admin-only pages (do NOT redirect — just show login)
+    if(location.hash.startsWith('#/projects')) renderProjectsManagePage();
+    if(location.hash.startsWith('#/admin')) renderAdminPage();
   }
-  if(location.hash.startsWith('#/admin')) renderAdminPage();
-  if(location.hash.startsWith('#/projects')) renderProjectsManagePage();
 });
 
 // ── realtime projects ─────────────────────────────────────────────────────
-onSnapshot(query(collection(db,'projects'),orderBy('createdAt','desc')), snap=>{
-  projects = snap.docs.map(d=>({id:d.id,...d.data()}));
+onSnapshot(collection(db,'projects'), snap=>{
+  projects = snap.docs.map(d=>{
+    const data = d.data();
+    // normalize tags: old projects stored as comma string, new ones as array
+    let tags = data.tags;
+    if(typeof tags === 'string') tags = tags.split(',').map(t=>t.trim()).filter(Boolean);
+    if(!Array.isArray(tags)) tags = [];
+    return { id:d.id, ...data, tags };
+  });
+  // sort by createdAt descending — missing createdAt goes to bottom
+  projects.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+
   const visible = projects.filter(p=>p.visible !== false);
   $('statProjects').textContent = visible.length;
   const tProj=$('termProj');
   if(tProj) tProj.textContent = projects.length
     ? projects.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ')
     : '(none yet)';
-  // always refresh home projects section
+  // refresh home projects
   renderHomeProjects();
-  // if admin table is currently visible, refresh only the table body (not full page)
-  if($('adminTableWrap')) renderAdminTable();
+  // refresh admin table if on projects page
+  if($('projectsPage').classList.contains('active')){
+    if($('adminTableWrap')) renderAdminTable();
+    else renderProjectsManagePage();
+  }
 });
 
 // ── load profile ──────────────────────────────────────────────────────────
@@ -725,24 +739,21 @@ function renderProjectsManagePage(){
     setTimeout(()=>$('liEmail')?.focus(),60);
     return;
   }
-  // only build the shell if it isn't already there
-  if(!$('adminTableWrap')){
-    wrap.innerHTML=`
-      <div class="admin-page-inner">
-        <div class="admin-page-header">
-          <div>
-            <div class="admin-page-title">📁 Project Manager</div>
-            <div class="admin-page-subtitle">All your projects — toggle "Show on Home" to control what visitors see</div>
-          </div>
-          <div class="admin-actions">
-            <button class="btn-form save" onclick="openDrawer(null)">+ Add Project</button>
-            <a href="#/admin" class="btn-secondary" style="font-size:.8rem;padding:.5rem 1.1rem;text-decoration:none;display:inline-block">⚙ Settings</a>
-            <button class="btn-form cancel" onclick="doLogout()">Logout</button>
-          </div>
+  wrap.innerHTML=`
+    <div class="admin-page-inner">
+      <div class="admin-page-header">
+        <div>
+          <div class="admin-page-title">📁 Project Manager</div>
+          <div class="admin-page-subtitle">All your projects — toggle "Show on Home" to control what visitors see</div>
         </div>
-        <div id="adminTableWrap"></div>
-      </div>`;
-  }
+        <div class="admin-actions">
+          <button class="btn-form save" onclick="openDrawer(null)">+ Add Project</button>
+          <a href="#/admin" class="btn-secondary" style="font-size:.8rem;padding:.5rem 1.1rem;text-decoration:none;display:inline-block">⚙ Settings</a>
+          <button class="btn-form cancel" onclick="doLogout()">Logout</button>
+        </div>
+      </div>
+      <div id="adminTableWrap"></div>
+    </div>`;
   renderAdminTable();
 }
 
@@ -926,9 +937,15 @@ window.doLogin=async()=>{
   if(err) err.style.display='none';
   try{
     await signInWithEmailAndPassword(auth,e,p);
-    location.hash='#/projects';
+    // onAuthStateChanged will fire and call renderProjectsManagePage
+    // but if hash is already #/projects, force it
+    if(location.hash.startsWith('#/projects') || location.hash.startsWith('#/admin')){
+      renderProjectsManagePage();
+    } else {
+      location.hash='#/projects';
+    }
   }
-  catch{ if(err){ err.textContent='Incorrect email or password.'; err.style.display='block'; } }
+  catch(e2){ if(err){ err.textContent='Incorrect email or password.'; err.style.display='block'; } }
 };
 window.doLogout=async()=>{ await signOut(auth); location.hash='#/'; toast('Logged out.'); };
 
