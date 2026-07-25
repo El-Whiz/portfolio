@@ -339,7 +339,7 @@ footer span{color:var(--neon);}
   <a class="nav-logo" href="#/" id="navLogo"><span>~/</span>devportfolio</a>
   <div class="nav-links">
     <a href="#/" id="navHome">home</a>
-    <a href="#/projects" id="navProjects">projects</a>
+    <a href="#/projects" id="navProjects" style="display:none">projects</a>
     <a href="#/admin" class="btn-admin" id="adminBtn">⚙ admin</a>
   </div>
 </nav>
@@ -356,7 +356,7 @@ footer span{color:var(--neon);}
         <p class="hero-sub" id="heroSub">Building the engines that power the web.</p>
         <p class="hero-desc" id="heroDesc">I design and build robust, scalable backend systems — APIs, databases, microservices, and the infrastructure that keeps things running at scale.</p>
         <div class="hero-cta">
-          <a href="#/projects" class="btn-primary">View Projects →</a>
+          <a href="#homeProjects" class="btn-primary">View Projects →</a>
           <a href="#about" class="btn-secondary">About Me</a>
         </div>
         <div class="hero-socials" id="heroSocials"></div>
@@ -399,23 +399,27 @@ footer span{color:var(--neon);}
       </div>
     </div>
   </section>
-  <footer>Built with <span>♥</span> &amp; <span>{ }</span> — Powered by Firebase</footer>
-</div>
 
-<!-- ═══ PROJECTS PAGE ═══ -->
-<div class="page" id="projectsPage">
-  <div class="section-wrap">
+  <!-- PUBLIC PROJECTS SECTION -->
+  <section id="homeProjects" class="section-wrap" style="border-top:1px solid var(--border);">
     <div class="section-header projects-page-header">
       <div>
         <div class="section-eyebrow">WORK</div>
-        <h2 class="section-title">Backend <span>Projects</span></h2>
+        <h2 class="section-title">My <span>Projects</span></h2>
       </div>
     </div>
-    <div class="filter-bar" id="filterBar"></div>
-    <div class="projects-grid" id="projectsGrid">
+    <div class="filter-bar" id="homeFilterBar"></div>
+    <div class="projects-grid" id="homeProjectsGrid">
       <div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">Loading…</div></div>
     </div>
-  </div>
+  </section>
+
+  <footer>Built with <span>♥</span> &amp; <span>{ }</span> — Powered by Firebase</footer>
+</div>
+
+<!-- ═══ PROJECTS MANAGEMENT PAGE (admin only) ═══ -->
+<div class="page" id="projectsPage">
+  <div id="projectsPageContent"></div>
 </div>
 
 <!-- ═══ ADMIN PAGE ═══ -->
@@ -548,14 +552,14 @@ function route(){
   const hash = location.hash || '#/';
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
-  if(hash.startsWith('#/admin')){
+  if(hash.startsWith('#/projects')){
+    $('projectsPage').classList.add('active');
+    $('navProjects').classList.add('active');
+    renderProjectsManagePage();
+  } else if(hash.startsWith('#/admin')){
     $('adminPage').classList.add('active');
     $('adminBtn').classList.add('active');
     renderAdminPage();
-  } else if(hash.startsWith('#/projects')){
-    $('projectsPage').classList.add('active');
-    $('navProjects').classList.add('active');
-    renderPublicProjects();
   } else {
     $('homePage').classList.add('active');
     $('navHome').classList.add('active');
@@ -567,10 +571,19 @@ window.addEventListener('hashchange', route);
 onAuthStateChanged(auth, user=>{
   currentUser = user;
   const btn=$('adminBtn');
-  if(user){ btn.textContent='⚙ dashboard'; btn.classList.add('authed'); }
-  else     { btn.textContent='⚙ admin';    btn.classList.remove('authed'); }
-  // if on admin page, re-render
+  const projLink=$('navProjects');
+  if(user){
+    btn.textContent='⚙ settings'; btn.classList.add('authed');
+    if(projLink){ projLink.style.display=''; projLink.textContent='projects'; }
+  } else {
+    btn.textContent='⚙ admin'; btn.classList.remove('authed');
+    if(projLink) projLink.style.display='none';
+    // if visitor somehow landed on admin-only pages, kick to home
+    if(location.hash.startsWith('#/projects') || location.hash.startsWith('#/admin'))
+      location.hash='#/';
+  }
   if(location.hash.startsWith('#/admin')) renderAdminPage();
+  if(location.hash.startsWith('#/projects')) renderProjectsManagePage();
 });
 
 // ── realtime projects ─────────────────────────────────────────────────────
@@ -579,11 +592,11 @@ onSnapshot(query(collection(db,'projects'),orderBy('createdAt','desc')), snap=>{
   const visible = projects.filter(p=>p.visible);
   $('statProjects').textContent = visible.length;
   const tProj=$('termProj');
-  if(tProj) tProj.textContent = visible.length ? visible.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ') : '(none yet)';
-  // refresh whichever page is active
-  if($('projectsPage').classList.contains('active')) renderPublicProjects();
+  if(tProj) tProj.textContent = projects.length ? projects.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ') : '(none yet)';
+  // refresh active views
+  renderHomeProjects();
+  if($('projectsPage').classList.contains('active')) renderProjectsManagePage();
   if($('adminPage').classList.contains('active')) renderAdminPage();
-  if(location.hash.startsWith('#/admin')) renderAdminTable();
 });
 
 // ── load profile ──────────────────────────────────────────────────────────
@@ -668,26 +681,24 @@ window.galGoto=i=>{
   document.querySelectorAll('.gallery-thumb').forEach((el,j)=>el.classList.toggle('active',j===i));
 };
 
-// ── public projects page ──────────────────────────────────────────────────
-function allTags(){
+// ── home projects (public — visible only) ────────────────────────────────
+function allVisibleTags(){
   const set=new Set();
   projects.filter(p=>p.visible).forEach(p=>(p.tags||[]).forEach(t=>set.add(t)));
   return [...set].sort();
 }
 
-function renderFilterBar(){
-  const bar=$('filterBar'); if(!bar) return;
-  const tags=allTags();
-  if(!tags.length){ bar.innerHTML=''; return; }
-  bar.innerHTML=`<span class="filter-label">Filter:</span>
-    <button class="filter-tag ${activeFilter==='all'?'active':''}" onclick="setFilter('all')">All</button>
-    ${tags.map(t=>`<button class="filter-tag ${activeFilter===t?'active':''}" onclick="setFilter('${esc(t)}')">${esc(t)}</button>`).join('')}`;
-}
-window.setFilter=t=>{ activeFilter=t; renderPublicProjects(); };
-
-function renderPublicProjects(){
-  renderFilterBar();
-  const grid=$('projectsGrid'); if(!grid) return;
+function renderHomeProjects(){
+  const bar=$('homeFilterBar'), grid=$('homeProjectsGrid');
+  if(!grid) return;
+  const tags=allVisibleTags();
+  if(bar){
+    bar.innerHTML= tags.length
+      ? `<span class="filter-label">Filter:</span>
+         <button class="filter-tag ${activeFilter==='all'?'active':''}" onclick="setFilter('all')">All</button>
+         ${tags.map(t=>`<button class="filter-tag ${activeFilter===t?'active':''}" onclick="setFilter('${esc(t)}')">${esc(t)}</button>`).join('')}`
+      : '';
+  }
   let list=projects.filter(p=>p.visible);
   if(activeFilter!=='all') list=list.filter(p=>(p.tags||[]).includes(activeFilter));
   if(!list.length){
@@ -695,6 +706,38 @@ function renderPublicProjects(){
     return;
   }
   grid.innerHTML=list.map(p=>projectCardHTML(p)).join('');
+}
+window.setFilter=t=>{ activeFilter=t; renderHomeProjects(); };
+
+// ── admin projects management page (#/projects — admin only) ──────────────
+function renderProjectsManagePage(){
+  const wrap=$('projectsPageContent'); if(!wrap) return;
+  if(!currentUser){
+    wrap.innerHTML=`<div class="admin-login-wall"><div class="admin-login-box">
+      <h2>⚙ Admin Login</h2><p>You need to log in to manage projects.</p>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="liEmail" placeholder="you@example.com"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="liPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="field-err" id="liErr" style="display:none"></div>
+      <div class="form-actions" style="margin-top:1rem"><button class="btn-form save" onclick="doLogin()">Login</button></div>
+    </div></div>`;
+    setTimeout(()=>$('liEmail')?.focus(),60);
+    return;
+  }
+  wrap.innerHTML=`
+    <div class="admin-page-inner">
+      <div class="admin-page-header">
+        <div>
+          <div class="admin-page-title">📁 Project Manager</div>
+          <div class="admin-page-subtitle">Control which projects are visible to the public</div>
+        </div>
+        <div class="admin-actions">
+          <button class="btn-form save" onclick="openDrawer(null)">+ Add Project</button>
+          <button class="btn-form cancel" onclick="doLogout()">Logout</button>
+        </div>
+      </div>
+      <div id="adminTableWrap"></div>
+    </div>`;
+  renderAdminTable();
 }
 
 function projectCardHTML(p){
@@ -774,25 +817,39 @@ window.closeProjectModal=()=>{ $('projectModal').classList.remove('open'); const
 window.openPreview=url=>{ $('previewUrl').textContent=url; $('previewFrame').src=url; $('previewModal').classList.add('open'); };
 window.closePreview=()=>{ $('previewModal').classList.remove('open'); $('previewFrame').src='about:blank'; };
 
-// ── ADMIN PAGE ────────────────────────────────────────────────────────────
+// ── ADMIN PAGE (#/admin — profile settings) ───────────────────────────────
 function renderAdminPage(){
   if(!currentUser){ renderAdminLoginWall(); return; }
   $('adminPageContent').innerHTML=`
     <div class="admin-page-inner">
       <div class="admin-page-header">
         <div>
-          <div class="admin-page-title">⚙ Admin Dashboard</div>
-          <div class="admin-page-subtitle">Manage projects, visibility, and profile</div>
+          <div class="admin-page-title">⚙ Admin Settings</div>
+          <div class="admin-page-subtitle">Edit your profile and site content</div>
         </div>
         <div class="admin-actions">
-          <button class="btn-form save" onclick="openDrawer(null)">+ Add Project</button>
-          <button class="btn-secondary" style="font-size:.8rem;padding:.5rem 1.1rem" onclick="openProfileModal()">✦ Edit Profile</button>
+          <a href="#/projects" class="btn-form save" style="text-decoration:none;display:inline-block">📁 Manage Projects</a>
           <button class="btn-form cancel" onclick="doLogout()">Logout</button>
         </div>
       </div>
-      <div id="adminTableWrap"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:1rem;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;color:var(--neon);margin-bottom:.5rem;">✦ Profile &amp; Bio</div>
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Edit your name, role, bio, photos, skills, and social links.</p>
+          <button class="btn-form save" onclick="openProfileModal()">Edit Profile</button>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;color:var(--neon);margin-bottom:.5rem;">📁 Projects</div>
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Add, edit, delete projects and control which ones visitors can see.</p>
+          <a href="#/projects" class="btn-form save" style="text-decoration:none;display:inline-block">Manage Projects</a>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;color:var(--neon);margin-bottom:.5rem;">🌐 Public Site</div>
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Preview your portfolio exactly as visitors see it.</p>
+          <a href="#/" class="btn-secondary" style="font-size:.8rem;padding:.5rem 1.1rem;text-decoration:none;display:inline-block">View Home</a>
+        </div>
+      </div>
     </div>`;
-  renderAdminTable();
 }
 
 function renderAdminTable(){
@@ -860,7 +917,10 @@ function renderAdminLoginWall(){
 window.doLogin=async()=>{
   const e=$('liEmail')?.value.trim(), p=$('liPw')?.value, err=$('liErr');
   if(err) err.style.display='none';
-  try{ await signInWithEmailAndPassword(auth,e,p); }
+  try{
+    await signInWithEmailAndPassword(auth,e,p);
+    location.hash='#/projects';
+  }
   catch{ if(err){ err.textContent='Incorrect email or password.'; err.style.display='block'; } }
 };
 window.doLogout=async()=>{ await signOut(auth); location.hash='#/'; toast('Logged out.'); };
