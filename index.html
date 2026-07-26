@@ -94,11 +94,23 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 /* PROJECTS PAGE */
 .projects-page-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;}
 /* filter bar */
-.filter-bar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:2rem;}
-.filter-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-right:.25rem;}
-.filter-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.25rem .7rem;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:20px;cursor:pointer;transition:all .18s;}
-.filter-tag:hover{border-color:var(--neon);color:var(--neon);}
-.filter-tag.active{background:rgba(0,255,157,.1);border-color:var(--neon);color:var(--neon);}
+.filter-bar{display:flex;flex-direction:column;gap:.85rem;margin-bottom:2rem;}
+.filter-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;}
+.filter-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-right:.1rem;flex-shrink:0;}
+.filter-chip{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.25rem .7rem;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:20px;cursor:pointer;transition:all .18s;user-select:none;}
+.filter-chip:hover{border-color:var(--neon);color:var(--neon);}
+.filter-chip.active{background:rgba(0,255,157,.12);border-color:var(--neon);color:var(--neon);}
+.filter-chip.status-live.active{background:rgba(0,255,157,.12);border-color:var(--neon);color:var(--neon);}
+.filter-chip.status-wip.active{background:rgba(245,158,11,.12);border-color:#fbbf24;color:#fbbf24;}
+.filter-chip.status-archived.active{background:rgba(100,116,139,.12);border-color:var(--muted);color:var(--muted);}
+.filter-clear{font-family:'JetBrains Mono',monospace;font-size:.65rem;background:transparent;border:none;color:#f87171;cursor:pointer;padding:.25rem .5rem;letter-spacing:.04em;transition:opacity .18s;}
+.filter-clear:hover{opacity:.7;}
+/* active filter share banner */
+.filter-share-bar{display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;background:rgba(0,255,157,.05);border:1px solid rgba(0,255,157,.15);border-radius:6px;flex-wrap:wrap;}
+.filter-share-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--neon);letter-spacing:.05em;white-space:nowrap;}
+.filter-share-url{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.filter-share-copy{font-family:'JetBrains Mono',monospace;font-size:.68rem;background:var(--neon);color:#0a0a0f;border:none;padding:.3rem .75rem;border-radius:4px;cursor:pointer;font-weight:600;flex-shrink:0;transition:background .18s;}
+.filter-share-copy:hover{background:#00e085;}
 /* project cards */
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;}
 .project-card{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:all .25s;cursor:pointer;position:relative;}
@@ -521,7 +533,48 @@ function fileIcon(name){
 // ── state ─────────────────────────────────────────────────────────────────
 let currentUser = null;
 let projects    = [];
-let activeFilter = 'all';
+
+// multi-filter state — read from / written to URL hash params
+function getFilters(){
+  try{
+    const h = location.hash || '#/';
+    const qi = h.indexOf('?');
+    if(qi === -1) return { tags:[], status:[] };
+    const params = new URLSearchParams(h.slice(qi+1));
+    const tags   = params.get('tags')  ? params.get('tags').split(',').map(s=>s.trim()).filter(Boolean) : [];
+    const status = params.get('status')? params.get('status').split(',').map(s=>s.trim()).filter(Boolean) : [];
+    return { tags, status };
+  } catch(e){ return { tags:[], status:[] }; }
+}
+
+function setFilters(tags, status){
+  const params = new URLSearchParams();
+  if(tags.length)   params.set('tags',   tags.join(','));
+  if(status.length) params.set('status', status.join(','));
+  const qs = params.toString();
+  const newHash = '#/' + (qs ? '?'+qs : '');
+  // replace so filter changes don't stack in browser history
+  history.replaceState(null,'', newHash);
+  renderHomeProjects();
+}
+
+function toggleTag(tag){
+  const f = getFilters();
+  const idx = f.tags.indexOf(tag);
+  if(idx === -1) f.tags.push(tag);
+  else f.tags.splice(idx,1);
+  setFilters(f.tags, f.status);
+}
+
+function toggleStatus(s){
+  const f = getFilters();
+  const idx = f.status.indexOf(s);
+  if(idx === -1) f.status.push(s);
+  else f.status.splice(idx,1);
+  setFilters(f.tags, f.status);
+}
+
+function clearFilters(){ setFilters([],[]); }
 
 let editingId = null;
 let exMedia   = { images:[], videos:[], files:[] };
@@ -561,8 +614,10 @@ function route(){
     $('adminBtn').classList.add('active');
     renderAdminPage();
   } else {
+    // home — may have ?tags=...&status=... params
     $('homePage').classList.add('active');
     $('navHome').classList.add('active');
+    renderHomeProjects();
   }
 }
 window.addEventListener('hashchange', route);
@@ -697,33 +752,100 @@ window.galGoto=i=>{
   document.querySelectorAll('.gallery-thumb').forEach((el,j)=>el.classList.toggle('active',j===i));
 };
 
-// ── home projects (public — visible only) ────────────────────────────────
+// ── home projects (public — visible only, multi-filter) ───────────────────
 function allVisibleTags(){
   const set=new Set();
   projects.filter(p=>p.visible !== false).forEach(p=>(p.tags||[]).forEach(t=>set.add(t)));
   return [...set].sort();
 }
+function allVisibleStatuses(){
+  const set=new Set();
+  projects.filter(p=>p.visible !== false).forEach(p=>{ if(p.status) set.add(p.status); });
+  return [...set];
+}
 
 function renderHomeProjects(){
-  const bar=$('homeFilterBar'), grid=$('homeProjectsGrid');
+  const bar  = $('homeFilterBar');
+  const grid = $('homeProjectsGrid');
   if(!grid) return;
-  const tags=allVisibleTags();
+
+  const f    = getFilters();
+  const tags = allVisibleTags();
+  const statuses = allVisibleStatuses();
+  const hasFilters = f.tags.length > 0 || f.status.length > 0;
+
+  // ── build filter bar ────────────────────────────────────────────────────
   if(bar){
-    bar.innerHTML= tags.length
-      ? `<span class="filter-label">Filter:</span>
-         <button class="filter-tag ${activeFilter==='all'?'active':''}" onclick="setFilter('all')">All</button>
-         ${tags.map(t=>`<button class="filter-tag ${activeFilter===t?'active':''}" onclick="setFilter('${esc(t)}')">${esc(t)}</button>`).join('')}`
-      : '';
+    let html = '';
+
+    // tag row
+    if(tags.length){
+      html += `<div class="filter-row">
+        <span class="filter-label">Tags</span>
+        ${tags.map(t=>{
+          const on = f.tags.includes(t);
+          return `<button class="filter-chip ${on?'active':''}" onclick="toggleTag('${esc(t)}')">${esc(t)}</button>`;
+        }).join('')}
+      </div>`;
+    }
+
+    // status row
+    if(statuses.length){
+      const statusMeta = { live:'● Live', wip:'WIP', archived:'Archived' };
+      html += `<div class="filter-row">
+        <span class="filter-label">Status</span>
+        ${statuses.map(s=>{
+          const on = f.status.includes(s);
+          return `<button class="filter-chip status-${s} ${on?'active':''}" onclick="toggleStatus('${esc(s)}')">${statusMeta[s]||s}</button>`;
+        }).join('')}
+      </div>`;
+    }
+
+    // active filters: share bar + clear
+    if(hasFilters){
+      const shareUrl = location.origin + location.pathname + location.search + location.hash;
+      const activeLabels = [
+        ...f.tags,
+        ...f.status.map(s=>({live:'Live',wip:'WIP',archived:'Archived'}[s]||s))
+      ].join(', ');
+      html += `<div class="filter-share-bar">
+        <span class="filter-share-label">🔗 Shareable link — filters: ${esc(activeLabels)}</span>
+        <span class="filter-share-url" id="shareUrlText">${esc(shareUrl)}</span>
+        <button class="filter-share-copy" onclick="copyShareUrl()">Copy Link</button>
+        <button class="filter-clear" onclick="clearFilters()">✕ Clear</button>
+      </div>`;
+    }
+
+    bar.innerHTML = html;
   }
-  let list=projects.filter(p=>p.visible !== false);
-  if(activeFilter!=='all') list=list.filter(p=>(p.tags||[]).includes(activeFilter));
+
+  // ── filter projects ─────────────────────────────────────────────────────
+  let list = projects.filter(p=>p.visible !== false);
+  // tags: project must have ALL selected tags (AND logic)
+  if(f.tags.length) list = list.filter(p=> f.tags.every(t=>(p.tags||[]).includes(t)));
+  // status: project must match ANY selected status (OR logic)
+  if(f.status.length) list = list.filter(p=> f.status.includes(p.status||'wip'));
+
   if(!list.length){
-    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">${activeFilter!=='all'?'No projects with this tag':'No projects yet'}</div><div class="empty-sub">Check back soon.</div></div>`;
+    const msg = hasFilters ? 'No projects match these filters' : 'No projects yet';
+    const sub = hasFilters ? '<button class="filter-clear" style="font-size:.82rem;margin-top:.5rem" onclick="clearFilters()">Clear filters</button>' : 'Check back soon.';
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">${msg}</div><div class="empty-sub">${sub}</div></div>`;
     return;
   }
-  grid.innerHTML=list.map(p=>projectCardHTML(p)).join('');
+  grid.innerHTML = list.map(p=>projectCardHTML(p)).join('');
 }
-window.setFilter=t=>{ activeFilter=t; renderHomeProjects(); };
+
+window.toggleTag    = toggleTag;
+window.toggleStatus = toggleStatus;
+window.clearFilters = clearFilters;
+window.copyShareUrl = () => {
+  const url = location.origin + location.pathname + location.search + location.hash;
+  navigator.clipboard.writeText(url).then(()=>toast('Link copied!')).catch(()=>{
+    // fallback
+    const el = $('shareUrlText');
+    if(el){ const r=document.createRange(); r.selectNode(el); window.getSelection().removeAllRanges(); window.getSelection().addRange(r); document.execCommand('copy'); toast('Link copied!'); }
+  });
+};
 
 // ── admin projects management page (#/projects — admin only) ──────────────
 function renderProjectsManagePage(){
