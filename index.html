@@ -320,7 +320,33 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2rem;display:f
 .size-preview{background:rgba(0,255,157,.25);border-radius:3px;height:28px;}
 .size-preview--small{width:28px;}.size-preview--medium{width:42px;}.size-preview--large{width:58px;}
 
-footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.05em;}
+/* SHARED VIEW PAGE */
+.view-page-inner{max-width:1240px;margin:0 auto;padding:2rem;}
+.view-banner{display:flex;align-items:center;gap:1rem;padding:.85rem 1.25rem;background:rgba(0,255,157,.05);border:1px solid rgba(0,255,157,.18);border-radius:8px;margin-bottom:2rem;flex-wrap:wrap;}
+.view-banner-icon{font-size:1.4rem;flex-shrink:0;}
+.view-banner-text{flex:1;min-width:0;}
+.view-banner-title{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;color:var(--neon);}
+.view-banner-sub{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);margin-top:.2rem;}
+.view-filter-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem;}
+.view-filter-chip{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.15rem .5rem;background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.25);color:var(--neon);border-radius:12px;}
+.view-filter-chip.status{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#fbbf24;}
+.view-404{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:1rem;}
+.view-404-code{font-family:'JetBrains Mono',monospace;font-size:5rem;font-weight:700;color:var(--border);line-height:1;}
+.view-404-title{font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--muted);}
+.view-404-sub{font-size:.85rem;color:var(--muted);max-width:360px;line-height:1.6;}
+
+/* SHARE MODAL */
+.share-filter-group{margin-bottom:1.25rem;}
+.share-filter-group-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;}
+.share-chips{display:flex;flex-wrap:wrap;gap:.4rem;}
+.share-chip{font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.25rem .7rem;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:20px;cursor:pointer;transition:all .18s;user-select:none;}
+.share-chip:hover{border-color:var(--neon);color:var(--neon);}
+.share-chip.active{background:rgba(0,255,157,.12);border-color:var(--neon);color:var(--neon);}
+.share-chip.status.active{background:rgba(245,158,11,.12);border-color:#fbbf24;color:#fbbf24;}
+.share-generated{margin-top:1.25rem;padding:1rem;background:var(--card);border:1px solid var(--border);border-radius:6px;display:none;}
+.share-generated-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--neon);margin-bottom:.5rem;}
+.share-generated-url{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text);word-break:break-all;line-height:1.6;margin-bottom:.75rem;}
+.share-generated-actions{display:flex;gap:.5rem;}
 footer span{color:var(--neon);}
 .toast{position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--card);border:1px solid var(--neon);border-radius:6px;padding:.7rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--neon);transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;}
 .toast.show{transform:translateY(0);opacity:1;}
@@ -412,7 +438,7 @@ footer span{color:var(--neon);}
     </div>
   </section>
 
-  <!-- PUBLIC PROJECTS SECTION -->
+<!-- PUBLIC PROJECTS SECTION — no filter bar, just grid -->
   <section id="homeProjects" class="section-wrap" style="border-top:1px solid var(--border);">
     <div class="section-header projects-page-header">
       <div>
@@ -420,13 +446,17 @@ footer span{color:var(--neon);}
         <h2 class="section-title">My <span>Projects</span></h2>
       </div>
     </div>
-    <div class="filter-bar" id="homeFilterBar"></div>
     <div class="projects-grid" id="homeProjectsGrid">
       <div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">Loading…</div></div>
     </div>
   </section>
 
   <footer>Built with <span>♥</span> &amp; <span>{ }</span> — Powered by Firebase</footer>
+</div>
+
+<!-- ═══ SHARED FILTERED VIEW (token-based, tamper-proof) ═══ -->
+<div class="page" id="viewPage">
+  <div id="viewPageContent"></div>
 </div>
 
 <!-- ═══ PROJECTS MANAGEMENT PAGE (admin only) ═══ -->
@@ -467,6 +497,11 @@ footer span{color:var(--neon);}
 <!-- PROJECT DRAWER (add/edit) -->
 <div class="drawer-overlay" id="drawerOverlay">
   <div class="drawer" id="drawerContent"></div>
+</div>
+
+<!-- SHARE FILTERED LINK MODAL -->
+<div class="modal-overlay" id="shareModal">
+  <div class="admin-modal-box" id="shareModalContent"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -534,48 +569,6 @@ function fileIcon(name){
 let currentUser = null;
 let projects    = [];
 
-// multi-filter state — read from / written to URL hash params
-function getFilters(){
-  try{
-    const h = location.hash || '#/';
-    const qi = h.indexOf('?');
-    if(qi === -1) return { tags:[], status:[] };
-    const params = new URLSearchParams(h.slice(qi+1));
-    const tags   = params.get('tags')  ? params.get('tags').split(',').map(s=>s.trim()).filter(Boolean) : [];
-    const status = params.get('status')? params.get('status').split(',').map(s=>s.trim()).filter(Boolean) : [];
-    return { tags, status };
-  } catch(e){ return { tags:[], status:[] }; }
-}
-
-function setFilters(tags, status){
-  const params = new URLSearchParams();
-  if(tags.length)   params.set('tags',   tags.join(','));
-  if(status.length) params.set('status', status.join(','));
-  const qs = params.toString();
-  const newHash = '#/' + (qs ? '?'+qs : '');
-  // replace so filter changes don't stack in browser history
-  history.replaceState(null,'', newHash);
-  renderHomeProjects();
-}
-
-function toggleTag(tag){
-  const f = getFilters();
-  const idx = f.tags.indexOf(tag);
-  if(idx === -1) f.tags.push(tag);
-  else f.tags.splice(idx,1);
-  setFilters(f.tags, f.status);
-}
-
-function toggleStatus(s){
-  const f = getFilters();
-  const idx = f.status.indexOf(s);
-  if(idx === -1) f.status.push(s);
-  else f.status.splice(idx,1);
-  setFilters(f.tags, f.status);
-}
-
-function clearFilters(){ setFilters([],[]); }
-
 let editingId = null;
 let exMedia   = { images:[], videos:[], files:[] };
 let queued    = { images:[], videos:[], files:[] };
@@ -603,18 +596,47 @@ let profile = { ...DEFAULT_PROFILE };
 // ── routing ───────────────────────────────────────────────────────────────
 function route(){
   const hash = location.hash || '#/';
+
+  // ── VIEW PAGE LOCK: if a view token is active, block ALL other navigation
+  if(window._viewToken){
+    // only allow if hash is still exactly this token's view URL
+    const expectedHash = `#/view/${window._viewToken}`;
+    if(!hash.startsWith(expectedHash)){
+      // force back to the token URL and show 404 for attempted escape
+      history.replaceState(null,'', expectedHash);
+      const wrap = $('viewPageContent');
+      if(wrap) wrap.innerHTML = `<div class="view-page-inner">
+        <div class="view-404">
+          <div class="view-404-code">404</div>
+          <div class="view-404-title">Access denied</div>
+          <div class="view-404-sub">This link only shows a specific filtered view. You cannot navigate to other pages from here.</div>
+        </div></div>`;
+      return;
+    }
+  }
+
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
-  if(hash.startsWith('#/projects')){
+
+  if(hash.startsWith('#/view/')){
+    $('viewPage').classList.add('active');
+    const token = hash.slice('#/view/'.length).split('?')[0];
+    renderViewPage(token);
+  } else if(hash.startsWith('#/projects')){
+    window._viewToken = null;
+    document.querySelector('nav').style.display = '';
     $('projectsPage').classList.add('active');
     $('navProjects').classList.add('active');
     renderProjectsManagePage();
   } else if(hash.startsWith('#/admin')){
+    window._viewToken = null;
+    document.querySelector('nav').style.display = '';
     $('adminPage').classList.add('active');
     $('adminBtn').classList.add('active');
     renderAdminPage();
   } else {
-    // home — may have ?tags=...&status=... params
+    window._viewToken = null;
+    document.querySelector('nav').style.display = '';
     $('homePage').classList.add('active');
     $('navHome').classList.add('active');
     renderHomeProjects();
@@ -667,6 +689,11 @@ onSnapshot(collection(db,'projects'), snap=>{
   if($('projectsPage').classList.contains('active')){
     if($('adminTableWrap')) renderAdminTable();
     else renderProjectsManagePage();
+  }
+  // refresh view page if active (projects may have changed)
+  if($('viewPage').classList.contains('active')){
+    const token = location.hash.slice('#/view/'.length).split('?')[0];
+    if(token) renderViewPage(token);
   }
 });
 
@@ -752,100 +779,17 @@ window.galGoto=i=>{
   document.querySelectorAll('.gallery-thumb').forEach((el,j)=>el.classList.toggle('active',j===i));
 };
 
-// ── home projects (public — visible only, multi-filter) ───────────────────
-function allVisibleTags(){
-  const set=new Set();
-  projects.filter(p=>p.visible !== false).forEach(p=>(p.tags||[]).forEach(t=>set.add(t)));
-  return [...set].sort();
-}
-function allVisibleStatuses(){
-  const set=new Set();
-  projects.filter(p=>p.visible !== false).forEach(p=>{ if(p.status) set.add(p.status); });
-  return [...set];
-}
-
+// ── home projects (all visible, no filtering) ─────────────────────────────
 function renderHomeProjects(){
-  const bar  = $('homeFilterBar');
   const grid = $('homeProjectsGrid');
   if(!grid) return;
-
-  const f    = getFilters();
-  const tags = allVisibleTags();
-  const statuses = allVisibleStatuses();
-  const hasFilters = f.tags.length > 0 || f.status.length > 0;
-
-  // ── build filter bar ────────────────────────────────────────────────────
-  if(bar){
-    let html = '';
-
-    // tag row
-    if(tags.length){
-      html += `<div class="filter-row">
-        <span class="filter-label">Tags</span>
-        ${tags.map(t=>{
-          const on = f.tags.includes(t);
-          return `<button class="filter-chip ${on?'active':''}" onclick="toggleTag('${esc(t)}')">${esc(t)}</button>`;
-        }).join('')}
-      </div>`;
-    }
-
-    // status row
-    if(statuses.length){
-      const statusMeta = { live:'● Live', wip:'WIP', archived:'Archived' };
-      html += `<div class="filter-row">
-        <span class="filter-label">Status</span>
-        ${statuses.map(s=>{
-          const on = f.status.includes(s);
-          return `<button class="filter-chip status-${s} ${on?'active':''}" onclick="toggleStatus('${esc(s)}')">${statusMeta[s]||s}</button>`;
-        }).join('')}
-      </div>`;
-    }
-
-    // active filters: share bar + clear
-    if(hasFilters){
-      const shareUrl = location.origin + location.pathname + location.search + location.hash;
-      const activeLabels = [
-        ...f.tags,
-        ...f.status.map(s=>({live:'Live',wip:'WIP',archived:'Archived'}[s]||s))
-      ].join(', ');
-      html += `<div class="filter-share-bar">
-        <span class="filter-share-label">🔗 Shareable link — filters: ${esc(activeLabels)}</span>
-        <span class="filter-share-url" id="shareUrlText">${esc(shareUrl)}</span>
-        <button class="filter-share-copy" onclick="copyShareUrl()">Copy Link</button>
-        <button class="filter-clear" onclick="clearFilters()">✕ Clear</button>
-      </div>`;
-    }
-
-    bar.innerHTML = html;
-  }
-
-  // ── filter projects ─────────────────────────────────────────────────────
-  let list = projects.filter(p=>p.visible !== false);
-  // tags: project must have ALL selected tags (AND logic)
-  if(f.tags.length) list = list.filter(p=> f.tags.every(t=>(p.tags||[]).includes(t)));
-  // status: project must match ANY selected status (OR logic)
-  if(f.status.length) list = list.filter(p=> f.status.includes(p.status||'wip'));
-
+  const list = projects.filter(p=>p.visible !== false);
   if(!list.length){
-    const msg = hasFilters ? 'No projects match these filters' : 'No projects yet';
-    const sub = hasFilters ? '<button class="filter-clear" style="font-size:.82rem;margin-top:.5rem" onclick="clearFilters()">Clear filters</button>' : 'Check back soon.';
-    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">${msg}</div><div class="empty-sub">${sub}</div></div>`;
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">No projects yet</div><div class="empty-sub">Check back soon.</div></div>`;
     return;
   }
   grid.innerHTML = list.map(p=>projectCardHTML(p)).join('');
 }
-
-window.toggleTag    = toggleTag;
-window.toggleStatus = toggleStatus;
-window.clearFilters = clearFilters;
-window.copyShareUrl = () => {
-  const url = location.origin + location.pathname + location.search + location.hash;
-  navigator.clipboard.writeText(url).then(()=>toast('Link copied!')).catch(()=>{
-    // fallback
-    const el = $('shareUrlText');
-    if(el){ const r=document.createRange(); r.selectNode(el); window.getSelection().removeAllRanges(); window.getSelection().addRange(r); document.execCommand('copy'); toast('Link copied!'); }
-  });
-};
 
 // ── admin projects management page (#/projects — admin only) ──────────────
 function renderProjectsManagePage(){
@@ -870,6 +814,7 @@ function renderProjectsManagePage(){
         </div>
         <div class="admin-actions">
           <button class="btn-form save" onclick="openDrawer(null)">+ Add Project</button>
+          <button class="btn-secondary" style="font-size:.8rem;padding:.5rem 1.1rem" onclick="openShareModal()">🔗 Share Filtered View</button>
           <a href="#/admin" class="btn-secondary" style="font-size:.8rem;padding:.5rem 1.1rem;text-decoration:none;display:inline-block">⚙ Settings</a>
           <button class="btn-form cancel" onclick="doLogout()">Logout</button>
         </div>
@@ -1095,6 +1040,179 @@ window.confirmDelete=async id=>{
     closeProjectModal(); toast('Project deleted.');
   } catch(e){ toast('Error: '+e.message,true); }
 };
+
+// ── SHARE FILTERED LINK MODAL ─────────────────────────────────────────────
+let shareSelectedTags   = [];
+let shareSelectedStatus = [];
+
+window.openShareModal = () => {
+  shareSelectedTags   = [];
+  shareSelectedStatus = [];
+  $('shareModal').classList.add('open');
+  renderShareModal();
+};
+window.closeShareModal = () => { $('shareModal').classList.remove('open'); };
+
+function allProjectTags(){
+  const set = new Set();
+  projects.forEach(p=>(p.tags||[]).forEach(t=>set.add(t)));
+  return [...set].sort();
+}
+function allProjectStatuses(){
+  const set = new Set();
+  projects.forEach(p=>{ if(p.status) set.add(p.status); });
+  return [...set];
+}
+
+function renderShareModal(){
+  const tags     = allProjectTags();
+  const statuses = allProjectStatuses();
+  const statusMeta = { live:'● Live', wip:'WIP', archived:'Archived' };
+  $('shareModalContent').innerHTML = `
+    <h2>🔗 Share Filtered View</h2>
+    <p class="admin-sub">Select filters — a tamper-proof link will be generated that shows only matching visible projects.</p>
+
+    ${tags.length ? `
+    <div class="share-filter-group">
+      <div class="share-filter-group-label">Tags <small style="font-family:'Inter',sans-serif;text-transform:none;letter-spacing:0;font-size:.7rem">(AND — project must have all selected)</small></div>
+      <div class="share-chips">
+        ${tags.map(t=>`<button class="share-chip ${shareSelectedTags.includes(t)?'active':''}"
+          onclick="toggleShareTag('${esc(t)}')">${esc(t)}</button>`).join('')}
+      </div>
+    </div>` : ''}
+
+    ${statuses.length ? `
+    <div class="share-filter-group">
+      <div class="share-filter-group-label">Status <small style="font-family:'Inter',sans-serif;text-transform:none;letter-spacing:0;font-size:.7rem">(OR — any selected status matches)</small></div>
+      <div class="share-chips">
+        ${statuses.map(s=>`<button class="share-chip status ${shareSelectedStatus.includes(s)?'active':''}"
+          onclick="toggleShareStatus('${esc(s)}')">${statusMeta[s]||s}</button>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="share-generated" id="shareGenerated">
+      <div class="share-generated-label">🔗 Shareable link (tamper-proof)</div>
+      <div class="share-generated-url" id="shareGenUrl"></div>
+      <div class="share-generated-actions">
+        <button class="btn-form save" onclick="copyGeneratedLink()">Copy Link</button>
+        <button class="btn-form cancel" onclick="closeShareModal()">Done</button>
+      </div>
+    </div>
+
+    <div class="form-actions" style="margin-top:1.25rem;">
+      <button class="btn-form save" id="genLinkBtn" onclick="generateShareLink()"
+        ${!shareSelectedTags.length && !shareSelectedStatus.length ? 'disabled style="opacity:.45"' : ''}>
+        Generate Link
+      </button>
+      <button class="btn-form cancel" onclick="closeShareModal()">Cancel</button>
+    </div>`;
+}
+
+window.toggleShareTag = t => {
+  const i = shareSelectedTags.indexOf(t);
+  if(i===-1) shareSelectedTags.push(t); else shareSelectedTags.splice(i,1);
+  renderShareModal();
+};
+window.toggleShareStatus = s => {
+  const i = shareSelectedStatus.indexOf(s);
+  if(i===-1) shareSelectedStatus.push(s); else shareSelectedStatus.splice(i,1);
+  renderShareModal();
+};
+
+window.generateShareLink = async () => {
+  if(!shareSelectedTags.length && !shareSelectedStatus.length){
+    toast('Select at least one filter first.', true); return;
+  }
+  const btn = $('genLinkBtn'); if(btn){ btn.disabled=true; btn.textContent='Generating…'; }
+  try{
+    // generate a random token
+    const token = Array.from(crypto.getRandomValues(new Uint8Array(18)))
+      .map(b=>b.toString(36).padStart(2,'0')).join('').slice(0,24);
+    // store filter config in Firestore under shareLinks/[token]
+    await setDoc(doc(db,'shareLinks',token),{
+      tags:   shareSelectedTags,
+      status: shareSelectedStatus,
+      createdAt: Date.now(),
+    });
+    const url = `${location.origin}${location.pathname}#/view/${token}`;
+    const genBox = $('shareGenerated');
+    const genUrl = $('shareGenUrl');
+    if(genBox) genBox.style.display='block';
+    if(genUrl) genUrl.textContent = url;
+    window._generatedShareUrl = url;
+    if(btn){ btn.disabled=false; btn.textContent='Regenerate'; }
+  } catch(e){
+    toast('Error generating link: '+e.message, true);
+    if(btn){ btn.disabled=false; btn.textContent='Generate Link'; }
+  }
+};
+
+window.copyGeneratedLink = () => {
+  const url = window._generatedShareUrl; if(!url) return;
+  navigator.clipboard.writeText(url)
+    .then(()=>toast('Link copied to clipboard!'))
+    .catch(()=>{ const el=$('shareGenUrl'); if(el){ const r=document.createRange(); r.selectNode(el); window.getSelection().removeAllRanges(); window.getSelection().addRange(r); document.execCommand('copy'); toast('Copied!'); } });
+};
+
+// ── VIEW PAGE (token-based shared filtered view) ──────────────────────────
+async function renderViewPage(token){
+  const wrap = $('viewPageContent'); if(!wrap) return;
+
+  // ── LOCK: hide nav, block all hash navigation away from this token ──────
+  document.querySelector('nav').style.display = 'none';
+  // override hashchange while on view page — any attempt to navigate away
+  // shows 404 unless the new hash is still this exact token
+  window._viewToken = token;
+
+  wrap.innerHTML = `<div class="view-page-inner"><div class="empty-state"><div class="empty-icon" style="animation:blink 1s step-end infinite">⚙</div><div class="empty-title">Loading…</div></div></div>`;
+
+  try{
+    const snap = await getDoc(doc(db,'shareLinks',token));
+    if(!snap.exists()){
+      wrap.innerHTML = `<div class="view-page-inner">
+        <div class="view-404">
+          <div class="view-404-code">404</div>
+          <div class="view-404-title">Link not found</div>
+          <div class="view-404-sub">This shared link doesn't exist or has been removed.</div>
+        </div></div>`;
+      return;
+    }
+
+    const { tags=[], status=[] } = snap.data();
+    const statusMeta = { live:'● Live', wip:'WIP', archived:'Archived' };
+
+    let list = projects.filter(p=>p.visible !== false);
+    if(tags.length)   list = list.filter(p=> tags.every(t=>(p.tags||[]).includes(t)));
+    if(status.length) list = list.filter(p=> status.includes(p.status||'wip'));
+
+    wrap.innerHTML = `
+      <div class="view-page-inner">
+        <div class="view-banner">
+          <div class="view-banner-icon">🔗</div>
+          <div class="view-banner-text">
+            <div class="view-banner-title">Filtered Portfolio View</div>
+            <div class="view-banner-sub">Showing projects that match the filters below</div>
+            <div class="view-filter-chips">
+              ${tags.map(t=>`<span class="view-filter-chip">${esc(t)}</span>`).join('')}
+              ${status.map(s=>`<span class="view-filter-chip status">${statusMeta[s]||s}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+        ${list.length
+          ? `<div class="projects-grid">${list.map(p=>projectCardHTML(p)).join('')}</div>`
+          : `<div class="empty-state"><div class="empty-icon">⚙</div>
+             <div class="empty-title">No projects match these filters</div>
+             <div class="empty-sub">The owner may not have published any matching projects yet.</div></div>`}
+      </div>`;
+  } catch(e){
+    wrap.innerHTML = `<div class="view-page-inner">
+      <div class="view-404">
+        <div class="view-404-code">404</div>
+        <div class="view-404-title">Something went wrong</div>
+        <div class="view-404-sub">${esc(e.message)}</div>
+      </div></div>`;
+  }
+}
 
 // ── TAG INPUT ─────────────────────────────────────────────────────────────
 function tagInputHTML(containerId, tags){
@@ -1419,6 +1537,7 @@ document.addEventListener('click',e=>{
   if(e.target.id==='previewModal') closePreview();
   if(e.target.id==='profileModal') closeProfileModal();
   if(e.target.id==='drawerOverlay') closeDrawer();
+  if(e.target.id==='shareModal')   closeShareModal();
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){ closeProjectModal(); closePreview(); closeProfileModal(); closeDrawer(); }
