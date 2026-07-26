@@ -455,7 +455,7 @@ footer span{color:var(--neon);}
 </div>
 
 <!-- ═══ SHARED FILTERED VIEW (token-based, tamper-proof) ═══ -->
-<div class="page" id="viewPage">
+<div class="page" id="viewPage" style="padding-top:0;">
   <div id="viewPageContent"></div>
 </div>
 
@@ -1158,13 +1158,11 @@ window.copyGeneratedLink = () => {
 async function renderViewPage(token){
   const wrap = $('viewPageContent'); if(!wrap) return;
 
-  // ── LOCK: hide nav, block all hash navigation away from this token ──────
+  // hide nav, set lock
   document.querySelector('nav').style.display = 'none';
-  // override hashchange while on view page — any attempt to navigate away
-  // shows 404 unless the new hash is still this exact token
   window._viewToken = token;
 
-  wrap.innerHTML = `<div class="view-page-inner"><div class="empty-state"><div class="empty-icon" style="animation:blink 1s step-end infinite">⚙</div><div class="empty-title">Loading…</div></div></div>`;
+  wrap.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;min-height:60vh;"><div class="empty-state"><div class="empty-icon" style="animation:blink 1s step-end infinite">⚙</div><div class="empty-title">Loading…</div></div></div>`;
 
   try{
     const snap = await getDoc(doc(db,'shareLinks',token));
@@ -1181,29 +1179,118 @@ async function renderViewPage(token){
     const { tags=[], status=[] } = snap.data();
     const statusMeta = { live:'● Live', wip:'WIP', archived:'Archived' };
 
+    // filter visible projects
     let list = projects.filter(p=>p.visible !== false);
     if(tags.length)   list = list.filter(p=> tags.every(t=>(p.tags||[]).includes(t)));
     if(status.length) list = list.filter(p=> status.includes(p.status||'wip'));
 
+    // active filter chips label for the projects section header
+    const filterChips = [
+      ...tags.map(t=>`<span class="view-filter-chip">${esc(t)}</span>`),
+      ...status.map(s=>`<span class="view-filter-chip status">${statusMeta[s]||s}</span>`),
+    ].join('');
+
+    // build the projects grid HTML
+    const gridHTML = list.length
+      ? `<div class="projects-grid">${list.map(p=>projectCardHTML(p)).join('')}</div>`
+      : `<div class="empty-state"><div class="empty-icon">⚙</div><div class="empty-title">No projects match these filters</div><div class="empty-sub">The owner may not have published any matching projects yet.</div></div>`;
+
+    // render the full home layout — hero, about, projects (filtered)
     wrap.innerHTML = `
-      <div class="view-page-inner">
-        <div class="view-banner">
-          <div class="view-banner-icon">🔗</div>
-          <div class="view-banner-text">
-            <div class="view-banner-title">Filtered Portfolio View</div>
-            <div class="view-banner-sub">Showing projects that match the filters below</div>
-            <div class="view-filter-chips">
-              ${tags.map(t=>`<span class="view-filter-chip">${esc(t)}</span>`).join('')}
-              ${status.map(s=>`<span class="view-filter-chip status">${statusMeta[s]||s}</span>`).join('')}
+      <!-- HERO -->
+      <section id="heroSection" style="min-height:calc(100vh - 0px);display:flex;align-items:center;justify-content:center;padding:4rem 10vw;position:relative;overflow:hidden;">
+        <div class="hero-grid"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-inner" style="position:relative;z-index:1;width:100%;max-width:1100px;display:flex;align-items:center;justify-content:space-between;gap:3rem;">
+          <div class="hero-text">
+            <div class="hero-eyebrow">${esc(profile.role||'BACKEND ENGINEER')}</div>
+            <h1 class="hero-name"><span>${esc(profile.name||'Your Name')}</span></h1>
+            <p class="hero-sub">${esc(profile.tagline||'')}</p>
+            <p class="hero-desc">${esc(profile.desc||'')}</p>
+            <div class="hero-cta" style="display:flex;gap:1rem;flex-wrap:wrap;">
+              <a href="#homeProjects" class="btn-primary" onclick="document.getElementById('viewHomeProjects').scrollIntoView({behavior:'smooth'});return false;">View Projects ↓</a>
+            </div>
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem;">
+              ${profile.github  ?`<a href="${esc(profile.github)}"  target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">⌥ GitHub</a>`:''}
+              ${profile.linkedin?`<a href="${esc(profile.linkedin)}" target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">in LinkedIn</a>`:''}
+              ${profile.twitter ?`<a href="${esc(profile.twitter)}"  target="_blank" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">𝕏 Twitter</a>`:''}
+              ${profile.email   ?`<a href="mailto:${esc(profile.email)}" class="btn-secondary" style="font-size:.78rem;padding:.5rem 1rem">✉ Email</a>`:''}
+            </div>
+            <div style="display:flex;gap:2rem;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border);">
+              <div><span class="stat-num">${list.length}</span><span class="stat-label">Projects</span></div>
+            </div>
+          </div>
+          <div class="hero-avatar-wrap">
+            <div class="hero-avatar-ring"></div>
+            <div class="hero-avatar-inner">${
+              (profile.photos||[]).filter(Boolean)[0]
+                ? `<img src="${(profile.photos||[]).filter(Boolean)[0]}" alt="${esc(profile.name||'')}"/>`
+                : `<span class="hero-avatar-placeholder">🧑‍💻</span>`
+            }</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section class="section-wrap about-section">
+        <div class="section-header">
+          <div class="section-eyebrow">ABOUT</div>
+          <h2 class="section-title">Who I <span>Am</span></h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-left">
+            ${(()=>{
+              const photos=(profile.photos||[]).filter(Boolean);
+              if(!photos.length) return `<div class="about-gallery"><div class="gallery-placeholder">🧑‍💻</div></div>`;
+              return `<div class="about-gallery" style="width:var(--gallery-size);max-width:100%;margin-bottom:1.75rem;">
+                <div class="gallery-main"><img id="vwGalImg" src="${photos[0]}" alt="Profile photo" style="width:100%;height:100%;object-fit:cover;display:block;transition:opacity .35s;"/></div>
+                ${photos.length>1?`<div class="gallery-thumbs">${[0,1,2].map(i=>photos[i]
+                  ?`<div class="gallery-thumb ${i===0?'active':''}" onclick="vwGalGoto(${i},${JSON.stringify(photos)})"><img src="${photos[i]}" alt="Photo ${i+1}"/></div>`
+                  :`<div class="gallery-thumb empty">+</div>`).join('')}</div>`:''}
+              </div>`;
+            })()}
+            <p style="font-size:.93rem;color:var(--muted);line-height:1.8;margin-bottom:1rem;">${esc(profile.about1||'')}</p>
+            <p style="font-size:.93rem;color:var(--muted);line-height:1.8;margin-bottom:1rem;">${esc(profile.about2||'')}</p>
+            <div class="skills-list">${(profile.skills||'').split(',').map(s=>s.trim()).filter(Boolean).map(t=>`<span class="skill-tag">${esc(t)}</span>`).join('')}</div>
+            ${(profile.extraFields||[]).filter(f=>f.label||f.value).length?`
+            <div class="pm-extra-fields">${(profile.extraFields||[]).filter(f=>f.label||f.value).map(f=>`
+              <div class="pm-extra-field">
+                <span class="pm-extra-field-label">${esc(f.label)}</span>
+                <span class="pm-extra-field-value">${f.type==='link'?`<a href="${esc(f.value)}" target="_blank" rel="noopener noreferrer" class="pm-extra-field-link">↗ ${esc(f.value)}</a>`:esc(f.value)}</span>
+              </div>`).join('')}</div>`:''}
+          </div>
+          <div class="terminal-box">
+            <div class="terminal-bar"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div><div class="terminal-title">bash — profile.sh</div></div>
+            <div class="terminal-body">
+              <div class="t-line"><span class="prompt">$ </span><span class="cmd">whoami</span></div>
+              <div class="t-line"><span class="out">${esc((profile.name||'backend_engineer').toLowerCase().replace(/\s+/g,'_'))}</span></div>
+              <div class="t-line"><span class="prompt">$ </span><span class="cmd">cat stack.json</span></div>
+              <div class="t-line"><span class="out">${esc(JSON.stringify((profile.skills||'').split(',').map(s=>s.trim()).filter(Boolean).slice(0,4)))}</span></div>
+              <div class="t-line"><span class="prompt">$ </span><span class="cmd">ls ./projects</span></div>
+              <div class="t-line"><span class="out">${esc(list.slice(0,3).map(p=>p.name.toLowerCase().replace(/\s+/g,'_')).join('  ')||'(none)')}</span></div>
+              <div class="t-line"><span class="prompt">$ </span><span class="cmd">git log --oneline -1</span></div>
+              <div class="t-line"><span class="out">a1b2c3d always be shipping 🚀</span></div>
             </div>
           </div>
         </div>
-        ${list.length
-          ? `<div class="projects-grid">${list.map(p=>projectCardHTML(p)).join('')}</div>`
-          : `<div class="empty-state"><div class="empty-icon">⚙</div>
-             <div class="empty-title">No projects match these filters</div>
-             <div class="empty-sub">The owner may not have published any matching projects yet.</div></div>`}
-      </div>`;
+      </section>
+
+      <!-- FILTERED PROJECTS -->
+      <section id="viewHomeProjects" class="section-wrap" style="border-top:1px solid var(--border);">
+        <div class="section-header projects-page-header">
+          <div>
+            <div class="section-eyebrow">WORK</div>
+            <h2 class="section-title">My <span>Projects</span></h2>
+          </div>
+          ${filterChips ? `<div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;">${filterChips}</div>` : ''}
+        </div>
+        ${gridHTML}
+      </section>
+
+      <footer style="border-top:1px solid var(--border);padding:2rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.05em;">
+        Built with <span style="color:var(--neon)">♥</span> &amp; <span style="color:var(--neon)">{ }</span> — Powered by Firebase
+      </footer>`;
+
   } catch(e){
     wrap.innerHTML = `<div class="view-page-inner">
       <div class="view-404">
@@ -1213,6 +1300,13 @@ async function renderViewPage(token){
       </div></div>`;
   }
 }
+
+// gallery helper for the view page (separate from main page galGoto)
+window.vwGalGoto = (i, photos) => {
+  const img = document.getElementById('vwGalImg');
+  if(img){ img.style.opacity='0'; setTimeout(()=>{ img.src=photos[i]; img.style.opacity='1'; },180); }
+  document.querySelectorAll('#viewPageContent .gallery-thumb').forEach((el,j)=>el.classList.toggle('active',j===i));
+};
 
 // ── TAG INPUT ─────────────────────────────────────────────────────────────
 function tagInputHTML(containerId, tags){
